@@ -346,3 +346,9 @@ o Fixed (hopefully) endon() kills threads correctly and gets along with other bl
 05/06/09
 o Fix and improve format() Thanks DrEvil.
 o Add some more gmVariable accessors (similar to gm_ex)
+
+25/01/10
+o Remove orphaned code in gmBlock dated 25/10/04 "Changed behaviour of Block() to yeild if blocked on 'null'."
+o Changed block on null behavior to cause script thread exception.
+o Fix signal behavior so multiple signals cannot accumulate on a blocked thread. Thanks DrEvil.
+o Changing gm version format from vMajor.Minor.BetaLetter to vMajor.Minor.Build. Probably won't change coded version to store past Minor unless process is automated.

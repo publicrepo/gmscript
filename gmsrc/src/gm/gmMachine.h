@@ -60,7 +60,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #undef GetObject //Argh Windows defines this in WINGDI.H
 
-#define GM_VERSION "1.25"
+#define GM_VERSION "1.26"
 
 // fwd decls
 class gmStringObject;

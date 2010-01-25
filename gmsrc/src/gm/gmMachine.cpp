@@ -923,6 +923,12 @@ int gmMachine::Sys_Block(gmThread * a_thread, int m_numBlocks, const gmVariable 
   int i;
   for(i = 0; i < m_numBlocks; ++i)
   {
+    // Catch attempts to block on null
+    if( a_blocks[i].IsNull() )
+    {
+      return -2;
+    }
+
 #if GM_USE_ENDON
     // hunt for an existing block on the thread
     gmBlock * block = a_thread->Sys_GetBlocks();
@@ -1030,6 +1036,7 @@ void gmMachine::Sys_SwitchState(gmThread * a_thread, int a_to)
     case gmThread::SYS_PENDING :
     {
       // remove and clean up the blocks.
+      Sys_RemoveSignals(a_thread); // Prevent signals from accumulating
       Sys_RemoveBlocks(a_thread);
       m_blockedThreads.Remove(a_thread);
       break;

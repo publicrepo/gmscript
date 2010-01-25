@@ -91,7 +91,7 @@ struct gmVariable
   
 
   inline void Nullify() { m_type = GM_NULL; m_value.m_int = 0; }
-  inline bool IsNull() { return m_type == GM_NULL; }
+  inline bool IsNull() const { return m_type == GM_NULL; }
   inline bool IsReference() const { return m_type > GM_FLOAT; }
 	inline bool IsInt() const { return m_type == GM_INT; }
   inline bool IsFloat() const { return m_type == GM_FLOAT; }
