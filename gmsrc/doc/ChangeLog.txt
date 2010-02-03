@@ -352,3 +352,6 @@ o Remove orphaned code in gmBlock dated 25/10/04 "Changed behaviour of Block() t
 o Changed block on null behavior to cause script thread exception.
 o Fix signal behavior so multiple signals cannot accumulate on a blocked thread. Thanks DrEvil.
 o Changing gm version format from vMajor.Minor.BetaLetter to vMajor.Minor.Build. Probably won't change coded version to store past Minor unless process is automated.
+
+04/02/10
+o Changed new to GM_NEW in gmCodeGen.cpp for consistency.  Thanks Sunray.

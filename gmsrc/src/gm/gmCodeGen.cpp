@@ -1508,7 +1508,7 @@ gmCodeGenPrivate::FunctionState * gmCodeGenPrivate::PushFunction()
     }
     else
     {
-      m_currentFunction = new FunctionState();   
+      m_currentFunction = GM_NEW( FunctionState() );
       m_functionStack.InsertLast(m_currentFunction);
     }
   }
@@ -1516,7 +1516,7 @@ gmCodeGenPrivate::FunctionState * gmCodeGenPrivate::PushFunction()
   {
     if(m_functionStack.IsEmpty())
     {
-      m_currentFunction = new FunctionState();   
+      m_currentFunction = GM_NEW( FunctionState() );
       m_functionStack.InsertLast(m_currentFunction);
     }
     else
