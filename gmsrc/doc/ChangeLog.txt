@@ -355,3 +355,6 @@ o Changing gm version format from vMajor.Minor.BetaLetter to vMajor.Minor.Build.
 
 04/02/10
 o Changed new to GM_NEW in gmCodeGen.cpp for consistency.  Thanks Sunray.
+
+15/03/10
+o Fix GC auto calibration. Thanks DrEvil.

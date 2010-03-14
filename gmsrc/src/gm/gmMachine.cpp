@@ -1289,7 +1289,7 @@ bool gmMachine::CollectGarbage(bool a_forceFullCollect)
         {
           // We ran out of memory because we needed more than our limit, so increase limit
           int newHard = (int)(GMMACHINE_GC_HARD_MEM_INC_FRAC_OF_USED * (float)afterMemUsage);
-          int newSoft = (int)(GMMACHINE_GC_SOFT_MEM_DEFAULT_FRAC_OF_HARD * (float)GetDesiredByteMemoryUsageHard());
+          int newSoft = (int)(GMMACHINE_GC_SOFT_MEM_DEFAULT_FRAC_OF_HARD * (float)newHard);
 
           if( !GMMACHINE_AUTOMEMALLOWSHRINK )
           {
