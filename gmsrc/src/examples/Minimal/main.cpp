@@ -29,6 +29,8 @@ int main(int argc, char* argv[])
   char script[MAX_SCRIPT_SIZE];
   fgets(script, MAX_SCRIPT_SIZE-1, stdin);
   
+  machine->SetDebugMode(true); // Enable debug mode so errors are readable
+  
   // Compile the script, but don't run it for now
   int errors = machine->ExecuteString(script, NULL, false, NULL);
   // Dump compile time errors to output
@@ -49,8 +51,10 @@ int main(int argc, char* argv[])
     int lastTime = timeGetTime();
     
     // Keep executing script while threads persist
-    while(machine->Execute(deltaTime))
+    for(;;)
     {
+      int threadCount = machine->Execute(deltaTime);
+      
       // Update delta time
       int curTime = timeGetTime();
       deltaTime = curTime - lastTime;
@@ -64,6 +68,11 @@ int main(int argc, char* argv[])
         fprintf(stderr, "%s"GM_NL, message);
       }
       machine->GetLog().Reset();
+      
+      if( !threadCount ) // Exit here when necessary, to allow error logs to print
+      {
+        break;
+      }
     }
   }
 

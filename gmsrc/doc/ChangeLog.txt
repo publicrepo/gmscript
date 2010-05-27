@@ -351,10 +351,14 @@ o Add some more gmVariable accessors (similar to gm_ex)
 o Remove orphaned code in gmBlock dated 25/10/04 "Changed behaviour of Block() to yeild if blocked on 'null'."
 o Changed block on null behavior to cause script thread exception.
 o Fix signal behavior so multiple signals cannot accumulate on a blocked thread. Thanks DrEvil.
-o Changing gm version format from vMajor.Minor.BetaLetter to vMajor.Minor.Build. Probably won't change coded version to store past Minor unless process is automated.
+o Changing gm version format from vMajor.Minor.BetaLetter to vMajor.Minor.Build. Probably won't change coded version to store past Minor unless process is automated. Probably won't use 4 components as each can be multi digit.
 
 04/02/10
 o Changed new to GM_NEW in gmCodeGen.cpp for consistency.  Thanks Sunray.
 
 15/03/10
 o Fix GC auto calibration. Thanks DrEvil.
+
+27/05/10
+o Improved Minimal example.  Not all errors were logged. Also enabled debug mode. Thanks xaxa.
+
