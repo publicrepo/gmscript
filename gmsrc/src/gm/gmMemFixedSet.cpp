@@ -58,7 +58,7 @@ unsigned int gmMemFixedSet::GetSystemMemUsed() const
   BigMemNode* curNode = m_bigAllocs.GetFirst();
   while(m_bigAllocs.IsValid(curNode))
   {
-    total += curNode->m_size;
+    total += GetDataAllocationSize( curNode->Data() ); // Pass in the Data ptr, not the node ptr so we can offset correctly
     curNode = m_bigAllocs.GetNext(curNode);
   }
   return total;

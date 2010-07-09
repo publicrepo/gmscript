@@ -121,7 +121,7 @@ public:
   // Return number of elements in array
   int GetSize()
   {
-    return m_array.size();
+    return (int)m_array.size();
   }
 
   // Return last index eg. GetSize()-1

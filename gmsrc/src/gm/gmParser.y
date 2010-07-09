@@ -741,7 +741,7 @@ identifier
   : IDENTIFIER
     {
       $$ = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_IDENTIFIER, gmlineno);
-      $$->m_data.m_string = (char *) gmCodeTree::Get().Alloc(strlen(gmtext) + 1);
+      $$->m_data.m_string = (char *) gmCodeTree::Get().Alloc((int)strlen(gmtext) + 1);
       strcpy($$->m_data.m_string, gmtext);
     }
   ;
@@ -776,7 +776,7 @@ constant
     {
       $$ = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_CONSTANT, gmlineno, CTNCT_INT);
 
-      char * c = (char *) gmCodeTree::Get().Alloc(strlen(gmtext) + 1);
+      char * c = (char *) gmCodeTree::Get().Alloc((int)strlen(gmtext) + 1);
       strcpy(c, gmtext);
       int result = 0;
       int shr = 0;
@@ -838,7 +838,7 @@ constant_string_list
   : CONSTANT_STRING
     {
       $$ = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_CONSTANT, gmlineno, CTNCT_STRING);
-      $$->m_data.m_string = (char *) gmCodeTree::Get().Alloc(strlen(gmtext) + 1);
+      $$->m_data.m_string = (char *) gmCodeTree::Get().Alloc((int)strlen(gmtext) + 1);
       strcpy($$->m_data.m_string, gmtext);
       if(gmtext[0] == '"')
       {
@@ -852,8 +852,8 @@ constant_string_list
   | constant_string_list CONSTANT_STRING
     {
       $$ = $1;
-      int alen = strlen($$->m_data.m_string);
-      int blen = strlen(gmtext);
+      int alen = (int)strlen($$->m_data.m_string);
+      int blen = (int)strlen(gmtext);
       char * str = (char *) gmCodeTree::Get().Alloc(alen + blen + 1);
       if(str)
       {

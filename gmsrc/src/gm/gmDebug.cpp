@@ -79,8 +79,8 @@ void gmDebuggerSource(gmDebugSession * a_session, int a_sourceId, const char * a
 void gmDebuggerException(gmDebugSession * a_session, int a_threadId);
 
 void gmDebuggerBeginContext(gmDebugSession * a_session, int a_threadId, int a_callFrame);
-void gmDebuggerContextCallFrame(gmDebugSession * a_session, int a_callFrame, const char * a_functionName, int a_sourceId, int a_lineNumber, const char * a_thisSymbol, const char * a_thisValue, int a_thisId);
-void gmDebuggerContextVariable(gmDebugSession * a_session, const char * a_varSymbol, const char * a_varValue, int a_varId);
+void gmDebuggerContextCallFrame(gmDebugSession * a_session, int a_callFrame, const char * a_functionName, int a_sourceId, int a_lineNumber, const char * a_thisSymbol, const char * a_thisValue, gmptr a_thisId);
+void gmDebuggerContextVariable(gmDebugSession * a_session, const char * a_varSymbol, const char * a_varValue, gmptr a_varId);
 void gmDebuggerEndContext(gmDebugSession * a_session);
 
 void gmDebuggerBeginSourceInfo(gmDebugSession * a_session);
@@ -354,10 +354,19 @@ gmDebugSession &gmDebugSession::Pack(int a_val)
 }
 
 
+#ifdef GT_PTR_SIZE_64 // Only needed if types gmptr != gmint
+gmDebugSession &gmDebugSession::Pack(gmint64 a_val)
+{
+  m_out << a_val;
+  return *this;
+}
+#endif //GT_PTR_SIZE_64
+
+
 gmDebugSession &gmDebugSession::Pack(const char * a_val)
 {
   if(a_val)
-    m_out.Write(a_val, strlen(a_val) + 1);
+    m_out.Write(a_val, (unsigned int)strlen(a_val) + 1);
   else
     m_out.Write("", 1);
   return *this;
@@ -378,11 +387,19 @@ gmDebugSession &gmDebugSession::Unpack(int &a_val)
 }
 
 
+#ifdef GT_PTR_SIZE_64 // Only needed if types gmptr != gmint
+gmDebugSession &gmDebugSession::Unpack(gmint64 &a_val)
+{
+  if(m_in.Read(&a_val, sizeof(gmint64)) != sizeof(gmint64)) a_val = 0;
+  return *this;
+}
+#endif //GT_PTR_SIZE_64
+
 gmDebugSession &gmDebugSession::Unpack(const char * &a_val)
 {
   // this is dangerous!!!
   a_val = &m_in.GetData()[m_in.Tell()];
-  int len = strlen(a_val);
+  int len = (int)strlen(a_val);
   m_in.Seek(m_in.Tell() + len + 1);
   return *this;
 }
@@ -653,10 +670,10 @@ void gmDebuggerSource(gmDebugSession * a_session, int a_sourceId, const char * a
 void gmDebuggerBeginContext(gmDebugSession * a_session, int a_threadId, int a_callFrame) {
   a_session->Pack(ID_dctx).Pack(a_threadId).Pack(a_callFrame);
 }
-void gmDebuggerContextCallFrame(gmDebugSession * a_session, int a_callFrame, const char * a_functionName, int a_sourceId, int a_lineNumber, const char * a_thisSymbol, const char * a_thisValue, int a_thisId) {
+void gmDebuggerContextCallFrame(gmDebugSession * a_session, int a_callFrame, const char * a_functionName, int a_sourceId, int a_lineNumber, const char * a_thisSymbol, const char * a_thisValue, gmptr a_thisId) {
   a_session->Pack(ID_call).Pack(a_callFrame).Pack(a_functionName).Pack(a_sourceId).Pack(a_lineNumber).Pack(a_thisSymbol).Pack(a_thisValue).Pack(a_thisId);
 }
-void gmDebuggerContextVariable(gmDebugSession * a_session, const char * a_varSymbol, const char * a_varValue, int a_varId) {
+void gmDebuggerContextVariable(gmDebugSession * a_session, const char * a_varSymbol, const char * a_varValue, gmptr a_varId) {
   a_session->Pack(ID_vari).Pack(a_varSymbol).Pack(a_varValue).Pack(a_varId);
 }
 void gmDebuggerEndContext(gmDebugSession * a_session) {

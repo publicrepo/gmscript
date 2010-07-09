@@ -55,8 +55,8 @@ private:
   bool m_swapEndian;
   bool m_debug;
   const char * m_source;
-  gmptr m_symbolOffset;
-  gmptr m_functionId;
+  gmuint32 m_symbolOffset;
+  gmuint32 m_functionId;
   gmStreamBufferDynamic m_functionStream;
   gmListDouble<USymbol> m_symbols;
   gmMemChain m_allocator;

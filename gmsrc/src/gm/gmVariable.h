@@ -60,8 +60,8 @@ struct gmVariable
   gmType m_type;
   union
   {
-    int m_int;
-    float m_float;
+    gmint m_int;
+    gmfloat m_float;
     gmptr m_ref;
   } m_value;
 

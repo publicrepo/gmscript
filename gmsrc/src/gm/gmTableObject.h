@@ -118,7 +118,7 @@ private:
   void RemoveAndDeleteAll(gmMachine * a_machine);
   inline gmTableNode * GetAtHashPos(const gmVariable* a_key) const
   {
-    unsigned int hash = a_key->m_value.m_ref;
+    unsigned int hash = (unsigned int)a_key->m_value.m_ref; // Use lower 32 bits for now (NOTE: Alternate hashing method may improve performance)
 
     if(a_key->IsReference())
     {

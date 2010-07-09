@@ -80,8 +80,8 @@ public:
 
   gmSourceEntry(const char * a_source, const char * a_filename)
   {
-    int slen = strlen(a_source);
-    int flen = strlen(a_filename);
+    int slen = (int)strlen(a_source);
+    int flen = (int)strlen(a_filename);
     m_id = gmCrc32String(a_source);
 
     m_source = GM_NEW( char[slen + flen + 2] );
@@ -1490,7 +1490,7 @@ gmStringObject * gmMachine::AllocStringObject(const char * a_string, int a_lengt
   
   if(a_length < 0)
   {
-    a_length = strlen(a_string);
+    a_length = (int)strlen(a_string);
   }
   char * string = (char *) Sys_Alloc(a_length + 1);
   memcpy(string, a_string, a_length + 1);

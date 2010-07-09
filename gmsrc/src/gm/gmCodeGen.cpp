@@ -19,7 +19,7 @@
 //static const char * s_tempVarName0 = "__t0"; // Currently not used
 static const char * s_tempVarName1 = "__t1";
 
-#define SIZEOF_BC_BRA   8
+#define SIZEOF_BC_BRA   (sizeof(gmuint32)+sizeof(gmptr)) // instruction + address
 
 /// \brief gmSortDebugLines will sort debug line information
 static void gmSortDebugLines(gmArraySimple<gmLineInfo> &a_lineInfo)
@@ -628,7 +628,11 @@ bool gmCodeGenPrivate::GenExprTable(const gmCodeTreeNode * a_node, gmByteCodeGen
     }
     else
     {
+#if 1 // 32bit Integers
+      a_byteCode->Emit(BC_PUSHINT, index++);
+#else
       a_byteCode->EmitPtr(BC_PUSHINT, index++);
+#endif
       if(!Generate(fields, a_byteCode, false)) return false;
       a_byteCode->Emit(BC_SETIND);
     }
@@ -793,7 +797,7 @@ bool gmCodeGenPrivate::GenStmtForEach(const gmCodeTreeNode * a_node, gmByteCodeG
     return false;
   }
 
-  a_byteCode->Emit(BC_BRA, (gmuint32) loc1);
+  a_byteCode->EmitPtr(BC_BRA, (gmuint32) loc1);
   breakAddress = a_byteCode->Seek(loc2);
   a_byteCode->EmitPtr(BC_BRZ, breakAddress);
   a_byteCode->Seek(breakAddress);
@@ -1268,7 +1272,11 @@ bool gmCodeGenPrivate::GenExprConstant(const gmCodeTreeNode * a_node, gmByteCode
       }
       else
       {
+#if 1 // 32bit Integers
+        a_byteCode->Emit(BC_PUSHINT, *((gmint *) &a_node->m_data.m_iValue));
+#else
         a_byteCode->EmitPtr(BC_PUSHINT, *((gmptr *) &a_node->m_data.m_iValue));
+#endif
       }
       break;
     }

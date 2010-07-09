@@ -27,7 +27,7 @@
 /// \enum gmEndian Endian byte order
 enum gmEndian
 {
-  GM_ENDIAN_BIG = 0,      //!< MOTOROLA (MAC), NINTENDO GC
+  GM_ENDIAN_BIG = 0,      //!< MOTOROLA (MAC), NINTENDO GC, Xbox360, PS3
   GM_ENDIAN_LITTLE = 1    //!< x86, XBOX, PS2
 };
 

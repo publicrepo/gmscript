@@ -269,7 +269,7 @@ static int GM_CDECL gmfStringSpanIncluding(gmThread * a_thread)
     const char * thisStr = (const char *) *strObj;
     const char * otherStr = a_thread->ParamString(0);
     
-    int offset = strspn(thisStr, otherStr);
+    int offset = (int)strspn(thisStr, otherStr);
     char * buffer = (char *) alloca(offset + 1);
     memcpy(buffer, thisStr, offset);
     buffer[offset] = 0;
@@ -297,7 +297,7 @@ static int GM_CDECL gmfStringSpanExcluding(gmThread * a_thread)
     const char * thisStr = (const char *) *strObj;
     const char * otherStr = a_thread->ParamString(0);
     
-    int offset = strcspn(thisStr, otherStr);
+    int offset = (int)strcspn(thisStr, otherStr);
     char * buffer = (char *) alloca(offset + 1);
     memcpy(buffer, thisStr, offset);
     buffer[offset] = 0;
@@ -434,7 +434,7 @@ static int GM_CDECL gmfStringReplaceCharsInSet(gmThread * a_thread)
 
   for(;;)
   {
-    validPos = strcspn(buffer, invalidCharSet);
+    validPos = (int)strcspn(buffer, invalidCharSet);
     if(validPos != lenA)
     {
       buffer[validPos] = repChar;
@@ -591,7 +591,7 @@ static int GM_CDECL gmStringReverse(gmThread * a_thread)
   gmStringObject * strObj = (gmStringObject *) GM_OBJECT(var->m_value.m_ref);
   const char * str = (const char *) *strObj;
 
-  int len = strlen(str);
+  int len = (int)strlen(str);
   if(len > 0)
   {
     char * buffer = (char *) alloca(len + 1); 
@@ -818,7 +818,7 @@ static int GM_CDECL gmStringGetFilenameNoExt(gmThread * a_thread)
   while (--lpsz >= buffer && *lpsz != '\\' && *lpsz != '/') {}
 
   buffer = ++lpsz;
-  strLength = strlen(buffer);
+  strLength = (int)strlen(buffer);
   lpsz = buffer + strLength;
   while (--lpsz >= buffer && *lpsz != '.') {}
   if(*lpsz == '.') *lpsz = 0;
@@ -884,12 +884,12 @@ static int GM_CDECL gmStringSetExtension(gmThread * a_thread)
 
   const char * str = (const char *) *strObj;
   int strLength = strObj->GetLength();
-  int extLength = strlen(newExt);
+  int extLength = (int)strlen(newExt);
 
   if (extLength && newExt[0] == '.')
   {
     ++newExt;
-    extLength = strlen(newExt);
+    extLength = (int)strlen(newExt);
   }
 
   char *buffer = (char *) alloca(strLength + 1 + extLength);

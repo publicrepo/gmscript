@@ -345,7 +345,7 @@ inline const char * gmUnknownToString(gmMachine * a_machine, gmVariable * a_unkn
   {
     strcpy(a_buffer, "null");
   }
-  if(a_len) { *a_len = strlen(a_buffer); }
+  if(a_len) { *a_len = (int)strlen(a_buffer); }
   return a_buffer;
 }
 void GM_CDECL gmStringOpAdd(gmThread * a_thread, gmVariable * a_operands)

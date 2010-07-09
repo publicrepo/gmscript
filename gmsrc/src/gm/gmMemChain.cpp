@@ -105,7 +105,7 @@ gmMemChain::MemChunk* gmMemChain::NewChunk()
   
     //Allocate memory and set address space
     newChunk->m_minAddress = mem + sizeof(MemChunk);
-    newChunk->m_lastAddress = (void*)((unsigned int)newChunk->m_minAddress + m_chunkSize);
+    newChunk->m_lastAddress = (void*)((gmuptr)newChunk->m_minAddress + m_chunkSize);
     newChunk->m_curAddress = newChunk->m_minAddress;
 
     //Link new chunk to chain
@@ -196,12 +196,12 @@ void* gmMemChain::Alloc(unsigned int a_numElementsToAlloc)
 
   GM_ASSERT(allocSize <= m_chunkSize); // Chunk size is too small to alloc that many elements at once and should be increased
 
-  if(((unsigned int)m_currentChunk->m_curAddress + allocSize) > (unsigned int)m_currentChunk->m_lastAddress)
+  if(((gmuptr)m_currentChunk->m_curAddress + allocSize) > (gmuptr)m_currentChunk->m_lastAddress)
   {
     NewChunk();    
   }
   retPtr = m_currentChunk->m_curAddress;
-  m_currentChunk->m_curAddress = (void*)((unsigned int)m_currentChunk->m_curAddress + allocSize);
+  m_currentChunk->m_curAddress = (void*)((gmuptr)m_currentChunk->m_curAddress + allocSize);
 
   return retPtr;
 }

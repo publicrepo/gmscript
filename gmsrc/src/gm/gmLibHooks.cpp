@@ -109,7 +109,7 @@ bool gmLibHooks::End(int a_errors)
     USymbol * symbol = m_symbols.GetLast();
     while(m_symbols.IsValid(symbol))
     {
-      m_stream->Write(symbol->m_string, strlen(symbol->m_string) + 1);
+      m_stream->Write(symbol->m_string, (unsigned int)strlen(symbol->m_string) + 1);
       symbol = m_symbols.GetPrev(symbol);
     }
     GM_ASSERT(m_stream->Tell() == m_symbolOffset + offsets[0] + sizeof(gmuint32));
@@ -118,7 +118,7 @@ bool gmLibHooks::End(int a_errors)
     if(m_debug && m_source)
     {
       offsets[1] = m_stream->Tell();
-      t = strlen(m_source) + 1;
+      t = (gmuint32)strlen(m_source) + 1;
       t1 = 0;
       *m_stream << t << t1;
       m_stream->Write(m_source, t);
@@ -167,7 +167,7 @@ gmptr gmLibHooks::GetSymbolId(const char * a_symbol)
   }
 
   // add a new symbol
-  unsigned int len = strlen(a_symbol) + 1;
+  unsigned int len = (unsigned int)strlen(a_symbol) + 1;
   symbol = (USymbol *) m_allocator.AllocBytes(sizeof(USymbol), GM_DEFAULT_ALLOC_ALIGNMENT);
   symbol->m_string = (char *) m_allocator.AllocBytes(len, GM_DEFAULT_ALLOC_ALIGNMENT);
   memcpy(symbol->m_string, a_symbol, len);
@@ -314,8 +314,8 @@ gmFunctionObject * gmLibHooks::BindLib(gmMachine &a_machine, gmStream &a_stream,
         case BC_BRNZ :
         case BC_BRZK :
         case BC_BRNZK :
-        case BC_FOREACH :
-        case BC_PUSHINT :
+        case BC_FOREACH : instruction += sizeof(gmptr); break;
+        case BC_PUSHINT : instruction += sizeof(gmint); break;
         case BC_PUSHFP : instruction += sizeof(gmfloat); break;
 
         case BC_CALL :

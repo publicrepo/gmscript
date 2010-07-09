@@ -70,7 +70,7 @@ void GM_CDECL gmLog::LogEntry(const char * a_format, ...)
   Entry * entry = (Entry *) m_mem.AllocBytes(sizeof(Entry) + sizeof(int), GM_DEFAULT_ALLOC_ALIGNMENT);
   if(entry != NULL)
   {
-    char * text = (char *) m_mem.AllocBytes(strlen(buffer) + 1, GM_DEFAULT_ALLOC_ALIGNMENT);
+    char * text = (char *) m_mem.AllocBytes( (int)strlen(buffer) + 1, GM_DEFAULT_ALLOC_ALIGNMENT);
     if(text)
     {
       strcpy(text, buffer);

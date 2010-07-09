@@ -27,14 +27,15 @@ void gmByteCodePrint(FILE * a_fp, const void * a_byteCode, int a_byteCodeLength)
   const gmuint8 * end = instruction + a_byteCodeLength;
   const gmuint8 * start = instruction;
   const char * cp;
-  bool opiptr, opf32;
+  bool opiptr, opf32, opi32;
 
   while(instruction < end)
   {
     opiptr = false;
     opf32 = false;
+    opi32 = false;
 
-    int addr = instruction - start;
+    int addr = (int)(instruction - start);
 
     switch(*instruction)
     {
@@ -62,7 +63,7 @@ void gmByteCodePrint(FILE * a_fp, const void * a_byteCode, int a_byteCodeLength)
       case BC_DUP2 : cp = "dup2"; break;
       case BC_SWAP : cp = "swap"; break;
       case BC_PUSHNULL : cp = "push null"; break;
-      case BC_PUSHINT : cp = "push int"; opiptr = true; break;
+      case BC_PUSHINT : cp = "push int"; opi32 = true; break;
       case BC_PUSHINT0 : cp = "push int 0"; break;
       case BC_PUSHINT1 : cp = "push int 1"; break;
       case BC_PUSHFP : cp = "push fp"; opf32 = true; break;
@@ -71,8 +72,8 @@ void gmByteCodePrint(FILE * a_fp, const void * a_byteCode, int a_byteCodeLength)
       case BC_PUSHFN : cp = "push fn"; opiptr = true; break;
       case BC_PUSHTHIS : cp = "push this"; break;
       
-      case BC_GETLOCAL : cp = "get local"; opiptr = true; break;
-      case BC_SETLOCAL : cp = "set local"; opiptr = true; break;
+      case BC_GETLOCAL : cp = "get local"; opi32 = true; break;
+      case BC_SETLOCAL : cp = "set local"; opi32 = true; break;
       case BC_GETGLOBAL : cp = "get global"; opiptr = true; break;
       case BC_SETGLOBAL : cp = "set global"; opiptr = true; break;
       case BC_GETTHIS : cp = "get this"; opiptr = true; break;
@@ -116,6 +117,12 @@ void gmByteCodePrint(FILE * a_fp, const void * a_byteCode, int a_byteCodeLength)
       float fval = *((float *) instruction);
       instruction += sizeof(gmint32);
       fprintf(a_fp, "  %04d %s %f"GM_NL, addr, cp, fval);
+    }
+    if(opi32)
+    {
+      gmint32 ival = *((gmint32 *) instruction);
+      instruction += sizeof(gmint32);
+      fprintf(a_fp, "  %04d %s %d"GM_NL, addr, cp, ival);
     }
     else if (opiptr)
     {

@@ -56,7 +56,7 @@ const char * gmVariable::AsStringWithType(gmMachine * a_machine, char * a_buffer
   _gmsnprintf(a_buffer, a_len, "%s: ", a_machine->GetTypeName(m_type));
 
   // Update for used portion
-  int usedLen = strlen(a_buffer);
+  int usedLen = (int)strlen(a_buffer);
   char* newBufferPos = a_buffer + usedLen;
   int newLen = a_len - usedLen;
 

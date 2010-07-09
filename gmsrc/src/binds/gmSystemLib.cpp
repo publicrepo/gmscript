@@ -201,8 +201,6 @@ static void GM_CDECL gmFileOpGetDot(gmThread * a_thread, gmVariable * a_operands
   {
     gmStringObject * member = (gmStringObject *) GM_OBJECT(a_operands[1].m_value.m_ref);
 
-    GM_ASSERT(sizeof(gmptr) == sizeof(time_t));
-
     if(strcmp(member->GetString(), "SEEK_CUR") == 0)
       a_operands->SetInt(SEEK_CUR);
     else if(strcmp(member->GetString(), "SEEK_END") == 0)
@@ -268,7 +266,7 @@ static int GM_CDECL gmfFileReadLine(gmThread * a_thread) // flag keep \n (0), re
     char * str = fgets(buffer, len, (FILE *) fileObject->m_user);
     if(str)
     {
-      int slen = strlen(str);
+      int slen = (int)strlen(str);
       if(!keepLF)
       {
         if(!feof((FILE *) fileObject->m_user))
@@ -413,7 +411,25 @@ static int GM_CDECL gmfFileInfo(gmThread * a_thread)
 {
   GM_CHECK_NUM_PARAMS(1);
   GM_CHECK_STRING_PARAM(filename, 0);
-  
+
+#if 1 // Compatible with 64bit OS
+  struct _stat32 buf;
+  int fh, result;
+
+  if((fh = _open(filename, _O_RDONLY)) ==  -1) return GM_OK; // return null
+  result = _fstat32(fh, &buf); // Get data associated with "fh"
+  if(result == 0) //function obtained data correctly (0 == success, -1 == fail)
+  {
+    // create and push a gmFileInfoUser object
+    gmFileInfoUser * fileInfo = (gmFileInfoUser *) a_thread->GetMachine()->Sys_Alloc(sizeof(gmFileInfoUser));
+    fileInfo->m_creationTime = buf.st_ctime;
+    fileInfo->m_accessedTime = buf.st_atime;
+    fileInfo->m_modifiedTime = buf.st_mtime;
+    fileInfo->m_size = buf.st_size;
+    a_thread->PushNewUser(fileInfo, s_gmFileInfoType);
+  }
+  _close( fh );
+#else  
   struct _stat buf;
   int fh, result;
 
@@ -430,6 +446,7 @@ static int GM_CDECL gmfFileInfo(gmThread * a_thread)
     a_thread->PushNewUser(fileInfo, s_gmFileInfoType);
   }
   _close( fh );
+#endif
   return GM_OK;
 }
 
@@ -476,7 +493,7 @@ bool RecurseDeletePath(const char * a_path)
   strcpy(path,a_path);
 
   // remove trailing '\' char
-  int last = strlen(path) - 1;
+  int last = (int)strlen(path) - 1;
   if(path[last] == '\\')
   {
     path[last] = '\0';
@@ -567,11 +584,19 @@ static int GM_CDECL gmfDeleteFolder(gmThread * a_thread)
 
 static int GM_CDECL gmfTime(gmThread * a_thread)
 {
+#if 1 // Compatible with 64bit OS
+  __time32_t t;
+  _time32(&t);
+  GM_ASSERT(sizeof(t) <= sizeof(gmint));
+  a_thread->PushInt(t);
+  return GM_OK;
+#else
   time_t t;
   time(&t);
-  GM_ASSERT(sizeof(time_t) == sizeof(gmptr));
-  a_thread->PushInt((gmptr) t);
+  GM_ASSERT(sizeof(time_t) <= sizeof(gmptr));
+  a_thread->PushInt(t);
   return GM_OK;
+#endif
 }
 
 
@@ -694,16 +719,18 @@ static void GM_CDECL gmFileInfoOpGetDot(gmThread * a_thread, gmVariable * a_oper
     gmFileInfoUser * fileInfo = (gmFileInfoUser *) user->m_user;
     gmStringObject * member = (gmStringObject *) GM_OBJECT(a_operands[1].m_value.m_ref);
 
-    GM_ASSERT(sizeof(gmptr) == sizeof(time_t));
+    GM_ASSERT(sizeof(fileInfo->m_creationTime) <= sizeof(gmint));
+
+    // NOTE: Not valid or tested for 64bit target
 
     if(strcmp(member->GetString(), "creationTime") == 0)
-      a_operands->SetInt((gmptr) fileInfo->m_creationTime);
+      a_operands->SetInt((gmint) fileInfo->m_creationTime);
     else if(strcmp(member->GetString(), "accessedTime") == 0)
-      a_operands->SetInt((gmptr) fileInfo->m_accessedTime);
+      a_operands->SetInt((gmint) fileInfo->m_accessedTime);
     else if(strcmp(member->GetString(), "modifiedTime") == 0)
-      a_operands->SetInt((gmptr) fileInfo->m_modifiedTime);
+      a_operands->SetInt((gmint) fileInfo->m_modifiedTime);
     else if(strcmp(member->GetString(), "size") == 0)
-      a_operands->SetInt((gmptr) fileInfo->m_size);
+      a_operands->SetInt((gmint) fileInfo->m_size);
     else
     {
       a_operands->Nullify();

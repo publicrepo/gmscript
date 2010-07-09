@@ -14,6 +14,8 @@
 
 #include "gmMemChain.h"
 
+#define GM_DEBUG_MEMFIXED 0 // Enable some debugging code, should be disabled unless developing or testing this code
+
 /// \class gmMemFixed
 /// \brief Fixed memory allocator, wrapper on chain memory allocator to provide memory reuse. 
 ///        Performance note: use can cause more random memory access
@@ -106,12 +108,12 @@ void* gmMemFixed::Alloc()
   m_memUsed += m_memChain.GetElementSize();
 #endif // GM_DEBUG_BUILD
 
-#if 0
+#if GM_DEBUG_MEMFIXED
   // clear new mem pointer to 0xB00BFEED
   int * n = (int *) newMemPtr;
   int c = m_memChain.GetElementSize() / sizeof(int);
   while(c--) *(n++) = 0xB00BFEED;
-#endif
+#endif //GM_DEBUG_MEMFIXED
 
   return newMemPtr;
 }
@@ -120,7 +122,7 @@ void* gmMemFixed::Alloc()
 
 void gmMemFixed::Free(void* a_ptr)
 {
-#if 0
+#if GM_DEBUG_MEMFIXED
   // make sure a_ptr is not already in list (freeing something twice)
   FreeListNode * node = m_freeList;
   while(node)
@@ -128,16 +130,16 @@ void gmMemFixed::Free(void* a_ptr)
     GM_ASSERT(a_ptr != node);
     node = node->m_next;
   }
-#endif
+#endif //GM_DEBUG_MEMFIXED
 
   if(a_ptr)
   {
-#if 0
+#if GM_DEBUG_MEMFIXED
     // clear new mem pointer to 0xFEEDFACE
     int * n = (int *) a_ptr;
     int c = m_memChain.GetElementSize() / sizeof(int);
     while(c--) *(n++) = 0xFEEDFACE;
-#endif
+#endif //GM_DEBUG_MEMFIXED
 
     //Add pointer to free list so we can reuse it
     ((FreeListNode*)a_ptr)->m_next = m_freeList;

@@ -87,7 +87,7 @@ public:
 
   /// \brief GetLine() will return the source line for the given address
   int GetLine(int a_address) const;
-  int GetLine(const void * a_instruction) const { return GetLine((const char * ) a_instruction - (char *) m_byteCode); }
+  int GetLine(const void * a_instruction) const { return GetLine( (int)((const char * ) a_instruction - (char *) m_byteCode) ); }
 
   /// \brief GetInstructionAtLine() will return the instruction at the given line, or NULL of line was not within this function
   const void * GetInstructionAtLine(int a_line) const;

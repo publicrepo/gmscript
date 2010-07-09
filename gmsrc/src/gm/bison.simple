@@ -290,7 +290,7 @@ yynewstate:
 #endif
 
       /* Get the current used size of the three stacks, in elements.  */
-      int size = yyssp - yyss + 1;
+      int size = (int)(yyssp - yyss + 1); // _GD_ cast for 64bit build
 
 #ifdef yyoverflow
       /* Each stack pointer address is followed by the size of
@@ -562,7 +562,7 @@ yyerrlab:   /* here on detecting error */
           for (x = (yyn < 0 ? -yyn : 0);
                x < (int)(sizeof(yytname) / sizeof(char *)); x++) //_GD_
             if (yycheck[x + yyn] == x)
-              size += strlen(yytname[x]) + 15, count++;
+              size += (int)strlen(yytname[x]) + 15, count++; // _GD_ add cast for 64bit build
           //_GD_ msg = (char *) malloc(size + 15);
           msg = GM_NEW( char [size + 15] );
           if (msg != 0)

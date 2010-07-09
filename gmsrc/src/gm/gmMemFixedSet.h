@@ -65,20 +65,48 @@ protected:
   /// \brief Internal data structure for small allocations
   struct SmallMemNode
   {
-    int m_size;                                   ///< Allocation size
-    char* Data() {return (char*)(this + 1);}      ///< Get ptr after this structure
+    // NOTE: IMPORTANT size is NOT stored in m_size but (int*)Data()[-1]
+    //       This allows SmallMemNode and BigMemNode to both check the same memory offset to determine size
+    //       We must allocate AT LEAST enough memory for the size to be stored.
+    private: int m_size_reserved;                         ///< Allocation size (WARNING: Do not directly access)
+    public: char* Data() {return (char*)(this + 1);}      ///< Get ptr after this structure
   };
 
   /// \brief Internal data structure for large allocations
   struct BigMemNode: public gmListDoubleNode<BigMemNode>
   { 
-    int m_size;                                   ///< Allocation size
-    char* Data() {return (char*)(this + 1);}      ///< Get ptr after this structure
+    // NOTE: IMPORTANT size is NOT stored in m_size but (int*)Data()[-1]
+    //       This allows SmallMemNode and BigMemNode to both check the same memory offset to determine size
+    //       We must allocate AT LEAST enough memory for the size to be stored.
+    private: int m_size_reserved;                         ///< Allocation size (WARNING: Do not directly access)
+    public: char* Data() {return (char*)(this + 1);}      ///< Get ptr after this structure
   };
 
   void FreeBigAllocs();                           ///< Free the big allocations
   inline SmallMemNode* GetSmallNodeData(void* a_ptr)  { return ((SmallMemNode*)a_ptr)-1; }
   inline BigMemNode* GetBigNodeData(void* a_ptr)  { return ((BigMemNode*)a_ptr)-1; }
+
+  // NOTE: Pass in the DATA ptr, NOT the Node ptr
+  inline int GetDataAllocationSize(void* a_ptr) const
+  {
+    int* ptrToSize = (int*)a_ptr;
+    return ptrToSize[-1]; 
+  }
+  // NOTE: Pass in the DATA ptr, NOT the Node ptr
+  inline void SetDataAllocationSize(void* a_ptr, int a_size)
+  {
+    int* ptrToSize = (int*)a_ptr;
+    ptrToSize[-1] = a_size; 
+  }
+  inline void SetNodeDataSize(SmallMemNode* a_ptr, int a_size)
+  {
+    SetDataAllocationSize(a_ptr->Data(), a_size);
+  }
+  inline void SetNodeDataSize(BigMemNode* a_ptr, int a_size)
+  {
+    SetDataAllocationSize(a_ptr->Data(), a_size);
+  }
+
 
   gmMemFixed m_mem8;                              ///< Memory for 8 bytes and less
   gmMemFixed m_mem16;                             ///< Memory for 16 bytes and less
@@ -123,19 +151,19 @@ void* gmMemFixedSet::Alloc(int a_size)
     if (a_size <= 8)
     {
       node = (SmallMemNode*)m_mem8.Alloc();
-      node->m_size = 8;
+      SetNodeDataSize(node, 8);
       m_memUsed += 8;
     }
     else if (a_size <= 16)
     {
       node = (SmallMemNode*)m_mem16.Alloc();
-      node->m_size = 16;
+      SetNodeDataSize(node, 16);
       m_memUsed += 16;
     }
     else if (a_size <= 24)
     {
       node = (SmallMemNode*)m_mem24.Alloc();
-      node->m_size = 24;
+      SetNodeDataSize(node, 24);
       m_memUsed += 24;
     }
     else // if (a_size <= 32)
@@ -143,7 +171,7 @@ void* gmMemFixedSet::Alloc(int a_size)
       GM_ASSERT(a_size <= 32);
 
       node = (SmallMemNode*)m_mem32.Alloc();
-      node->m_size = 32;
+      SetNodeDataSize(node, 32);
       m_memUsed += 32;
     }
   }
@@ -152,25 +180,25 @@ void* gmMemFixedSet::Alloc(int a_size)
     if (a_size <= 64)
     {
       node = (SmallMemNode*)m_mem64.Alloc();
-      node->m_size = 64;
+      SetNodeDataSize(node, 64);
       m_memUsed += 64;
     }
     else if (a_size <= 128)
     {
       node = (SmallMemNode*)m_mem128.Alloc();
-      node->m_size = 128;
+      SetNodeDataSize(node, 128);
       m_memUsed += 128;
     }
     else if (a_size <= 256)
     {
       node = (SmallMemNode*)m_mem256.Alloc();
-      node->m_size = 256;
+      SetNodeDataSize(node, 256);
       m_memUsed += 256;
     }
     else if (a_size <= 512)
     {
       node = (SmallMemNode*)m_mem512.Alloc();
-      node->m_size = 512;
+      SetNodeDataSize(node, 512);
       m_memUsed += 512;
     }    
     else
@@ -180,7 +208,7 @@ void* gmMemFixedSet::Alloc(int a_size)
       bigNode = (BigMemNode*)GM_NEW( char[a_size + sizeof(*bigNode)] ); // This will be aligned as it calls sys new
 
       m_bigAllocs.InsertFirst(bigNode);
-      bigNode->m_size = a_size;
+      SetNodeDataSize(bigNode, a_size);
       m_memUsed += a_size;
 
       return bigNode->Data();
@@ -193,8 +221,8 @@ void* gmMemFixedSet::Alloc(int a_size)
 
 void gmMemFixedSet::Free(void* a_ptr)
 {
-  SmallMemNode* node = GetSmallNodeData(a_ptr);
-  int size = node->m_size;
+  SmallMemNode* node = GetSmallNodeData(a_ptr); // NOTE: Only valid for small nodes
+  int size = GetDataAllocationSize(a_ptr); // Pass the data ptr, not the node ptr so we can offset correctly
 
   if (size <= 32)
   {
@@ -246,7 +274,7 @@ void gmMemFixedSet::Free(void* a_ptr)
     else
     {
       BigMemNode* bigNode = GetBigNodeData(a_ptr);
-      m_memUsed -= bigNode->m_size;
+      m_memUsed -= size;
       m_bigAllocs.Remove(bigNode);
       delete [] (char*) bigNode;
     }
