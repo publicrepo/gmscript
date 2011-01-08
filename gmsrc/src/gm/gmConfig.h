@@ -58,6 +58,7 @@ enum gmEndian
 
 // MACHINE
 
+#define GMMACHINE_DEFAULT_FUNCTION  CTVT_LOCAL // CTVT_LOCAL, CTVT_GLOBAL or CTVT_MEMBER for default scope of function using sugar syntax
 #define GMMACHINE_REMOVECOMPILER    0         // Remove compiler code, will only be able to run precompiled libs
 #define GMMACHINE_GMCHECKDIVBYZERO  0         // Let GM operator check for divide by zero and possibly cause GM run time exception (rather than OS exception)
 #define GMMACHINE_NULL_VAR_CTOR     0         // Nullify gmVariable in constructor.  Not recommended for real-time / time critical applications.

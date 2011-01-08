@@ -365,3 +365,7 @@ o Improved Minimal example.  Not all errors were logged. Also enabled debug mode
 09/07/10
 o Updated code base for 64bit address target. (64bit builds of current binaries not made or tested yet.) 
 o Updated system lib for 64bit Win OS compatibility.
+
+16/08/10
+o Added syntactical sugar for functions.  'function <name>(<parms>){<statements>}' Thanks 39ster.
+

@@ -158,6 +158,10 @@ statement
     {
       $$ = $1;
     }
+  | function_statement
+    {
+	  $$ = $1;
+	}
   ;
 
 compound_statement
@@ -172,6 +176,33 @@ compound_statement
     }
   ;
 
+  
+function_statement
+  :
+    KEYWORD_FUNCTION identifier '(' ')' compound_statement
+    {
+		gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
+		func->SetChild(1, $5);
+		
+
+		$$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int)GMMACHINE_DEFAULT_FUNCTION);
+		$$->SetChild(0, $2);
+		ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $2, func));
+	}
+  |
+    KEYWORD_FUNCTION identifier '(' parameter_list ')' compound_statement
+    {
+		gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
+		func->SetChild(0, $4);
+		func->SetChild(1, $6);
+		
+
+		$$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int)GMMACHINE_DEFAULT_FUNCTION);
+		$$->SetChild(0, $2);
+		ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $2, func));
+	}
+  ;
+  
 var_statement
   : var_type identifier ';'
     {
@@ -183,6 +214,25 @@ var_statement
       $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int) $1);
       $$->SetChild(0, $2);
       ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $2, $4));
+    }
+  | var_type KEYWORD_FUNCTION identifier '(' ')' compound_statement
+    {
+      gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
+      func->SetChild(1, $6);
+
+      $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int) $1);
+      $$->SetChild(0, $3);
+      ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $3, func));
+    }
+  | var_type KEYWORD_FUNCTION identifier '(' parameter_list ')' compound_statement
+    {
+      gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
+      func->SetChild(0, $5);
+      func->SetChild(1, $7);
+
+      $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int) $1);
+      $$->SetChild(0, $3);
+      ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $3, func));
     }
   ;
 
