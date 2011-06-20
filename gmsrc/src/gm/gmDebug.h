@@ -54,17 +54,17 @@ public:
 
   // send message helpers
   gmDebugSession &Pack(int a_val);
-#ifdef GT_PTR_SIZE_64 // Only needed if types gmptr != gmint
+#ifdef GM_PTR_SIZE_64 // Only needed if types gmptr != gmint
   gmDebugSession &Pack(gmint64 a_val);
-#endif //GT_PTR_SIZE_64 
+#endif //GM_PTR_SIZE_64 
   gmDebugSession &Pack(const char * a_val);
   void Send();
 
   // rcv message helpers
   gmDebugSession &Unpack(int &a_val);
-#ifdef GT_PTR_SIZE_64 // Only needed if types gmptr != gmint
+#ifdef GM_PTR_SIZE_64 // Only needed if types gmptr != gmint
   gmDebugSession &Unpack(gmint64 &a_val);
-#endif //GT_PTR_SIZE_64 
+#endif //GM_PTR_SIZE_64 
   gmDebugSession &Unpack(const char * &a_val);
 
   // helpers

@@ -354,13 +354,13 @@ gmDebugSession &gmDebugSession::Pack(int a_val)
 }
 
 
-#ifdef GT_PTR_SIZE_64 // Only needed if types gmptr != gmint
+#ifdef GM_PTR_SIZE_64 // Only needed if types gmptr != gmint
 gmDebugSession &gmDebugSession::Pack(gmint64 a_val)
 {
   m_out << a_val;
   return *this;
 }
-#endif //GT_PTR_SIZE_64
+#endif //GM_PTR_SIZE_64
 
 
 gmDebugSession &gmDebugSession::Pack(const char * a_val)
@@ -387,13 +387,13 @@ gmDebugSession &gmDebugSession::Unpack(int &a_val)
 }
 
 
-#ifdef GT_PTR_SIZE_64 // Only needed if types gmptr != gmint
+#ifdef GM_PTR_SIZE_64 // Only needed if types gmptr != gmint
 gmDebugSession &gmDebugSession::Unpack(gmint64 &a_val)
 {
   if(m_in.Read(&a_val, sizeof(gmint64)) != sizeof(gmint64)) a_val = 0;
   return *this;
 }
-#endif //GT_PTR_SIZE_64
+#endif //GM_PTR_SIZE_64
 
 gmDebugSession &gmDebugSession::Unpack(const char * &a_val)
 {

@@ -137,7 +137,7 @@ private:
   inline void SwapEndian(gmuint32 &a_x) { a_x = (a_x << 24) | ((a_x << 8) & 0x00ff0000) | ((a_x >> 8) & 0x0000ff00) | ((a_x >> 24) & 0x000000ff); }
   inline void SwapEndian(gmint32 &a_x) { a_x = (a_x << 24) | ((a_x << 8) & 0x00ff0000) | ((a_x >> 8) & 0x0000ff00) | ((a_x >> 24) & 0x000000ff); }
   inline void SwapEndian(gmfloat &a_x) { SwapEndian((gmuint32 &) a_x); }
-#ifdef GT_PTR_SIZE_64  
+#ifdef GM_PTR_SIZE_64  
   inline void SwapEndian(gmuint64 &a_x) 
   {
     a_x =     (a_x << 56) 
@@ -150,7 +150,7 @@ private:
            | ((a_x >> 56) & 0x00000000000000ff);
   }
   inline void SwapEndian(gmptr &a_x) { SwapEndian((gmuint64 &) a_x); }
-#endif //!GT_PTR_SIZE_64
+#endif //!GM_PTR_SIZE_64
 };
 
 

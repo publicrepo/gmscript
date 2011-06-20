@@ -38,12 +38,12 @@
 #endif //_XBOX
 #if defined(WIN32)
   #define GM_LITTLE_ENDIAN      1
-  #if defined(_X64) // 64bit target
+  #if defined(_M_X64) // 64bit target
     #define GM_DEFAULT_ALLOC_ALIGNMENT 16
-    #define GT_PTR_SIZE_64 // Ptr size is 64bit
+    #define GM_PTR_SIZE_64 // Ptr size is 64bit
   #else // 32bit target
     #define GM_DEFAULT_ALLOC_ALIGNMENT 4
-    #define GT_PTR_SIZE_32 // Ptr size is 32bit
+    #define GM_PTR_SIZE_32 // Ptr size is 32bit
   #endif
 //  #define GM_X86
 #endif //_WIN32
@@ -119,15 +119,15 @@ typedef unsigned int gmuint32;
 typedef int gmint;
 typedef unsigned int gmuint;
 typedef float gmfloat;
-#ifdef GT_PTR_SIZE_64
+#ifdef GM_PTR_SIZE_64
   typedef __int64 gmptr; // machine pointer size as int
   typedef unsigned __int64 gmuptr; // machine pointer size as int
   typedef __int64 gmint64;
   typedef unsigned __int64 gmuint64;
-#else //!GT_PTR_SIZE_64
+#else //!GM_PTR_SIZE_64
   typedef int gmptr; // machine pointer size as int
   typedef unsigned int gmuptr; // machine pointer size as int
-#endif //!GT_PTR_SIZE_64
+#endif //!GM_PTR_SIZE_64
 
 
 #define GM_CRT_DEBUG
