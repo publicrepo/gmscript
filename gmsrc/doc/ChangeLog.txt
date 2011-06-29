@@ -376,3 +376,6 @@ o Changed project and workspaces from MSVC 8 (2005) to MSVC 10 (2010 SP1)
   To run the Windows examples you will need VC10 compatible runtimes installed, The '.Net Framework' redistributables or 'Windows Update' will provide these.
   (Left VC6 and VC8 projects and workspaces in for now.  Debugger still relies on MFC which is not supported by 2005 Express edition.)
 o Changed #define in MSVC platform file to _M_X64 which is correct 64bit build macro. Also renamed another misspelled macro.
+
+29/06/11
+o Add 64bit MSVC build configurations for GME
