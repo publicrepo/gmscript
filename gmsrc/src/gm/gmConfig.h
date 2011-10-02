@@ -54,7 +54,7 @@ enum gmEndian
 // RUNTIME THREAD
 
 #define GMTHREAD_INITIALBYTESIZE    512       // initial stack byte size for a single thread
-#define GMTHREAD_MAXBYTESIZE        128000    //1024  // max stack byte size for a single thread (Sample scripts like it big)
+#define GMTHREAD_MAXBYTESIZE        (150*1024) //1024  // max stack byte size for a single thread (Sample scripts like it big)
 
 // MACHINE
 

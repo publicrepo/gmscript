@@ -102,7 +102,7 @@ void gmThread::GCScanRoots(gmMachine* a_machine, gmGarbageCollector* a_gc)
     if(m_stack[i].IsReference())
     {
       gmObject * object = GM_MOBJECT(m_machine, m_stack[i].m_value.m_ref);
-      a_gc->GetNextObject(object);
+      a_gc->GetNextRootObject(object);
     }
   }
 
@@ -113,7 +113,7 @@ void gmThread::GCScanRoots(gmMachine* a_machine, gmGarbageCollector* a_gc)
     if(signal->m_signal.IsReference())
     {
       gmObject * object = GM_MOBJECT(m_machine, signal->m_signal.m_value.m_ref);
-      a_gc->GetNextObject(object);
+      a_gc->GetNextRootObject(object);
     }
     signal = signal->m_nextSignal;
   }
@@ -125,7 +125,7 @@ void gmThread::GCScanRoots(gmMachine* a_machine, gmGarbageCollector* a_gc)
     if(block->m_block.IsReference())
     {
       gmObject * object = GM_MOBJECT(m_machine, block->m_block.m_value.m_ref);
-      a_gc->GetNextObject(object);
+      a_gc->GetNextRootObject(object);
     }
     block = block->m_nextBlock;
   }
@@ -1237,7 +1237,11 @@ bool gmThread::Touch(int a_extra)
   bool reAlloc = false; 
   while((m_top + a_extra + GMTHREAD_SLACKSPACE) >= m_size) 
   { 
-    if(sizeof(gmVariable) * m_size > GMTHREAD_MAXBYTESIZE) return false; 
+    if(sizeof(gmVariable) * m_size > GMTHREAD_MAXBYTESIZE)
+    {
+      GM_ASSERT(!"GMTHREAD_MAXBYTESIZE exceeded");
+      return false; 
+    }
     m_size *= 2; 
     reAlloc = true; 
   } 

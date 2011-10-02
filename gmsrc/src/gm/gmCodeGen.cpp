@@ -667,7 +667,7 @@ bool gmCodeGenPrivate::GenStmtBreak(const gmCodeTreeNode * a_node, gmByteCodeGen
   {
     a_byteCode->Emit(BC_BRA);
     Patch * patch = &m_patches.InsertLast();
-    patch->m_address = a_byteCode->Skip(sizeof(gmuint32));
+    patch->m_address = a_byteCode->Skip(sizeof(gmptr)); // NOTE: Using gmptr size addresses
     patch->m_next = m_loopStack[m_currentLoop].m_breaks;
     m_loopStack[m_currentLoop].m_breaks = m_patches.Count()-1;
     return true;
@@ -687,7 +687,7 @@ bool gmCodeGenPrivate::GenStmtContinue(const gmCodeTreeNode * a_node, gmByteCode
   {
     a_byteCode->Emit(BC_BRA);
     Patch * patch = &m_patches.InsertLast();
-    patch->m_address = a_byteCode->Skip(sizeof(gmuint32));
+    patch->m_address = a_byteCode->Skip(sizeof(gmptr)); // NOTE: Using gmptr size addresses
     patch->m_next = m_loopStack[m_currentLoop].m_continues;
     m_loopStack[m_currentLoop].m_continues = m_patches.Count()-1;
     return true;
@@ -1596,7 +1596,7 @@ void gmCodeGenPrivate::ApplyPatches(int a_patches, gmByteCodeGen * a_byteCode, g
     Patch * curPatch = &m_patches[a_patches];
 
     a_byteCode->Seek(curPatch->m_address);
-    *a_byteCode << a_value;
+    *a_byteCode << (gmptr)a_value; // NOTE: we are using gmptr size addresses/offsets
     a_patches = curPatch->m_next;
   }
   a_byteCode->Seek(pos);

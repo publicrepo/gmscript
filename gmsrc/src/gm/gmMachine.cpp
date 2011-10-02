@@ -157,7 +157,7 @@ void GM_CDECL gmMachine::ScanRootsCallBack(gmMachine* a_machine, gmGarbageCollec
   for(cgmoIt = a_machine->m_cppOwnedGMObjs.First(); cgmoIt; ++cgmoIt)
   {
     gmObject* curObj = cgmoIt->m_obj;
-    a_gc->GetNextObject(curObj);
+    a_gc->GetNextRootObject(curObj);
   }
 
   // iterate over all threads and mark the stacks.
@@ -169,20 +169,20 @@ void GM_CDECL gmMachine::ScanRootsCallBack(gmMachine* a_machine, gmGarbageCollec
   // iterate over global variables and mark
   if(a_machine->m_global)
   {
-    a_gc->GetNextObject(a_machine->m_global);
+    a_gc->GetNextRootObject(a_machine->m_global);
   }
   // iterate over type variables and mark
   gmuint i;
   for(i = 0; i < a_machine->m_types.Count(); ++i)
   {
-    a_gc->GetNextObject(a_machine->m_types[i].m_variables);
+    a_gc->GetNextRootObject(a_machine->m_types[i].m_variables);
   }
 
 #if !GM_GC_KEEP_PERSISTANT_SEPARATE
   //NOTE This needs to be spread over time perhaps.
   for(i=0; i<(gmuint)a_machine->m_numPermanantStrings; ++i)
   {
-    a_gc->GetNextObject(a_machine->m_permanantStrings[i]);
+    a_gc->GetNextRootObject(a_machine->m_permanantStrings[i]);
   }
 #endif //!GM_GC_KEEP_PERSISTANT_SEPARATE
 }
