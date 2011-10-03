@@ -385,3 +385,6 @@ o Fixed GC root scan.
 o Increased GMTHREAD_MAXBYTESIZE to allow samples to run in 64bit
 o Fixed gmTable 64bit gmVariable equality test.
 o Fixed byte code generator. 64bit was mixing 32 and 64 bit patched addresses.
+
+3/10/11
+o Fixed GC root scan to ignore persistent objects.

@@ -102,12 +102,13 @@ void gmTableObject::Destruct(gmMachine * a_machine)
 }
 
 
-// Helper to minimally compare if two variables are equal, for finding in table
+// Helper to minimally compare if two variables are equal, for finding matching keys in table
 // This function is a candidate for platform specific optimization
-inline int VariablesEqual(const gmVariable& a_varA, const gmVariable& a_varB)
+inline int VarKeysEqual(const gmVariable& a_varA, const gmVariable& a_varB)
 {
   // We can't assume unused bits in m_ref are zero.
   // Some GM variants can't assume sizeof(m_ref) is the largest union component.
+  // We currently CAN assume table keys are either Strings (refs) or Integers (indices).
 
 #if GMMACHINE_NULL_VAR_CTOR
   if( (a_varA.m_ref == a_varB.m_ref) &&
@@ -118,30 +119,16 @@ inline int VariablesEqual(const gmVariable& a_varA, const gmVariable& a_varB)
 #else //GMMACHINE_NULL_VAR_CTOR
   if( a_varA.m_type == a_varB.m_type )
   {
-    switch( a_varA.m_type )
+    if( a_varA.m_type == GM_INT)
     {
-      case GM_INT: 
+      if( a_varA.m_value.m_int == a_varB.m_value.m_int )
       {
-        if( a_varA.m_value.m_int == a_varB.m_value.m_int )
-        {
-          return true;
-        }
-        break;
+        return true;
       }
-      case GM_FLOAT:
-      {
-        //if( a_varA.m_value.m_float == a_varB.m_value.m_float ) return true;
-        return ( memcmp(&a_varA.m_value.m_ref, &a_varB.m_value.m_ref, sizeof(gmfloat)) == 0 ); // Don't use FPU for comparison
-        break;
-      }
-      default: // All other types are reference, NULLs are not stored.
-      {
-        if( a_varA.m_value.m_ref == a_varB.m_value.m_ref )
-        {
-          return true;
-        }
-        break;
-      }
+    }
+    else if( a_varA.m_value.m_ref == a_varB.m_value.m_ref )
+    {
+      return true;
     }
   }
 #endif  
@@ -159,7 +146,7 @@ gmVariable gmTableObject::Get(const gmVariable &a_key) const
 
     do
     {
-      if( VariablesEqual(a_key, foundNode->m_key) )
+      if( VarKeysEqual(a_key, foundNode->m_key) )
       {
         return foundNode->m_value;
       }
@@ -204,7 +191,7 @@ void gmTableObject::Set(gmMachine * a_machine, const gmVariable &a_key, const gm
   // find key, if it exists
   do
   {
-    if( VariablesEqual(a_key, foundNode->m_key) )
+    if( VarKeysEqual(a_key, foundNode->m_key) )
     {
       //If found and value is null, remove it
       if(GM_NULL == a_value.m_type)

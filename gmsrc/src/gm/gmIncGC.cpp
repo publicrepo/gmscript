@@ -240,6 +240,13 @@ void gmGCColorSet::GrayThisRootObject(gmGCObjBase* a_obj)
   // it is convenient to force roots to gray from whatever logical state they are in.
   // This is due to GC design choices including: atomic root snapshot, write barrier and allocate black.
 
+#if  GM_GC_KEEP_PERSISTANT_SEPARATE
+  if(a_obj->GetPersist()) // Don't do anything with persistant objects
+  {
+    return;
+  }
+#endif //GM_GC_KEEP_PERSISTANT_SEPARATE
+
   gmGCObjBase* objPrev = a_obj->GetPrev();
   gmGCObjBase* objNext = a_obj->GetNext();
 
