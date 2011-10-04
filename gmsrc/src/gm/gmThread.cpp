@@ -102,7 +102,7 @@ void gmThread::GCScanRoots(gmMachine* a_machine, gmGarbageCollector* a_gc)
     if(m_stack[i].IsReference())
     {
       gmObject * object = GM_MOBJECT(m_machine, m_stack[i].m_value.m_ref);
-      a_gc->GetNextRootObject(object);
+      a_gc->GetNextObject(object);
     }
   }
 
@@ -113,7 +113,7 @@ void gmThread::GCScanRoots(gmMachine* a_machine, gmGarbageCollector* a_gc)
     if(signal->m_signal.IsReference())
     {
       gmObject * object = GM_MOBJECT(m_machine, signal->m_signal.m_value.m_ref);
-      a_gc->GetNextRootObject(object);
+      a_gc->GetNextObject(object);
     }
     signal = signal->m_nextSignal;
   }
@@ -125,7 +125,7 @@ void gmThread::GCScanRoots(gmMachine* a_machine, gmGarbageCollector* a_gc)
     if(block->m_block.IsReference())
     {
       gmObject * object = GM_MOBJECT(m_machine, block->m_block.m_value.m_ref);
-      a_gc->GetNextRootObject(object);
+      a_gc->GetNextObject(object);
     }
     block = block->m_nextBlock;
   }
@@ -1179,6 +1179,19 @@ gmThread::State gmThread::Sys_PopStackFrame(const gmuint8 * &a_ip, const gmuint8
   {
     m_machine->GetLog().LogEntry("stack underflow");
     return SYS_EXCEPTION;
+  }
+
+  // Write barrier old local objects
+  {
+    gmGarbageCollector* gc = m_machine->GetGC();
+    for(int index = m_base; index < m_top; ++index) // NOTE: Should this be from m_base - 2 ?
+    {
+      if(m_stack[index].IsReference())
+      {
+        gmObject * object = GM_MOBJECT(m_machine, m_stack[index].m_value.m_ref);
+        gc->WriteBarrier(object);
+      }
+    }
   }
 
   gmStackFrame * frame = m_frame->m_prev;

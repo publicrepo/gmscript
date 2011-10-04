@@ -162,9 +162,6 @@ public:
   /// \brief Gray this object.
   void GrayThisObject(gmGCObjBase* a_obj);
 
-  /// \brief Gray this root object (Called to force roots to gray, which they logically always are)
-  void GrayThisRootObject(gmGCObjBase* a_obj);
-  
   /// \brief Called on a new object being allocated.
   void Allocate(gmGCObjBase* a_obj);
 
@@ -289,9 +286,6 @@ public:
 
   /// \brief Do a full collect and don't return until done.
   void FullCollect();
-
-  /// \brief Called during trace by machine ONLY on ROOT objects (eg. stacks)
-  void GetNextRootObject(gmGCObjBase* a_obj)      {m_colorSet.GrayThisRootObject(a_obj);}
 
   /// \brief Called during trace by client code, and by scan roots callback.  
   /// This grays a white object.

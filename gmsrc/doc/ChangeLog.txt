@@ -381,10 +381,13 @@ o Changed #define in MSVC platform file to _M_X64 which is correct 64bit build m
 o Add 64bit MSVC build configurations for GME
 
 2/10/11
-o Fixed GC root scan.
+o Fixed GC root scan. (PS. Failed attempt)
 o Increased GMTHREAD_MAXBYTESIZE to allow samples to run in 64bit
 o Fixed gmTable 64bit gmVariable equality test.
 o Fixed byte code generator. 64bit was mixing 32 and 64 bit patched addresses.
 
 3/10/11
 o Fixed GC root scan to ignore persistent objects.
+
+4/10/11
+o Fixed GC tricolor invariance wasn't preserved with local object transfer of ownership.
