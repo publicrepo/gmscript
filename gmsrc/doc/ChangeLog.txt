@@ -391,3 +391,6 @@ o Fixed GC root scan to ignore persistent objects.
 
 4/10/11
 o Fixed GC tricolor invariance wasn't preserved with local object transfer of ownership.
+
+7/10/11
+o Fixed GC (Another attempt)

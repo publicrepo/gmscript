@@ -901,6 +901,17 @@ gmThread::State gmThread::Sys_Execute(gmVariable * a_return)
       case BC_SETLOCAL :
       {
         gmuint32 offset = OPCODE_INT(instruction);
+
+        // Write barrier old local objects
+        {
+          gmGarbageCollector* gc = m_machine->GetGC();
+          if( !gc->IsOff() && base[offset].IsReference() )
+          {
+            gmObject * object = GM_MOBJECT(m_machine, base[offset].m_value.m_ref);
+            gc->WriteBarrier(object);
+          }
+        }
+
         base[offset] = *(--top);
         break;
       }
@@ -1061,6 +1072,22 @@ gmThread::State gmThread::PushStackFrame(int a_numParameters, const gmuint8 ** a
 
     int result = fn->m_cFunction(this);
 
+    // Write barrier old local objects at native pop time
+    {
+      gmGarbageCollector* gc = m_machine->GetGC();
+      if( !gc->IsOff() )
+      {
+        for(int index = m_base; index < m_top; ++index)
+        {
+          if(m_stack[index].IsReference())
+          {
+            gmObject * object = GM_MOBJECT(m_machine, m_stack[index].m_value.m_ref);
+            gc->WriteBarrier(object);
+          }
+        }
+      }
+    }
+
     // handle state
     if(result == GM_SYS_STATE)
     {
@@ -1184,12 +1211,15 @@ gmThread::State gmThread::Sys_PopStackFrame(const gmuint8 * &a_ip, const gmuint8
   // Write barrier old local objects
   {
     gmGarbageCollector* gc = m_machine->GetGC();
-    for(int index = m_base; index < m_top; ++index) // NOTE: Should this be from m_base - 2 ?
+    if( !gc->IsOff() )
     {
-      if(m_stack[index].IsReference())
+      for(int index = m_base-2; index < m_top; ++index)
       {
-        gmObject * object = GM_MOBJECT(m_machine, m_stack[index].m_value.m_ref);
-        gc->WriteBarrier(object);
+        if(m_stack[index].IsReference())
+        {
+          gmObject * object = GM_MOBJECT(m_machine, m_stack[index].m_value.m_ref);
+          gc->WriteBarrier(object);
+        }
       }
     }
   }
