@@ -1,0 +1,13 @@
+*.lock
+*~
+*.obj
+*.tlog
+*.pdb
+*.idb
+*.manifest
+*.ncb
+*.opt
+*.sdf
+*.old
+*.user
+*.log
