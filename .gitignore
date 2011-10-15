@@ -1,5 +1,7 @@
+#
 # ignore for GM
 # General ignores
+#
 
 *.lock
 *~
@@ -33,7 +35,9 @@ _UpgradeReport_Files/
 UpgradeLog*.XML
 log.txt
 
+#
 # GM specific ignores
+#
 
 */bin/gmd.debug.exe
 */bin/gmd.exe
