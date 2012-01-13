@@ -181,26 +181,54 @@ function_statement
   :
     KEYWORD_FUNCTION identifier '(' ')' compound_statement
     {
-		gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
-		func->SetChild(1, $5);
-		
+      gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
+      func->SetChild(1, $5);
+      
 
-		$$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int)GMMACHINE_DEFAULT_FUNCTION);
-		$$->SetChild(0, $2);
-		ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $2, func));
-	}
+      $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int)GMMACHINE_DEFAULT_FUNCTION);
+      $$->SetChild(0, $2);
+      ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $2, func));
+   }
   |
     KEYWORD_FUNCTION identifier '(' parameter_list ')' compound_statement
     {
-		gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
-		func->SetChild(0, $4);
-		func->SetChild(1, $6);
-		
+      gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
+      func->SetChild(0, $4);
+      func->SetChild(1, $6);
+      
 
-		$$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int)GMMACHINE_DEFAULT_FUNCTION);
-		$$->SetChild(0, $2);
-		ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $2, func));
-	}
+      $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int)GMMACHINE_DEFAULT_FUNCTION);
+      $$->SetChild(0, $2);
+      ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $2, func));
+   }
+  |
+    KEYWORD_FUNCTION tablemember_expression '(' ')' compound_statement
+    {
+      gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
+      func->SetChild(1, $5);
+      
+      ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $2, func));
+   }
+  |
+    KEYWORD_FUNCTION tablemember_expression '(' parameter_list ')' compound_statement
+    {
+      gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
+      func->SetChild(0, $4);
+      func->SetChild(1, $6);
+      
+      ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $2, func));
+   }
+  ;
+ 
+tablemember_expression
+  : identifier '.' identifier
+    {
+      $$ = CreateOperation(CTNOT_DOT, $1, $3);
+    }
+  | tablemember_expression '.' identifier
+    {
+      $$ = CreateOperation(CTNOT_DOT, $1, $3);
+    }
   ;
   
 var_statement
