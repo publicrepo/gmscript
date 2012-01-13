@@ -27,6 +27,7 @@
 *.vssscc
 *.vspscc
 *.SCC
+*.opensdf
 Debug/
 debug/
 Release/
