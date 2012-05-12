@@ -402,3 +402,5 @@ o Improved syntactical sugar for functions. Thanks HenryTran.
 o Added experimental project gmddotnet (gmDebuggerNet) which is gmd ported to C# .Net from C++ MFC.
   This was simply an experiment, this example debugger is as identically terrible as the original version.
   
+12/05/12
+o Fixed Fork stack growth bug. Thanks funkbot.
