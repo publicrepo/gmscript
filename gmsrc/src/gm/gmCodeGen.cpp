@@ -16,7 +16,9 @@
 #include "gmListDouble.h"
 
 
-//static const char * s_tempVarName0 = "__t0"; // Currently not used
+#if GM_USE_INCDECOPERATORS
+static const char * s_tempVarName0 = "__t0";
+#endif //GM_USE_INCDECOPERATORS
 static const char * s_tempVarName1 = "__t1";
 
 #define SIZEOF_BC_BRA   (sizeof(gmuint32)+sizeof(gmptr)) // instruction + address
@@ -94,6 +96,9 @@ public:
   bool GenStmtCompound(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode);
   bool GenExprOpDot(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode);
   bool GenExprOpUnary(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode);
+  #if GM_USE_INCDECOPERATORS
+  bool GenExprOpPreIncDec(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode);
+  #endif //GM_USE_INCDECOPERATORS
   bool GenExprOpArrayIndex(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode);
   bool GenExprOpAr(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode);
   bool GenExprOpShift(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode);
@@ -420,6 +425,10 @@ bool gmCodeGenPrivate::Generate(const gmCodeTreeNode * a_node, gmByteCodeGen * a
               case CTNOT_UNARY_MINUS :
               case CTNOT_UNARY_COMPLEMENT :
               case CTNOT_UNARY_NOT : res = GenExprOpUnary(a_node, a_byteCode); break;
+#if GM_USE_INCDECOPERATORS
+              case CTNOT_PRE_DEC :
+              case CTNOT_PRE_INC :          res = GenExprOpPreIncDec(a_node, a_byteCode); break;
+#endif //GM_USE_INCDECOPERATORS
               case CTNOT_ARRAY_INDEX :      res = GenExprOpArrayIndex(a_node, a_byteCode); break;
               case CTNOT_TIMES :
               case CTNOT_DIVIDE :
@@ -1010,6 +1019,120 @@ bool gmCodeGenPrivate::GenExprOpUnary(const gmCodeTreeNode * a_node, gmByteCodeG
   return false;
 }
 
+
+#if GM_USE_INCDECOPERATORS
+bool gmCodeGenPrivate::GenExprOpPreIncDec(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode)
+{
+  GM_ASSERT(a_node->m_type == CTNT_EXPRESSION && a_node->m_subType == CTNET_OPERATION);
+
+  // Make sure child 0 is an l-value
+  const gmCodeTreeNode * lValue = a_node->m_children[0];
+  int type = 0;
+
+  if(lValue->m_type == CTNT_EXPRESSION && lValue->m_subType == CTNET_OPERATION && lValue->m_subTypeType == CTNOT_DOT)
+  {
+    // Generate half l-value
+    if(!Generate(lValue->m_children[0], a_byteCode)) return false;
+    a_byteCode->Emit(BC_DUP);
+    a_byteCode->EmitPtr(BC_GETDOT, m_hooks->GetSymbolId(lValue->m_children[1]->m_data.m_string));
+    type = 0;
+  }
+  else if(lValue->m_type == CTNT_EXPRESSION && lValue->m_subType == CTNET_OPERATION && lValue->m_subTypeType == CTNOT_ARRAY_INDEX)
+  {
+    // Generate half l-value
+    if(!Generate(lValue->m_children[0], a_byteCode)) return false;
+    if(!Generate(lValue->m_children[1], a_byteCode)) return false;
+    a_byteCode->Emit(BC_DUP2);
+    a_byteCode->Emit(BC_GETIND);
+    type = 1;
+  }
+  else if(lValue->m_type == CTNT_EXPRESSION && lValue->m_subType == CTNET_IDENTIFIER)
+  {
+    if(!Generate(lValue, a_byteCode)) return false;
+    type = 2;
+  }
+  else
+  {
+    if(m_log) m_log->LogEntry("illegal l-value for '++/--' operator, line %d", a_node->m_lineNumber);
+    return false;
+  }
+
+  // Perform inc/dec
+  switch(a_node->m_subTypeType)
+  {
+    case CTNOT_PRE_INC : a_byteCode->Emit(BC_OP_INC); break;
+    case CTNOT_PRE_DEC : a_byteCode->Emit(BC_OP_DEC); break;
+    default :
+    {
+      if(m_log) m_log->LogEntry("unkown operator");
+      return false;
+    }
+  }
+
+  // Write back the value
+  if(type == 0)
+  {
+    int offset = m_currentFunction->SetVariableType(s_tempVarName0, CTVT_LOCAL);
+    a_byteCode->Emit(BC_DUP);
+    a_byteCode->Emit(BC_SETLOCAL, (gmuint32) offset);
+    a_byteCode->EmitPtr(BC_SETDOT, m_hooks->GetSymbolId(lValue->m_children[1]->m_data.m_string));
+    a_byteCode->Emit(BC_GETLOCAL, (gmuint32) offset);
+  }
+  else if(type == 1)
+  {
+    int offset = m_currentFunction->SetVariableType(s_tempVarName0, CTVT_LOCAL);
+    a_byteCode->Emit(BC_DUP);
+    a_byteCode->Emit(BC_SETLOCAL, (gmuint32) offset);
+    a_byteCode->Emit(BC_SETIND);
+    a_byteCode->Emit(BC_GETLOCAL, (gmuint32) offset);
+  }
+  else if(type == 2)
+  {
+    a_byteCode->Emit(BC_DUP);
+    gmCodeTreeVariableType vtype;
+    int offset = m_currentFunction->GetVariableOffset(lValue->m_data.m_string, vtype);
+
+    // if local, set local regardless
+    // if member set this
+    // if global, set global
+    // set and add local
+
+    if((lValue->m_flags & gmCodeTreeNode::CTN_MEMBER) > 0)
+    {
+      return a_byteCode->EmitPtr(BC_SETTHIS, m_hooks->GetSymbolId(lValue->m_data.m_string));
+    }
+
+    if(offset >= 0 && vtype == CTVT_LOCAL)
+    {
+      return a_byteCode->Emit(BC_SETLOCAL, (gmuint32) offset);
+    }
+    else if(offset == -1)
+    {
+      if(vtype == CTVT_MEMBER)
+      {
+        return a_byteCode->EmitPtr(BC_SETTHIS, m_hooks->GetSymbolId(lValue->m_data.m_string));
+      }
+      else if(vtype == CTVT_GLOBAL)
+      {
+        return a_byteCode->EmitPtr(BC_SETGLOBAL, m_hooks->GetSymbolId(lValue->m_data.m_string));
+      }
+      if(m_log) m_log->LogEntry("internal error");
+      return false;
+    }
+
+    offset = m_currentFunction->SetVariableType(lValue->m_data.m_string, CTVT_LOCAL);
+    return a_byteCode->Emit(BC_SETLOCAL, (gmuint32) offset);
+  }
+  else
+  {
+    // paranoia
+    if(m_log) m_log->LogEntry("internal error");
+    return false;
+  }
+
+  return true;
+}
+#endif
 
 
 bool gmCodeGenPrivate::GenExprOpArrayIndex(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode)

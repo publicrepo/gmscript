@@ -8,7 +8,8 @@ frame for changes or features, so effectively a wish list.
 o Fix issue where reported error line is not exact.  Occurs due to instruction pointer increment before exception handling.
 o Fix empty / commented out script from producing parse error. Work around: Add a ';' semicolon to end of source, or ignore known empty scripts.
 o Change overide 'this' syntax from this:func() to func<this>() to support member chains eg. a.b.c<t>()
-o Put ++, -- operators back, but perhaps don't let them be used in conditions for consistency.
+Part o Put ++, -- operators back, but perhaps don't let them be used in conditions for consistency.
+  (pre inc/dec are back in, but post inc/dec should be added also.
 
 o Make string hash table resize for efficiency in string intensive applications.
 o Make compiler thread safe.  Probably by moving to Lemon parser and Flex++.

@@ -94,6 +94,8 @@ FL		    (f|F)
 "^="                              { return(SYMBOL_ASGN_BXOR);   }
 ">>"                              { return(SYMBOL_RIGHT_SHIFT); }
 "<<"                              { return(SYMBOL_LEFT_SHIFT);  }
+"++"                              { return(SYMBOL_INC);         }
+"--"                              { return(SYMBOL_DEC);         }
 "<="                              { return(SYMBOL_LTE);         }
 ">="                              { return(SYMBOL_GTE);         }
 "=="                              { return(SYMBOL_EQ);          }

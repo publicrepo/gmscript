@@ -229,6 +229,10 @@ gmThread::State gmThread::Sys_Execute(gmVariable * a_return)
       // unary operator
       //
 
+#if GM_USE_INCDECOPERATORS
+      case BC_OP_INC :
+      case BC_OP_DEC :
+#endif
       case BC_BIT_INV :
       case BC_OP_NEG :
       case BC_OP_POS :

@@ -28,6 +28,10 @@ const char * gmGetOperatorName(gmOperator a_operator)
     case O_MUL : return "mul";
     case O_DIV : return "div";
     case O_REM : return "mod";
+#if GM_USE_INCDECOPERATORS
+    case O_INC : return "inc";
+    case O_DEC : return "dec";
+#endif //GM_USE_INCDECOPERATORS
     case O_BIT_OR : return "bitor";
     case O_BIT_XOR : return "bitxor";
     case O_BIT_AND : return "bitand";
@@ -62,6 +66,10 @@ gmOperator gmGetOperator(const char * a_operatorName)
   if(_gmstricmp(a_operatorName, "mul") == 0) return O_MUL;
   if(_gmstricmp(a_operatorName, "div") == 0) return O_DIV;
   if(_gmstricmp(a_operatorName, "mod") == 0) return O_REM;
+#if GM_USE_INCDECOPERATORS
+  if(_gmstricmp(a_operatorName, "inc") == 0) return O_INC;
+  if(_gmstricmp(a_operatorName, "dec") == 0) return O_DEC;
+#endif //GM_USE_INCDECOPERATORS
   if(_gmstricmp(a_operatorName, "bitor") == 0) return O_BIT_OR;
   if(_gmstricmp(a_operatorName, "bitxor") == 0) return O_BIT_XOR;
   if(_gmstricmp(a_operatorName, "bitand") == 0) return O_BIT_AND;
@@ -138,6 +146,16 @@ void GM_CDECL gmIntOpRem(gmThread * a_thread, gmVariable * a_operands)
   a_operands[0].m_value.m_int %= a_operands[1].m_value.m_int;
 #endif // GMMACHINE_GMCHECKDIVBYZERO
 }
+#if GM_USE_INCDECOPERATORS
+void GM_CDECL gmIntOpInc(gmThread * a_thread, gmVariable * a_operands)
+{
+  ++a_operands[0].m_value.m_int;
+}
+void GM_CDECL gmIntOpDec(gmThread * a_thread, gmVariable * a_operands)
+{
+  --a_operands[0].m_value.m_int;
+}
+#endif //GM_USE_INCDECOPERATORS
 void GM_CDECL gmIntOpBitOr(gmThread * a_thread, gmVariable * a_operands)
 {
   a_operands[0].m_value.m_int |= a_operands[1].m_value.m_int;
@@ -529,6 +547,10 @@ void gmInitBasicType(gmType a_type, gmOperatorFunction * a_operators)
     a_operators[O_MUL]            = gmIntOpMul;
     a_operators[O_DIV]            = gmIntOpDiv;
     a_operators[O_REM]            = gmIntOpRem;
+#if GM_USE_INCDECOPERATORS	
+    a_operators[O_INC]            = gmIntOpInc;
+    a_operators[O_DEC]            = gmIntOpDec;
+#endif //GM_USE_INCDECOPERATORS
     a_operators[O_BIT_OR]         = gmIntOpBitOr;
     a_operators[O_BIT_XOR]        = gmIntOpBitXor;
     a_operators[O_BIT_AND]        = gmIntOpBitAnd;
@@ -552,6 +574,10 @@ void gmInitBasicType(gmType a_type, gmOperatorFunction * a_operators)
     a_operators[O_MUL]    = gmFloatOpMul;
     a_operators[O_DIV]    = gmFloatOpDiv;
     a_operators[O_REM]    = gmFloatOpRem;
+#if GM_USE_INCDECOPERATORS
+    a_operators[O_INC]    = gmFloatOpInc;
+    a_operators[O_DEC]    = gmFloatOpDec;
+#endif //GM_USE_INCDECOPERATORS
     a_operators[O_LT]     = gmFloatOpLT;
     a_operators[O_GT]     = gmFloatOpGT;
     a_operators[O_LTE]    = gmFloatOpLTE;

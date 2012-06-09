@@ -123,8 +123,10 @@ static void PrintByteCode(FILE * a_fp, const void * a_byteCode, int a_byteCodeLe
       case BC_OP_MUL : cp = "mul"; break;
       case BC_OP_DIV : cp = "div"; break;
       case BC_OP_REM : cp = "rem"; break;
-      //case BC_OP_INC : cp = "inc"; break;
-      //case BC_OP_DEC : cp = "dec"; break;
+#if GM_USE_INCDECOPERATORS
+      case BC_OP_INC : cp = "inc"; break;
+      case BC_OP_DEC : cp = "dec"; break;
+#endif //GM_USE_INCDECOPERATORS
 
       case BC_BIT_OR : cp = "bor"; break;
       case BC_BIT_XOR : cp = "bxor"; break;

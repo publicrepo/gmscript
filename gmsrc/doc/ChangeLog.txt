@@ -404,3 +404,6 @@ o Added experimental project gmddotnet (gmDebuggerNet) which is gmd ported to C#
   
 12/05/12
 o Fixed Fork stack growth bug. Thanks funkbot.
+
+09/06/12
+o Add back ++,-- pre inc, dec operators (Experimental, code restored from v0.9)

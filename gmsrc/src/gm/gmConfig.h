@@ -106,5 +106,6 @@ enum gmEndian
 #define GM_USE_FORK                 1         // Support fork instruction 
 #define GM_USER_FOREACH             1         // Support foreach for user types
 #define GM_USE_ENDON                1         // Support endon() to kill thread when signalled
+#define GM_USE_INCDECOPERATORS      1         // Support operator ++ and --
 
 #endif // _GMCONFIG_H_

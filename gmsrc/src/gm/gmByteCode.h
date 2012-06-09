@@ -32,6 +32,10 @@ enum gmByteCode
   BC_OP_MUL,
   BC_OP_DIV,
   BC_OP_REM,
+#if GM_USE_INCDECOPERATORS
+  BC_OP_INC,
+  BC_OP_DEC,
+#endif //GM_USE_INCDECOPERATORS
 
   // bit
   BC_BIT_OR,
