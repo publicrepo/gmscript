@@ -327,7 +327,7 @@ public:
   void DestructAll();
 
   /// \brief Reclaim some free objects.
-  int ReclaimSomeFreeObjects()                    {return m_colorSet.DestructSomeFreeObjects(m_maxObjsToDestructPerIncrement);}
+  int ReclaimSomeFreeObjects();
 
   /// \brief Make an object persistant by moving it into the persistant list.
   void MakeObjectPersistant(gmGCObjBase* a_obj)   {m_colorSet.MakePersistant(a_obj);}
