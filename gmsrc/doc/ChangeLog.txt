@@ -407,3 +407,6 @@ o Fixed Fork stack growth bug. Thanks funkbot.
 
 09/06/12
 o Add back ++,-- pre inc, dec operators (Experimental, code restored from v0.9)
+
+18/05/13
+o Reordered GC descruction sequence to avoid Write Barrier mis-fire.
