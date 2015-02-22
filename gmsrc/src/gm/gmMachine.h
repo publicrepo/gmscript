@@ -536,7 +536,7 @@ public:
   inline void * Sys_Alloc(int a_size);
   inline void Sys_Free(void * a_mem) { m_fixedSet.Free(a_mem); }
 
-  void Sys_RemoveBlocks(gmThread * a_thread);
+  void Sys_RemoveBlocks(gmThread * a_thread, bool a_includeEndOnBlocks);
   void Sys_RemoveSignals(gmThread * a_thread);
 
   void Sys_SignalCreateThread(gmThread * a_thread);

@@ -1037,7 +1037,7 @@ void gmMachine::Sys_SwitchState(gmThread * a_thread, int a_to)
     {
       // remove and clean up the blocks.
       Sys_RemoveSignals(a_thread); // Prevent signals from accumulating
-      Sys_RemoveBlocks(a_thread);
+      Sys_RemoveBlocks(a_thread, false);
       m_blockedThreads.Remove(a_thread);
       break;
     } 
@@ -1748,20 +1748,23 @@ void gmMachine::ResetDefaultTypes()
 
 
 
-void gmMachine::Sys_RemoveBlocks(gmThread * a_thread)
+void gmMachine::Sys_RemoveBlocks(gmThread * a_thread, bool a_includeEndOnBlocks)
 {
   gmBlock * block = a_thread->Sys_GetBlocks(), * next;
   while(block)
   {
     next = block->m_nextBlock;
-    gmBlockList * list = block->m_list;
-    block->Remove();
-    if(list->m_blocks.IsEmpty())
+    if( !block->m_endOn || a_includeEndOnBlocks )
     {
-      list = (gmBlockList *) m_blocks.Remove(list);
-      Sys_Free(list);
+        gmBlockList * list = block->m_list;
+        block->Remove();
+        if(list->m_blocks.IsEmpty())
+        {
+          list = (gmBlockList *) m_blocks.Remove(list);
+          Sys_Free(list);
+        }
+        Sys_Free(block);
     }
-    Sys_Free(block);
     block = next;
   }
   a_thread->Sys_SetBlocks(NULL);

@@ -410,3 +410,6 @@ o Add back ++,-- pre inc, dec operators (Experimental, code restored from v0.9)
 
 18/05/13
 o Reordered GC descruction sequence to avoid Write Barrier mis-fire.
+
+19/05/14
+o Fix EndOn bug reported by Korrion

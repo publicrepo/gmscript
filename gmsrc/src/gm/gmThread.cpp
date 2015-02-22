@@ -1020,7 +1020,7 @@ LabelException:
 
 void gmThread::Sys_Reset(int a_id)
 {
-  m_machine->Sys_RemoveBlocks(this);
+  m_machine->Sys_RemoveBlocks(this, true);
   m_machine->Sys_RemoveSignals(this);
 
   gmStackFrame * frame;
