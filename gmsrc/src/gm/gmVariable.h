@@ -90,10 +90,10 @@ struct gmVariable
   void SetUser(gmMachine * a_machine, void * a_userPtr, int a_userType);
   
 
-  inline void Nullify() { m_type = GM_NULL; m_value.m_int = 0; }
+  inline void Nullify() { m_type = GM_NULL; m_value.m_ref = 0; }
   inline bool IsNull() const { return m_type == GM_NULL; }
   inline bool IsReference() const { return m_type > GM_FLOAT; }
-	inline bool IsInt() const { return m_type == GM_INT; }
+  inline bool IsInt() const { return m_type == GM_INT; }
   inline bool IsFloat() const { return m_type == GM_FLOAT; }
   inline bool IsNumber() const { return IsInt() || IsFloat(); }
 

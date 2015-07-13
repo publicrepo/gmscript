@@ -145,12 +145,12 @@ bool gmFunctionObject::Init(gmMachine * a_machine, bool a_debug, gmFunctionInfo 
         case BC_BRNZ :
         case BC_BRZK :
         case BC_BRNZK :
-        case BC_FOREACH :
         case BC_GETGLOBAL :
         case BC_SETGLOBAL :
         case BC_GETTHIS :
         case BC_SETTHIS : instruction += sizeof(gmptr); break;
-        case BC_PUSHINT : instruction += sizeof(gmint); break;
+        case BC_FOREACH :
+		case BC_PUSHINT : instruction += sizeof(gmint); break;
         case BC_PUSHFP : instruction += sizeof(gmfloat); break;
       
         case BC_CALL :

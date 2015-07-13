@@ -272,7 +272,7 @@ inline const gmFunctionObject * gmThread::GetFunctionObject() const
 inline void gmThread::PushNull()
 {
   m_stack[m_top].m_type = GM_NULL;
-  m_stack[m_top++].m_value.m_int = 0;
+  m_stack[m_top++].m_value.m_ref = 0; // equality operator compares references
 }
 
 

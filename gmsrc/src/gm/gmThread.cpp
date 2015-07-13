@@ -26,7 +26,7 @@
 #define OPERATOR(TYPE, OPERATOR) (m_machine->GetTypeNativeOperator((TYPE), (OPERATOR)))
 #define CALLOPERATOR(TYPE, OPERATOR) (m_machine->GetTypeOperator((TYPE), (OPERATOR)))
 #define GMTHREAD_LOG m_machine->GetLog().LogEntry
-#define PUSHNULL top->m_type = GM_NULL; top->m_value.m_int = 0; ++top;
+#define PUSHNULL top->m_type = GM_NULL; top->m_value.m_ref = 0; ++top;
 
 // helper functions
 void gmGetLineFromString(const char * a_string, int a_line, char * a_buffer, int a_len)

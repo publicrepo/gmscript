@@ -413,3 +413,6 @@ o Reordered GC descruction sequence to avoid Write Barrier mis-fire.
 
 19/05/14
 o Fix EndOn bug reported by Korrion
+
+13/07/15
+o Fix 64bit related. Thanks palota.
