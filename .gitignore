@@ -28,7 +28,8 @@
 *.vspscc
 *.SCC
 *.opensdf
-*.VC.db
+*.vc.db
+*.vc.opendb
 Debug/
 debug/
 Release/
