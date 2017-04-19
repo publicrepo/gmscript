@@ -1,15 +1,19 @@
-##GameMonkey Script
+## GameMonkey Script
 
-**This project**  
+### This project
+
 This project is Greg's personal build of GM Script. It is primarily maintained for stability.
 
-**What is GameMonkey Script?**  
+### What is GameMonkey Script?
+
 GameMonkey is a embedded scripting language that is intended for use in game and tool applications. GameMonkey is however suitable for use in any project requiring simple scripting support. GameMonkey borrows concepts from Lua (www.lua.org), but uses syntax similar to C, making it more accessible to game programmers. GameMonkey also natively supports multithreading and the concept of states.
 
-**Can I use GameMonkey freely in my hobby or work project?**  
+### Can I use GameMonkey freely in my hobby or work project?
+
 Yes, GameMonkey is distributed under the MIT license and is free for any use including commercial products. Please read the full license included in the download package.
 
-**What are the key features of GM?**  
+### What are the key features of GM?
+
 * Small code base. Compiled code may use about 75kb of RAM. Less when tweaking or sharing with application.
 * Compile source code at run time, or link to precompiled libs.
 * Lightweight, native threading (coroutines).
@@ -20,7 +24,8 @@ Yes, GameMonkey is distributed under the MIT license and is free for any use inc
 * Competitive performance when compared to other scripting languages for both CPU and Memory usage. Speed is a trade off for flexibility and simplicity.
 * Easily modifiable as it is written in C++ and uses Flex and Bison.
 
-**What does the script code look like?**  
+### What does the script code look like?
+
 Here is some script code that calls functions bound in C:
 
 ```
@@ -35,7 +40,8 @@ OnDoorTriggerEnter = function(door, objEntering)
 };
 ```
 
-**How do I bind a new script function in C?**  
+### How do I bind a new script function in C?
+
 Here is an example of binding a script function in C:
 
 ```
@@ -70,7 +76,8 @@ int GM_CDECL DebugText(gmThread *a_thread)
 
 ```
 
-**How easy is it to call script from C?**  
+### How easy is it to call script from C?
+
 Here is some C code calling a script function:
 
 ```
@@ -98,14 +105,15 @@ int AddTwoIntegers(int valueA, int valueB)
 }
 ```
 
-**What platforms does GameMonkey run on?**  
+### What platforms does GameMonkey run on?
+
 Written entirely in C++, it should run on any platform with at most minor modification or configuration. It has been successfully compiled and run on: Windows PC, Apple Mac, Microsoft XBox, Sony PlayStation2, Sony PSP and Nintendo GameCube. 
 
-GameMonkey Script Links
------------------------
-* [GameMonkey Script Official Website] (http://www.gmscript.com)
-* [GameMonkey Script Official Downloads] (http://www.gmscript.com/gamemonkey/downloads/)
-* [GameMonkey Script Official Forums] (http://www.gmscript.com/gamemonkey/forum/)
-* [GameDev.net - Introduction to GameMonkey Script - Part 1] (http://www.gamedev.net/page/resources/_/technical/apis-and-tools/introduction-to-gamemonkey-script-r3297)
-* [GameDev.net - Introduction to GameMonkey Script - Part 2] (http://www.gamedev.net/page/resources/_/technical/game-programming/introduction-to-gamemonkey-script-part-2-r2296)
-* [GameDev.net - Continuing GameMonkey Script: Advanced Use] (http://www.gamedev.net/page/resources/_/technical/game-programming/continuing-gamemonkey-script-advanced-use-r2666)
+## GameMonkey Script Links
+
+* [GameMonkey Script Official Website](http://www.gmscript.com)
+* [GameMonkey Script Official Downloads](http://www.gmscript.com/gamemonkey/downloads/)
+* [GameMonkey Script Official Forums](http://www.gmscript.com/gamemonkey/forum/)
+* [GameDev.net - Introduction to GameMonkey Script - Part 1](http://www.gamedev.net/page/resources/_/technical/apis-and-tools/introduction-to-gamemonkey-script-r3297)
+* [GameDev.net - Introduction to GameMonkey Script - Part 2](http://www.gamedev.net/page/resources/_/technical/game-programming/introduction-to-gamemonkey-script-part-2-r2296)
+* [GameDev.net - Continuing GameMonkey Script: Advanced Use](http://www.gamedev.net/page/resources/_/technical/game-programming/continuing-gamemonkey-script-advanced-use-r2666)
