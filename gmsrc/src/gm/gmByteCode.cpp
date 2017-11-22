@@ -114,15 +114,15 @@ void gmByteCodePrint(FILE * a_fp, const void * a_byteCode, int a_byteCodeLength)
 
     if(opf32)
     {
-      float fval = *((float *) instruction);
-      instruction += sizeof(gmint32);
+      gmfloat fval = *((gmfloat *) instruction);
+      instruction += sizeof(gmfloat);
       fprintf(a_fp, "  %04d %s %f" GM_NL, addr, cp, fval);
     }
-    if(opi32)
+    else if(opi32)
     {
-      gmint32 ival = *((gmint32 *) instruction);
-      instruction += sizeof(gmint32);
-      fprintf(a_fp, "  %04d %s %d" GM_NL, addr, cp, ival);
+      gmint ival = *((gmint *) instruction);
+      instruction += sizeof(gmint);
+      fprintf(a_fp, "  %04d %s %lld" GM_NL, addr, cp, (gmint64)ival);
     }
     else if (opiptr)
     {

@@ -637,11 +637,8 @@ bool gmCodeGenPrivate::GenExprTable(const gmCodeTreeNode * a_node, gmByteCodeGen
     }
     else
     {
-#if 1 // 32bit Integers
-      a_byteCode->Emit(BC_PUSHINT, index++);
-#else
-      a_byteCode->EmitPtr(BC_PUSHINT, index++);
-#endif
+       a_byteCode->Emit(BC_PUSHINT, (gmint)(index++));
+
       if(!Generate(fields, a_byteCode, false)) return false;
       a_byteCode->Emit(BC_SETIND);
     }
@@ -780,7 +777,7 @@ bool gmCodeGenPrivate::GenStmtForEach(const gmCodeTreeNode * a_node, gmByteCodeG
   PushLoop();
 
   // Push the first iterator
-  a_byteCode->Emit(BC_PUSHINT, (gmuint32) -2); // first iterator value.
+  a_byteCode->Emit(BC_PUSHINT, (gmint) -2); // first iterator value.
 
   continueAddress = (int)a_byteCode->Tell();
 

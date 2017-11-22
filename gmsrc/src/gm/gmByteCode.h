@@ -79,10 +79,10 @@ enum gmByteCode
   BC_DUP2,            // tos + 1 = tos -1, tos + 2 = tos, tos += 2
   BC_SWAP,            // 
   BC_PUSHNULL,        // push null,
-  BC_PUSHINT,         // push int opptr
+  BC_PUSHINT,         // push integer gmint
   BC_PUSHINT0,        // push 0
   BC_PUSHINT1,        // push 1
-  BC_PUSHFP,          // push floating point op32
+  BC_PUSHFP,          // push floating point gmfloat
   BC_PUSHSTR,         // push string opptr
   BC_PUSHTBL,         // push table
   BC_PUSHFN,          // push function opptr

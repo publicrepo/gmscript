@@ -66,13 +66,13 @@ static void PrintByteCode(FILE * a_fp, const void * a_byteCode, int a_byteCodeLe
   const gmuint8 * end = instruction + a_byteCodeLength;
   const gmuint8 * start = instruction;
   const char * cp;
-  bool opiptr, opf32, opisymbol;
+  bool opiptr, opf32, opi32;
 
   while(instruction < end)
   {
     opiptr = false;
     opf32 = false;
-    opisymbol = false;
+    opi32 = false;
 
     int addr = instruction - start;
 
@@ -102,7 +102,7 @@ static void PrintByteCode(FILE * a_fp, const void * a_byteCode, int a_byteCodeLe
       case BC_DUP2 : cp = "dup2"; break;
       case BC_SWAP : cp = "swap"; break;
       case BC_PUSHNULL : cp = "push null"; break;
-      case BC_PUSHINT : cp = "push int"; opiptr = true; break;
+      case BC_PUSHINT : cp = "push int"; opi32 = true; break;
       case BC_PUSHINT0 : cp = "push int 0"; break;
       case BC_PUSHINT1 : cp = "push int 1"; break;
       case BC_PUSHFP : cp = "push fp"; opf32 = true; break;
@@ -111,8 +111,8 @@ static void PrintByteCode(FILE * a_fp, const void * a_byteCode, int a_byteCodeLe
       case BC_PUSHFN : cp = "push fn"; opiptr = true; break;
       case BC_PUSHTHIS : cp = "push this"; break;
       
-      case BC_GETLOCAL : cp = "get local"; opiptr = true; break;
-      case BC_SETLOCAL : cp = "set local"; opiptr = true; break;
+      case BC_GETLOCAL : cp = "get local"; opi32 = true; break;
+      case BC_SETLOCAL : cp = "set local"; opi32 = true; break;
       case BC_GETGLOBAL : cp = "get global"; opiptr = true; break;
       case BC_SETGLOBAL : cp = "set global"; opiptr = true; break;
       case BC_GETTHIS : cp = "get this"; opiptr = true; break;
@@ -157,19 +157,25 @@ static void PrintByteCode(FILE * a_fp, const void * a_byteCode, int a_byteCodeLe
 
     if(opf32)
     {
-      float fval = *((float *) instruction);
-      instruction += sizeof(gmint32);
-      fprintf(a_fp, "  %04d %s %f"GM_NL, addr, cp, fval);
+      gmfloat fval = *((gmfloat *) instruction);
+      instruction += sizeof(gmfloat);
+      fprintf(a_fp, "  %04d %s %f" GM_NL, addr, cp, fval);
+    }
+    else if (opi32)
+    {
+      gmint ival = *((gmint *)instruction);
+      instruction += sizeof(gmint);
+      fprintf(a_fp, "  %04d %s %lld" GM_NL, addr, cp, (gmint64)ival);
     }
     else if (opiptr)
     {
       gmptr ival = *((gmptr *) instruction);
       instruction += sizeof(gmptr);
-      fprintf(a_fp, "  %04d %s %d"GM_NL, addr, cp, ival);
+      fprintf(a_fp, "  %04d %s %d" GM_NL, addr, cp, ival);
     }
     else
     {
-      fprintf(a_fp, "  %04d %s"GM_NL, addr, cp);
+      fprintf(a_fp, "  %04d %s" GM_NL, addr, cp);
     }
   }
 }
