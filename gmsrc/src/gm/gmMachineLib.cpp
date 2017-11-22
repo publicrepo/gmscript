@@ -103,7 +103,7 @@ static int GM_CDECL gmSetDesiredMemoryUsageHard(gmThread * a_thread) // mem usag
   GM_CHECK_NUM_PARAMS(1);
   GM_CHECK_INT_PARAM(mem, 0);
 
-  a_thread->GetMachine()->SetDesiredByteMemoryUsageHard(mem);
+  a_thread->GetMachine()->SetDesiredByteMemoryUsageHard((int)mem);
   return GM_OK;
 }
 
@@ -113,7 +113,7 @@ static int GM_CDECL gmSetDesiredMemoryUsageSoft(gmThread * a_thread) // mem usag
   GM_CHECK_NUM_PARAMS(1);
   GM_CHECK_INT_PARAM(mem, 0);
 
-  a_thread->GetMachine()->SetDesiredByteMemoryUsageSoft(mem);
+  a_thread->GetMachine()->SetDesiredByteMemoryUsageSoft((int)mem);
   return GM_OK;
 }
 
@@ -220,8 +220,8 @@ static int GM_CDECL gmSleep(gmThread * a_thread) // float\int param time in seco
   gmType type = a_thread->ParamType(0);
   gmuint32 ms = 0;
   
-  if(type == GM_INT) ms = a_thread->Param(0).m_value.m_int * 1000;
-  else if(type == GM_FLOAT) ms = (gmuint32) floorf(a_thread->Param(0).m_value.m_float * 1000.0f);
+  if(type == GM_INT) ms = (gmuint32)(a_thread->Param(0).m_value.m_int * 1000);
+  else if(type == GM_FLOAT) ms = (gmuint32) floor(a_thread->Param(0).m_value.m_float * 1000.0f);
 
   a_thread->Sys_SetTimeStamp(a_thread->GetMachine()->GetTime() + ms);
   return GM_SYS_SLEEP;
@@ -290,7 +290,7 @@ static int GM_CDECL gmKillThread(gmThread * a_thread) // thread id
   }
 
   // Attempt to kill other thread by Id
-  gmThread * thread = a_thread->GetMachine()->GetThread(id);
+  gmThread * thread = a_thread->GetMachine()->GetThread((int)id);
   if( thread )
   {
     thread->GetMachine()->Sys_SwitchState(thread, gmThread::KILLED); // Kill other thread
@@ -475,7 +475,7 @@ static int GM_CDECL gmSetStateOnThread(gmThread * a_thread) // (threadid, fp, pa
   GM_ASSERT(s_gmStateUserType != GM_NULL); 
 
   // get the target thread
-  gmThread * thread = a_thread->GetMachine()->GetThread(threadId);
+  gmThread * thread = a_thread->GetMachine()->GetThread((int)threadId);
   if(thread == a_thread)
   {
     a_thread->GetMachine()->GetLog().LogEntry("use setstate() on own thread");
@@ -558,7 +558,7 @@ static int GM_CDECL gmGetState(gmThread * a_thread) // return var
   if(a_thread->GetNumParams() >= 1)
   {
     GM_CHECK_INT_PARAM(testThreadId, 0);
-    testThread = a_thread->GetMachine()->GetThread(testThreadId);
+    testThread = a_thread->GetMachine()->GetThread((int)testThreadId);
     if(!testThread)
     {
       a_thread->PushNull();
@@ -587,7 +587,7 @@ static int GM_CDECL gmGetLastState(gmThread * a_thread) // return var
   if(a_thread->GetNumParams() >= 1)
   {
     GM_CHECK_INT_PARAM(testThreadId, 0);
-    testThread = a_thread->GetMachine()->GetThread(testThreadId);
+    testThread = a_thread->GetMachine()->GetThread((int)testThreadId);
     if(!testThread)
     {
       a_thread->PushNull();
@@ -633,7 +633,7 @@ static int GM_CDECL gmSignal(gmThread * a_thread) // var, dest thread id
 {
   GM_CHECK_NUM_PARAMS(1);
   GM_INT_PARAM(dstThreadId, 1, GM_INVALID_THREAD);
-  a_thread->GetMachine()->Signal(a_thread->Param(0), dstThreadId, a_thread->GetId());
+  a_thread->GetMachine()->Signal(a_thread->Param(0), (int)dstThreadId, a_thread->GetId());
   return GM_OK;  
 }
 
@@ -837,7 +837,7 @@ static int GM_CDECL gmfFormat(gmThread * a_thread) // string, params ...
 						GM_EXCEPTION_MSG("expected int as param %d",param);
 						return GM_EXCEPTION;
 					}
-					sprintf(buffer, "%c", a_thread->Param(param).GetInt());
+					sprintf(buffer, "%c", (int)a_thread->Param(param).GetInt());
 					gmConcat(a_thread->GetMachine(), str, len, size, buffer, 64);
 					++param;
 					break;
@@ -852,7 +852,7 @@ static int GM_CDECL gmfFormat(gmThread * a_thread) // string, params ...
 						GM_EXCEPTION_MSG("expected int as param %d",param);
 						return GM_EXCEPTION;
 					}
-					sprintf(buffer, "%d", a_thread->Param(param).GetInt());
+					sprintf(buffer, "%lld", (gmint64)a_thread->Param(param).GetInt());
 					gmConcat(a_thread->GetMachine(), str, len, size, buffer, 64);
 					++param;
 					break;
@@ -867,7 +867,7 @@ static int GM_CDECL gmfFormat(gmThread * a_thread) // string, params ...
 						GM_EXCEPTION_MSG("expected int as param %d",param);
 						return GM_EXCEPTION;
 					}
-					sprintf(buffer, "%u", a_thread->Param(param).GetInt());
+					sprintf(buffer, "%llu", (gmint64)a_thread->Param(param).GetInt());
 					gmConcat(a_thread->GetMachine(), str, len, size, buffer, 64);
 					++param;
 					break;
@@ -882,7 +882,7 @@ static int GM_CDECL gmfFormat(gmThread * a_thread) // string, params ...
 						GM_EXCEPTION_MSG("expected int as param %d",param);
 						return GM_EXCEPTION;
 					}
-					gmItoa(a_thread->Param(param).GetInt(), buffer, 2);
+					sprintf(buffer, "%lld", (gmint64)a_thread->Param(param).GetInt());
 					gmConcat(a_thread->GetMachine(), str, len, size, buffer, 64);
 					++param;
 					break;
@@ -897,7 +897,7 @@ static int GM_CDECL gmfFormat(gmThread * a_thread) // string, params ...
 						GM_EXCEPTION_MSG("expected int as param %d",param);
 						return GM_EXCEPTION;
 					}
-					sprintf(buffer, "%x", a_thread->Param(param).GetInt());
+					sprintf(buffer, "%llx", (gmint64)a_thread->Param(param).GetInt());
 					gmConcat(a_thread->GetMachine(), str, len, size, buffer, 64);
 					++param;
 					break;

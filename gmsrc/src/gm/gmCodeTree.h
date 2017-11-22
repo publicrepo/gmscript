@@ -206,8 +206,8 @@ enum gmCodeTreeNodeConstantType
 union gmCodeTreeNodeData
 {
   char * m_string;
-  int m_iValue;
-  float m_fValue;
+  gmint m_iValue;
+  gmfloat m_fValue;
 };
 
 

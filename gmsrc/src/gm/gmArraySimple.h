@@ -46,31 +46,31 @@ public:
 
   /// \brief SetBlockSize() will set the hysteresis memory grow by in elements. 
   /// \param a_blockSize as 0 will set automatic power of 2.
-  inline void SetBlockSize(gmuint a_blockSize) { m_blockSize = a_blockSize; }
+  inline void SetBlockSize(gmint a_blockSize) { m_blockSize = a_blockSize; }
 
   inline bool InsertLastIfUnique(const T &a_elem);
   inline T& InsertLast(void);
-  inline void InsertBefore(gmuint a_index, const T &a_elem);
-  inline void Remove(gmuint a_index);
-  inline void RemoveSwapLast(gmuint a_index);
+  inline void InsertBefore(gmint a_index, const T &a_elem);
+  inline void Remove(gmint a_index);
+  inline void RemoveSwapLast(gmint a_index);
   inline void RemoveLast(void);
   
-  inline T &operator[](gmuint a_index);
-  inline const T &operator[](gmuint a_index) const;
+  inline T &operator[](gmint a_index);
+  inline const T &operator[](gmint a_index) const;
 
-  inline gmuint Count(void) const { return m_count; }
+  inline gmint Count(void) const { return m_count; }
   inline bool IsEmpty(void) const { return (m_count == 0); }
 
   inline void Reset(void) { SetCount(0); }
   inline void ResetAndFreeMemory(void);
 
-  inline void SetCount(gmuint a_count);
-  inline void SetCountAndFreeMemory(gmuint a_count);
-  inline void Touch(gmuint a_element);
+  inline void SetCount(gmint a_count);
+  inline void SetCountAndFreeMemory(gmint a_count);
+  inline void Touch(gmint a_element);
 
   inline T* GetData(void) { return m_elem; }
   inline const T* GetData(void) const { return m_elem; }
-  inline gmuint GetSize(void) { return m_size; }
+  inline gmint GetSize(void) { return m_size; }
   bool IsValid(const T* a_elem) const;
   
   inline QUAL &operator=(const QUAL &a_array);
@@ -78,12 +78,12 @@ public:
   inline bool FindRemove(const T &a_elem);
   
   template <class Q>
-  inline gmuint FindIndex(const Q &a_elem) const
+  inline gmint FindIndex(const Q &a_elem) const
   {
     // iterate backwards, better chance of finding a_elem, given InsertLast() is 
     // used commonly which presents possible element coherence
     if(m_count == 0) return NULL_INDEX;
-    gmuint i = m_count - 1;
+    gmint i = m_count - 1;
     do
     {
       if (m_elem[i] == a_elem)    // used commonly which presents possible element coherence
@@ -95,12 +95,12 @@ public:
 private:
     
   T *m_elem;
-  gmuint m_count, m_size;
-  gmuint m_blockSize; //!< 0 and will be power of 2 sizing.
+  gmint m_count, m_size;
+  gmint m_blockSize; //!< 0 and will be power of 2 sizing.
   
   /// \brief Resize() will resize the array.
   /// \param a_size is the required size.
-  void Resize(gmuint a_size, bool a_shrinkIfPossible = false);
+  void Resize(gmint a_size, bool a_shrinkIfPossible = false);
 };
 
 
@@ -161,7 +161,7 @@ TMPL inline T& QUAL::InsertLast(void)
 
 
 TMPL
-inline void QUAL::InsertBefore(gmuint a_index, const T &a_elem)
+inline void QUAL::InsertBefore(gmint a_index, const T &a_elem)
 {
   if(a_index >= m_count)
   {
@@ -181,7 +181,7 @@ inline void QUAL::InsertBefore(gmuint a_index, const T &a_elem)
 
 
 TMPL
-inline void QUAL::Remove(gmuint a_index)
+inline void QUAL::Remove(gmint a_index)
 {
   if(a_index >= m_count) return;
   memmove(&m_elem[a_index], &m_elem[a_index+1], (m_count - (a_index + 1)) * sizeof(T));
@@ -190,7 +190,7 @@ inline void QUAL::Remove(gmuint a_index)
 
 
 TMPL
-inline void QUAL::RemoveSwapLast(gmuint a_index)
+inline void QUAL::RemoveSwapLast(gmint a_index)
 {
   if (a_index >= m_count) return;
   if(--m_count != a_index)
@@ -209,7 +209,7 @@ inline void QUAL::RemoveLast(void)
 
 
 TMPL
-inline T &QUAL::operator[](gmuint a_index)
+inline T &QUAL::operator[](gmint a_index)
 {
   GM_ASSERT(a_index >= 0 && a_index < m_count);
   return m_elem[a_index];
@@ -217,7 +217,7 @@ inline T &QUAL::operator[](gmuint a_index)
 
 
 TMPL
-inline const T &QUAL::operator[](gmuint a_index) const
+inline const T &QUAL::operator[](gmint a_index) const
 {
   GM_ASSERT(a_index >= 0 && a_index < m_count);
   return m_elem[a_index];
@@ -237,7 +237,7 @@ inline void QUAL::ResetAndFreeMemory(void)
 
 
 TMPL
-inline void QUAL::SetCount(gmuint a_count)
+inline void QUAL::SetCount(gmint a_count)
 {
   if(a_count > m_size)
   {
@@ -248,7 +248,7 @@ inline void QUAL::SetCount(gmuint a_count)
 
 
 TMPL
-inline void QUAL::SetCountAndFreeMemory(gmuint a_count)
+inline void QUAL::SetCountAndFreeMemory(gmint a_count)
 {
   Resize(a_count, true);
   m_count = a_count;
@@ -256,7 +256,7 @@ inline void QUAL::SetCountAndFreeMemory(gmuint a_count)
 
 
 TMPL
-inline void QUAL::Touch(gmuint a_element)
+inline void QUAL::Touch(gmint a_element)
 {
   if(a_element >= m_count)
   {
@@ -267,7 +267,7 @@ inline void QUAL::Touch(gmuint a_element)
 
 TMPL bool QUAL::IsValid(const T* a_elem) const
 {
-  gmuint index = (a_elem - m_elem);
+  gmint index = (a_elem - m_elem);
   return (index < m_count);
 }
 
@@ -283,7 +283,7 @@ inline QUAL &QUAL::operator=(const QUAL &a_array)
 
 TMPL bool QUAL::FindRemove(const T &a_elem)
 {
-  gmuint index = FindIndex(a_elem);
+  gmint index = FindIndex(a_elem);
   if(index != NULL_INDEX)
   {
     Remove(index);
@@ -294,7 +294,7 @@ TMPL bool QUAL::FindRemove(const T &a_elem)
 
 
 TMPL
-void QUAL::Resize(gmuint a_size, bool a_shrinkIfPossible)
+void QUAL::Resize(gmint a_size, bool a_shrinkIfPossible)
 {
   if(m_size >= a_size)
   {
@@ -310,7 +310,7 @@ void QUAL::Resize(gmuint a_size, bool a_shrinkIfPossible)
   }
   else
   {
-    size = gmLog2ge(gmMax<gmuint>(4, a_size + 1));
+    size = gmLog2ge((gmuint)gmMax<gmint>(4, a_size + 1));
   }
 
   // alloc, copy, free

@@ -96,7 +96,7 @@ public:
 
   // members
 
-  gmHash(gmuint a_size);
+  gmHash(gmint a_size);
   ~gmHash();
 
   void RemoveAll();
@@ -171,7 +171,7 @@ public:
   
   static inline gmuint Hash(const void * a_key) 
   {
-    return (gmuint) (((gmuint) a_key) / sizeof(double));
+    return (gmuint) (((gmuint)(gmuptr)a_key) / sizeof(double)); // Note ptr -> int size ptr -> truncated int
   }
 
   static inline int Compare(const void * a_keyA, const void * a_keyB)
@@ -183,13 +183,13 @@ public:
 
 
 TMPL
-QUAL::gmHash(gmuint a_size)
+QUAL::gmHash(gmint a_size)
 {
   // make sure size is power of 2
   GM_ASSERT((a_size & (a_size - 1)) == 0);
   m_size = a_size;
   m_table = GM_NEW(T * [a_size]);
-  int i = m_size;
+  gmint i = m_size;
   while(i--)
   {
     m_table[i] = NULL;
@@ -207,7 +207,7 @@ QUAL::~gmHash()
 TMPL
 void QUAL::RemoveAll()
 {
-  int i = m_size;
+  gmint i = m_size;
   while(i--)
   {
     m_table[i] = NULL;
@@ -220,7 +220,7 @@ TMPL
 void QUAL::RemoveAndDeleteAll()
 {
   // iterate over table and delete all
-  int i = m_size;
+  gmint i = m_size;
   T * node, * next;
   while(i--)
   {

@@ -19,10 +19,11 @@
 
 // helper macros
 
-#define OPCODE_INT(I)  *((gmint *) (I)); (I) += sizeof(gmint);
-#define OPCODE_PTR(I)  *((gmptr *) (I)); (I) += sizeof(gmptr);
-#define OPCODE_PTR_NI(I)  *((gmptr *) I);
-#define OPCODE_FLOAT(I)  *((gmfloat *) I); I += sizeof(gmfloat);
+#define OPCODE_INT32(I)  *((gmint32 *) (I)); (I) += sizeof(gmint32); // Int32 size instruction related
+#define OPCODE_INT(I)  *((gmint *) (I)); (I) += sizeof(gmint); // Specifically used for gmint literals
+#define OPCODE_FLOAT(I)  *((gmfloat *) I); I += sizeof(gmfloat); // Specifically used for gmfloat literals
+#define OPCODE_PTR(I)  *((gmptr *) (I)); (I) += sizeof(gmptr); // Ptr size instruction related
+#define OPCODE_PTR_NI(I)  *((gmptr *) I); // Ptr size with no increment
 #define OPERATOR(TYPE, OPERATOR) (m_machine->GetTypeNativeOperator((TYPE), (OPERATOR)))
 #define CALLOPERATOR(TYPE, OPERATOR) (m_machine->GetTypeOperator((TYPE), (OPERATOR)))
 #define GMTHREAD_LOG m_machine->GetLog().LogEntry
@@ -647,7 +648,7 @@ gmThread::State gmThread::Sys_Execute(gmVariable * a_return)
       {
         SetTop(top);
         
-        int numParams = (int) OPCODE_INT(instruction);
+        int numParams = (int) OPCODE_INT32(instruction);
 
         State res = PushStackFrame(numParams, &instruction, &code);
         top = GetTop(); 
@@ -746,8 +747,8 @@ gmThread::State gmThread::Sys_Execute(gmVariable * a_return)
 #endif //GM_USE_FORK
       case BC_FOREACH :
       {
-        gmuint32 localvalue = OPCODE_INT(instruction);
-        gmuint32 localkey = localvalue >> 16;
+        gmuint localvalue = OPCODE_INT32(instruction);
+        gmuint localkey = localvalue >> 16;
         localvalue &= 0xffff;
 
         // iterator is at tos-1, table is at tos -2, push int 1 if continuing loop. write key and value into localkey and localvalue
@@ -898,13 +899,13 @@ gmThread::State gmThread::Sys_Execute(gmVariable * a_return)
       }
       case BC_GETLOCAL :
       {
-        gmuint32 offset = OPCODE_INT(instruction);
+        gmuint32 offset = OPCODE_INT32(instruction);
         *(top++) = base[offset];
         break;
       }
       case BC_SETLOCAL :
       {
-        gmuint32 offset = OPCODE_INT(instruction);
+        gmuint32 offset = OPCODE_INT32(instruction);
 
         // Write barrier old local objects
         {

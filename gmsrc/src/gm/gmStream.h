@@ -43,23 +43,23 @@ public:
 
   /// \brief Seek()
   /// \return the p_pos before the seek if seek is supported, else ILLEGAL_POS.
-  virtual unsigned int Seek(unsigned int p_pos) = 0;
+  virtual gmint Seek(gmint p_pos) = 0;
 
   /// \brief Tell()
   /// \return the p_pos if tell is supported, else ILLEGAL_POS
-  virtual unsigned int Tell() const { return (unsigned int) ILLEGAL_POS; }
+  virtual gmint Tell() const { return (gmint) ILLEGAL_POS; }
 
   /// \brief GetSize() will return the size of the stream if the stream supports this feature.
   /// \return ILLEGAL_POS if GetSize is not supported
-  virtual unsigned int GetSize() const { return (unsigned int) ILLEGAL_POS; }
+  virtual gmint GetSize() const { return (gmint) ILLEGAL_POS; }
 
   /// \brief Read() will read p_n bytes from the stream into p_buffer.
   /// \return the number of bytes successfully read.
-  virtual unsigned int Read(void * p_buffer, unsigned int p_n) = 0;
+  virtual gmint Read(void * p_buffer, gmint p_n) = 0;
 
   /// \brief Write() will write p_n bytes from p_buffer to the stream.
   /// \return the number of bytes successfully written
-  virtual unsigned int Write(const void * p_buffer, unsigned int p_n) = 0;
+  virtual gmint Write(const void * p_buffer, gmint p_n) = 0;
 
   /// \brief GetFlags() will return the current stream flags
   inline Flags GetFlags() const { return (Flags) m_flags; }

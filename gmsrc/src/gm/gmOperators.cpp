@@ -13,7 +13,7 @@
 #include "gmOperators.h"
 #include "gmThread.h"
 #include "gmStringObject.h"
-//#include <math.h>
+
 
 const char * gmGetOperatorName(gmOperator a_operator)
 {
@@ -220,7 +220,7 @@ void GM_CDECL gmIntOpNOT(gmThread * a_thread, gmVariable * a_operands)
 // GM_FLOAT
 //
 
-#define INTTOFLOAT(A) (((A)->m_type == GM_FLOAT) ? (A)->m_value.m_float : (float) (A)->m_value.m_int)
+#define INTTOFLOAT(A) (((A)->m_type == GM_FLOAT) ? (A)->m_value.m_float : (gmfloat) (A)->m_value.m_int)
 
 void GM_CDECL gmFloatOpAdd(gmThread * a_thread, gmVariable * a_operands)
 {
@@ -261,7 +261,7 @@ void GM_CDECL gmFloatOpRem(gmThread * a_thread, gmVariable * a_operands)
 #if GMMACHINE_GMCHECKDIVBYZERO
   if(INTTOFLOAT(a_operands + 1) != 0)
   {
-    a_operands->m_value.m_float = fmodf(INTTOFLOAT(a_operands), INTTOFLOAT(a_operands + 1));
+    a_operands->m_value.m_float = fmod(INTTOFLOAT(a_operands), INTTOFLOAT(a_operands + 1));
     a_operands->m_type = GM_FLOAT;
   }
   else
@@ -271,7 +271,7 @@ void GM_CDECL gmFloatOpRem(gmThread * a_thread, gmVariable * a_operands)
     // NOTE: No proper way to signal exception from here at present
   }
 #else // GMMACHINE_GMCHECKDIVBYZERO
-  a_operands->m_value.m_float = fmodf(INTTOFLOAT(a_operands), INTTOFLOAT(a_operands + 1));
+  a_operands->m_value.m_float = fmod(INTTOFLOAT(a_operands), INTTOFLOAT(a_operands + 1));
   a_operands->m_type = GM_FLOAT;
 #endif // GMMACHINE_GMCHECKDIVBYZERO
 }
@@ -353,7 +353,7 @@ inline const char * gmUnknownToString(gmMachine * a_machine, gmVariable * a_unkn
   }
   if(a_unknown->m_type == GM_INT)
   {
-    sprintf(a_buffer, "%d", a_unknown->m_value.m_int); // this won't be > 64 chars
+    sprintf(a_buffer, "%lld", (gmint64)a_unknown->m_value.m_int); // this won't be > 64 chars
   }
   else if(a_unknown->m_type == GM_FLOAT)
   {

@@ -23,7 +23,7 @@
 #endif
 
 /// \brief Align pointer
-#define _gmAlignMem(PTR, ALIGN)                   (void*)(((gmuptr)(PTR) + (ALIGN) - 1) & ~((ALIGN)-1))
+#define _gmAlignMem(PTR, ALIGN)                   (void*)(((gmuptr)(PTR) + gmptr(ALIGN) - 1) & ~(gmptr(ALIGN)-1))
 
 
 /// \brief gmConstructElement will construct a single object at location

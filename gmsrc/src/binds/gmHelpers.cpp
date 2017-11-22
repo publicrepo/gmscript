@@ -17,11 +17,11 @@
   \brief gmRandomInt() returns a random int b/n two values
   \return number is >= min and < max (exclusive of max)
 */
-int gmRandomInt(int a_min, int a_max)
+gmint gmRandomInt(gmint a_min, gmint a_max)
 {
   if(a_min > a_max)
   {
-    int temp = a_max;
+    gmint temp = a_max;
     a_max = a_min;
     a_min = temp;
   }
@@ -30,8 +30,8 @@ int gmRandomInt(int a_min, int a_max)
     return a_min; // hmmm, not good.
   }
  
-  int randVal = rand();
-  int val = (randVal % (a_max - a_min)) + a_min;
+  gmint randVal = rand();
+  gmint val = (randVal % (a_max - a_min)) + a_min;
  
   return val;
 }
@@ -41,11 +41,11 @@ int gmRandomInt(int a_min, int a_max)
   \brief gmRandomInt() returns a random int b/n two values
   \return number is >= min and < max (exclusive of max)
 */
-float gmRandomFloat(float a_min, float a_max)
+gmfloat gmRandomFloat(gmfloat a_min, gmfloat a_max)
 {
   if(a_min > a_max)
   {
-    float temp = a_max;
+    gmfloat temp = a_max;
     a_max = a_min;
     a_min = temp;
   }
@@ -55,6 +55,6 @@ float gmRandomFloat(float a_min, float a_max)
   }
   
   int randVal = rand() % RAND_MAX;
-  float frandVal = (float)randVal / (float)RAND_MAX;
+  gmfloat frandVal = (gmfloat)randVal / (gmfloat)RAND_MAX;
   return a_min + (frandVal * (a_max - a_min));
 }

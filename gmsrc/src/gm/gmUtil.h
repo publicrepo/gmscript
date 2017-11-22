@@ -44,6 +44,21 @@ inline unsigned int gmLog2ge(unsigned int n)
   return n + 1;
 }
 
+/// \brief gmLog2ge() returns the next power of 2, greater than or equal to the given number.
+inline unsigned __int64 gmLog2ge(unsigned __int64 n)
+{
+  --n;
+
+  n |= n >> 32;
+  n |= n >> 16;
+  n |= n >> 8;
+  n |= n >> 4;
+  n |= n >> 2;
+  n |= n >> 1;
+
+  return n + 1;
+}
+
 /// \brief gmItoa()
 char * gmItoa(int a_val, char * a_dst, int a_radix);
 

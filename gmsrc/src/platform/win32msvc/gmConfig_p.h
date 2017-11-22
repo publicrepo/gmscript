@@ -31,6 +31,9 @@
 #include <new>
 #include <cassert>
 
+//MAYBE #include <cstdint> // c++11 std types
+
+
 // system defines
 #if defined(_XBOX)
   #define GM_LITTLE_ENDIAN      0
@@ -107,23 +110,33 @@
 #define GM_MAX_CHAR_STRING    256
 #define GM_MAX_PATH           256
 
-// basic types
+// basic types (compatibility and fixed size)
 typedef const char * LPCTSTR;
-typedef unsigned int gmuint;
 typedef char gmint8;
 typedef unsigned char gmuint8;
 typedef short gmint16;
 typedef unsigned short gmuint16;
 typedef int gmint32;
 typedef unsigned int gmuint32;
+typedef __int64 gmint64;
+typedef unsigned __int64 gmuint64;
+
+#if 1 // 32bit int
 typedef int gmint;
 typedef unsigned int gmuint;
+#else // 64bit int
+typedef __int64 gmint;
+typedef unsigned __int64 gmuint;
+#endif
+#if 1 // 32bit float
 typedef float gmfloat;
+#else // 64bit float
+typedef double gmfloat;
+#endif
+
 #ifdef GM_PTR_SIZE_64
   typedef __int64 gmptr; // machine pointer size as int
   typedef unsigned __int64 gmuptr; // machine pointer size as int
-  typedef __int64 gmint64;
-  typedef unsigned __int64 gmuint64;
 #else //!GM_PTR_SIZE_64
   typedef int gmptr; // machine pointer size as int
   typedef unsigned int gmuptr; // machine pointer size as int

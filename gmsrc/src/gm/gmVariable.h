@@ -73,15 +73,15 @@ struct gmVariable
   }
   inline gmVariable(gmType a_type, gmptr a_ref) : m_type(a_type) { m_value.m_ref = a_ref; }
 
-  explicit inline gmVariable(int a_val) : m_type(GM_INT) { m_value.m_int = a_val; }
-  explicit inline gmVariable(float a_val) : m_type(GM_FLOAT) { m_value.m_float = a_val; }
+  explicit inline gmVariable(gmint a_val) : m_type(GM_INT) { m_value.m_int = a_val; }
+  explicit inline gmVariable(gmfloat a_val) : m_type(GM_FLOAT) { m_value.m_float = a_val; }
   explicit inline gmVariable(gmStringObject * a_string) { SetString(a_string); }
   explicit inline gmVariable(gmTableObject * a_table) { SetTable(a_table); }
   explicit inline gmVariable(gmFunctionObject * a_func) { SetFunction(a_func); }
   explicit inline gmVariable(gmUserObject * a_user) { SetUser(a_user); }
 
-  inline void SetInt(int a_value) { m_type = GM_INT; m_value.m_int = a_value; }
-  inline void SetFloat(float a_value) { m_type = GM_FLOAT; m_value.m_float = a_value; }
+  inline void SetInt(gmint a_value) { m_type = GM_INT; m_value.m_int = a_value; }
+  inline void SetFloat(gmfloat a_value) { m_type = GM_FLOAT; m_value.m_float = a_value; }
   inline void SetString(gmStringObject * a_string);
   void SetString(gmMachine * a_machine, const char * a_cString);
   inline void SetTable(gmTableObject * a_table);
@@ -98,8 +98,8 @@ struct gmVariable
   inline bool IsNumber() const { return IsInt() || IsFloat(); }
 
   // GetInt and GetFloat are not protected. User should verify the type before calling this.
-  inline int GetInt() const  { return m_value.m_int; }
-  inline float GetFloat() const { return m_value.m_float; }
+  inline gmint GetInt() const  { return m_value.m_int; }
+  inline gmfloat GetFloat() const { return m_value.m_float; }
 
 
   /// \brief AsString will get this gm variable as a string if possible.  AsString is used for the gm "print" and system.Exec function bindings.
@@ -116,9 +116,9 @@ struct gmVariable
   const char * AsStringWithType(gmMachine * a_machine, char * a_buffer, int a_len) const;
 
   /// Return int/float or zero
-  inline int GetIntSafe() const;
+  inline gmint GetIntSafe() const;
   /// Return float/int or zero
-  inline float GetFloatSafe() const;
+  inline gmfloat GetFloatSafe() const;
   /// Return string object or null
   inline gmStringObject* GetStringObjectSafe() const;
   /// Return table object or null
@@ -215,7 +215,7 @@ inline void gmVariable::SetFunction(gmFunctionObject * a_function)
   m_value.m_ref = ((gmObject *) a_function)->GetRef();
 }
 
-int gmVariable::GetIntSafe() const
+gmint gmVariable::GetIntSafe() const
 {
   if( GM_INT == m_type )
   {
@@ -228,7 +228,7 @@ int gmVariable::GetIntSafe() const
   return 0;
 }
 
-float gmVariable::GetFloatSafe() const
+gmfloat gmVariable::GetFloatSafe() const
 {
   if( GM_FLOAT == m_type )
   {
@@ -238,8 +238,7 @@ float gmVariable::GetFloatSafe() const
   {
     return (float)m_value.m_int;
   }
-  return 0.0f;
- 
+  return gmfloat(0);
 }
 
 gmStringObject * gmVariable::GetStringObjectSafe() const

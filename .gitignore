@@ -51,8 +51,9 @@ log.txt
 */bin/gml.debug.exe
 */bin/gml.exe
 */bin/gml.exe
-*/*/gm/gmParser.cpp
-*/*/gm/gmParser.cpp.h
-*/*/gm/gmScanner.cpp
+# Generated code. We may want to check this in for convenience
+# */*/gm/gmParser.cpp
+# */*/gm/gmParser.cpp.h
+# */*/gm/gmScanner.cpp
 gmdoc.html
 gmdoc.xml

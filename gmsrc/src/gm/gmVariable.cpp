@@ -27,7 +27,7 @@ const char * gmVariable::AsString(gmMachine * a_machine, char * a_buffer, int a_
       _gmsnprintf(a_buffer, a_len, "null");
       break;
     case GM_INT :
-      _gmsnprintf(a_buffer, a_len, "%d", m_value.m_int);
+      _gmsnprintf(a_buffer, a_len, "%lld", (gmint64)m_value.m_int);
       break;
     case GM_FLOAT :
       _gmsnprintf(a_buffer, a_len, "%g", m_value.m_float);
@@ -42,7 +42,7 @@ const char * gmVariable::AsString(gmMachine * a_machine, char * a_buffer, int a_
       }
       else
       {
-        _gmsnprintf(a_buffer, a_len, "%s:0x%x", a_machine->GetTypeName(m_type), m_value.m_ref);
+        _gmsnprintf(a_buffer, a_len, "%s:0x%zx", a_machine->GetTypeName(m_type), m_value.m_ref);
       }
       break;
   }

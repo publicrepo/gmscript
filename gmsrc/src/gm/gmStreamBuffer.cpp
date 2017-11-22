@@ -21,7 +21,7 @@ gmStreamBufferStatic::gmStreamBufferStatic()
 }
 
 
-gmStreamBufferStatic::gmStreamBufferStatic(const void * p_buffer, unsigned int a_size)
+gmStreamBufferStatic::gmStreamBufferStatic(const void * p_buffer, gmint a_size)
 {
   Open(p_buffer, a_size);
 }
@@ -32,32 +32,32 @@ gmStreamBufferStatic::~gmStreamBufferStatic()
 }
 
 
-unsigned int gmStreamBufferStatic::Seek(unsigned int p_pos)
+gmint gmStreamBufferStatic::Seek(gmint p_pos)
 {
-  int oldCursor = m_cursor;
-  int cursor = p_pos;
-  if(cursor < 0) return (unsigned int)ILLEGAL_POS;
-  if((unsigned int) cursor > m_size) return (unsigned int)ILLEGAL_POS;
+  gmint oldCursor = m_cursor;
+  gmint cursor = p_pos;
+  if(cursor < 0) return (gmint)ILLEGAL_POS;
+  if((gmint) cursor > m_size) return (gmint)ILLEGAL_POS;
   m_cursor = cursor;
   return oldCursor;  
 }
 
 
-unsigned int gmStreamBufferStatic::Tell() const
+gmint gmStreamBufferStatic::Tell() const
 {
   return m_cursor;
 }
 
 
-unsigned int gmStreamBufferStatic::GetSize() const
+gmint gmStreamBufferStatic::GetSize() const
 {
   return m_size;
 }
 
 
-unsigned int gmStreamBufferStatic::Read(void * p_buffer, unsigned int p_n)
+gmint gmStreamBufferStatic::Read(void * p_buffer, gmint p_n)
 {
-  unsigned int remain = m_size - m_cursor;
+  gmint remain = m_size - m_cursor;
   if(p_n > remain)
   {
     m_flags |= F_EOS;
@@ -69,14 +69,14 @@ unsigned int gmStreamBufferStatic::Read(void * p_buffer, unsigned int p_n)
 }
 
 
-unsigned int gmStreamBufferStatic::Write(const void * p_buffer, unsigned int p_n)
+gmint gmStreamBufferStatic::Write(const void * p_buffer, gmint p_n)
 {
   m_flags |= F_ERROR;
   return 0;
 }
 
 
-void gmStreamBufferStatic::Open(const void * p_buffer, unsigned int a_size)
+void gmStreamBufferStatic::Open(const void * p_buffer, gmint a_size)
 {
   m_cursor = 0;
   m_size = a_size;
@@ -102,34 +102,34 @@ gmStreamBufferDynamic::~gmStreamBufferDynamic()
 }
 
 
-unsigned int gmStreamBufferDynamic::Seek(unsigned int p_pos)
+gmint gmStreamBufferDynamic::Seek(gmint p_pos)
 {
-  int oldCursor = m_cursor;
-  int cursor = p_pos;
+  gmint oldCursor = m_cursor;
+  gmint cursor = p_pos;
   if(cursor < 0) 
-    return (unsigned int)ILLEGAL_POS;
-  if((unsigned int) cursor > m_stream.Count()) 
-    return (unsigned int)ILLEGAL_POS;
+    return (gmint)ILLEGAL_POS;
+  if(cursor > m_stream.Count()) 
+    return (gmint)ILLEGAL_POS;
   m_cursor = cursor;
   return oldCursor;
 }
 
 
-unsigned int gmStreamBufferDynamic::Tell() const
+gmint gmStreamBufferDynamic::Tell() const
 {
   return m_cursor;
 }
 
 
-unsigned int gmStreamBufferDynamic::GetSize() const
+gmint gmStreamBufferDynamic::GetSize() const
 {
   return m_stream.Count();
 }
 
 
-unsigned int gmStreamBufferDynamic::Read(void * p_buffer, unsigned int p_n)
+gmint gmStreamBufferDynamic::Read(void * p_buffer, gmint p_n)
 {
-  unsigned int remain = m_stream.Count() - m_cursor;
+  gmint remain = m_stream.Count() - m_cursor;
   if(p_n > remain)
   {
     // set eof
@@ -142,9 +142,9 @@ unsigned int gmStreamBufferDynamic::Read(void * p_buffer, unsigned int p_n)
 }
 
 
-unsigned int gmStreamBufferDynamic::Write(const void * p_buffer, unsigned int p_n)
+gmint gmStreamBufferDynamic::Write(const void * p_buffer, gmint p_n)
 {
-  unsigned int remain = m_stream.Count() - m_cursor;
+  gmint remain = m_stream.Count() - m_cursor;
   if(p_n > remain)
   {
     // grow the stream

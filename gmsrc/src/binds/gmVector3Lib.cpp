@@ -14,7 +14,7 @@
 #include "gmThread.h"
 #include "gmMachine.h"
 #include "gmHelpers.h"
-#include <math.h>
+#include <cmath>
 
 
 //
@@ -27,11 +27,11 @@ struct gmVector3
 {
   static int DominantAxis(const gmVector3& a_vec)
   {
-    float absX, absY, absZ;
+    gmfloat absX, absY, absZ;
 
-    absX = fabsf(a_vec.m_x);
-    absY = fabsf(a_vec.m_y);
-    absZ = fabsf(a_vec.m_z);
+    absX = fabs(a_vec.m_x);
+    absY = fabs(a_vec.m_y);
+    absZ = fabs(a_vec.m_z);
   
     if(absY > absX)
     {
@@ -45,7 +45,7 @@ struct gmVector3
     else
       {return 0;} // Dominant X
   }
-  static float Dot(const gmVector3& a_vec1, const gmVector3& a_vec2)
+  static gmfloat Dot(const gmVector3& a_vec1, const gmVector3& a_vec2)
   {
     return (a_vec1.m_x * a_vec2.m_x + a_vec1.m_y * a_vec2.m_y + a_vec1.m_z * a_vec2.m_z);
   }
@@ -57,27 +57,27 @@ struct gmVector3
     a_result.m_y = (a_vec1.m_z * a_vec2.m_x) - (a_vec1.m_x * a_vec2.m_z);
     a_result.m_z = (a_vec1.m_x * a_vec2.m_y) - (a_vec1.m_y * a_vec2.m_x);
   }
-  static float Length(const gmVector3& a_vec)
+  static gmfloat Length(const gmVector3& a_vec)
   {
     return (float)sqrt(LengthSquared(a_vec));
   }
-  static float LengthSquared(const gmVector3& a_vec)
+  static gmfloat LengthSquared(const gmVector3& a_vec)
   {
     return Dot(a_vec, a_vec);
   }
   static void Normalize(const gmVector3& a_vec, gmVector3& a_result)
   {
-    float len2 = LengthSquared(a_vec);
-    if(len2 != 0.0f)
+    gmfloat len2 = LengthSquared(a_vec);
+    if(len2 != gmfloat(0.0))
     {
-      float ooLen = 1.0f / (float)sqrt(len2);
+      gmfloat ooLen = gmfloat(1.0) / (gmfloat)sqrt(len2);
       MulScalar(a_vec, ooLen, a_result);
     }
     else
     {
-      a_result.m_x = 0.0f;
-      a_result.m_y = 0.0f;
-      a_result.m_z = 0.0f;
+      a_result.m_x = gmfloat(0.0);
+      a_result.m_y = gmfloat(0.0);
+      a_result.m_z = gmfloat(0.0);
     }
   }
   static void Add(const gmVector3& a_vec1, const gmVector3& a_vec2, gmVector3& a_result)
@@ -98,13 +98,13 @@ struct gmVector3
     a_result.m_y = a_vec1.m_y * a_vec2.m_y;
     a_result.m_z = a_vec1.m_z * a_vec2.m_z;
   }
-  static void MulScalar(const gmVector3& a_vec, const float& a_scale, gmVector3& a_result)
+  static void MulScalar(const gmVector3& a_vec, const gmfloat& a_scale, gmVector3& a_result)
   {
     a_result.m_x = a_vec.m_x * a_scale;
     a_result.m_y = a_vec.m_y * a_scale;
     a_result.m_z = a_vec.m_z * a_scale;
   }
-  static void LerpPoints(const gmVector3& a_vecFrom, const gmVector3& a_vecTo, const float a_frac, gmVector3& a_result)  
+  static void LerpPoints(const gmVector3& a_vecFrom, const gmVector3& a_vecTo, const gmfloat a_frac, gmVector3& a_result)  
   {
     a_result.m_x = a_vecFrom.m_x + a_frac * (a_vecTo.m_x - a_vecFrom.m_x);
     a_result.m_y = a_vecFrom.m_y + a_frac * (a_vecTo.m_y - a_vecFrom.m_y);
@@ -114,25 +114,25 @@ struct gmVector3
   // Set to Vector rotated by AxisAngle rotation 
   // Rotate a vector by a axis (unit vector) and angle (radians)
   // Only useful if you want to do this once off, otherwise, create a matrix and rotate multiple vectors more efficiently
-  static void RotateAxisAngle(const gmVector3& a_point, const gmVector3& a_axis, const float a_angle, gmVector3& a_result)
+  static void RotateAxisAngle(const gmVector3& a_point, const gmVector3& a_axis, const gmfloat a_angle, gmVector3& a_result)
   {
     //cos(t) V + (1 - cos(t)) (A dot V) A + sin(t) (A cross V).
 
-    float sinAng, cosAng;
+    gmfloat sinAng, cosAng;
     gmVector3 temp1, temp2;
     gmSinCos(a_angle, sinAng, cosAng);
 
     MulScalar(a_point, cosAng, temp1);
-    MulScalar(a_axis, (1 - cosAng) * Dot(a_axis, a_point), temp2);
+    MulScalar(a_axis, (gmfloat(1) - cosAng) * Dot(a_axis, a_point), temp2);
     Cross(a_axis, a_point, a_result);
     MulScalar(a_result, sinAng, a_result);
     Add(temp1, a_result, a_result);
     Add(temp2, a_result, a_result);
   }
 
-  static void RotateAboutX(const gmVector3& a_vec, float a_angle, gmVector3& a_result)
+  static void RotateAboutX(const gmVector3& a_vec, gmfloat a_angle, gmVector3& a_result)
   {
-    float sinAng, cosAng;
+    gmfloat sinAng, cosAng;
 
     gmSinCos(a_angle, sinAng, cosAng);
 
@@ -141,9 +141,9 @@ struct gmVector3
     a_result.m_x = a_vec.m_x;
   }
 
-  static void RotateAboutY(const gmVector3& a_vec, float a_angle, gmVector3& a_result)
+  static void RotateAboutY(const gmVector3& a_vec, gmfloat a_angle, gmVector3& a_result)
   {
-    float sinAng, cosAng;
+    gmfloat sinAng, cosAng;
 
     gmSinCos(a_angle, sinAng, cosAng);
 
@@ -152,9 +152,9 @@ struct gmVector3
     a_result.m_y = a_vec.m_y;
   }
 
-  static void RotateAboutZ(const gmVector3& a_vec, float a_angle, gmVector3& a_result)
+  static void RotateAboutZ(const gmVector3& a_vec, gmfloat a_angle, gmVector3& a_result)
   {
-    float sinAng, cosAng;
+    gmfloat sinAng, cosAng;
 
     gmSinCos(a_angle, sinAng, cosAng);
 
@@ -166,32 +166,32 @@ struct gmVector3
   // Spherical linear interpolation between two vectors
   // Using quaternion style, find vector along smallest great circle between vectors
   // [sin((1-t)*A)/sin(A)]*P + [sin(t*A)/sin(A)]*Q
-  static void SlerpVectors(const gmVector3& a_vecFrom, const gmVector3& a_vecTo, const float a_frac, gmVector3& a_result)
+  static void SlerpVectors(const gmVector3& a_vecFrom, const gmVector3& a_vecTo, const gmfloat a_frac, gmVector3& a_result)
   {
-    float sinA;
-    float ang;
-    float ooSinA;
+    gmfloat sinA;
+    gmfloat ang;
+    gmfloat ooSinA;
     gmVector3 partSrc, partDst;
-    float cosAng;
+    gmfloat cosAng;
 
     cosAng = Dot(a_vecFrom, a_vecTo);
-    if(fabsf(cosAng) >= 0.999f) //if From is very similar to To
+    if(fabs(cosAng) >= gmfloat(0.999)) //if From is very similar to To
     {
       a_result = a_vecFrom;
       return;
     }
 
-    ang = acosf(cosAng);
-    sinA = sinf(ang);
-    ooSinA = 1.0f / sinA;
+    ang = acos(cosAng);
+    sinA = sin(ang);
+    ooSinA = gmfloat(1.0) / sinA;
 
-    MulScalar(a_vecFrom, sinf((1 - a_frac) * ang) * ooSinA, partSrc);
-    MulScalar(a_vecTo, sinf(a_frac * ang) * ooSinA, partDst);
+    MulScalar(a_vecFrom, sin((gmfloat(1) - a_frac) * ang) * ooSinA, partSrc);
+    MulScalar(a_vecTo, sin(a_frac * ang) * ooSinA, partDst);
 
     Add(partSrc, partDst, a_result);
   }
 
-  static void Project(const gmVector3& a_dir, const gmVector3& a_point, const float a_time, gmVector3& a_result)
+  static void Project(const gmVector3& a_dir, const gmVector3& a_point, const gmfloat a_time, gmVector3& a_result)
   {
     a_result.m_x = a_point.m_x + a_dir.m_x * a_time;
     a_result.m_y = a_point.m_y + a_dir.m_y * a_time;
@@ -200,12 +200,12 @@ struct gmVector3
 
   union
   {
-    float m_v[3];
+    gmfloat m_v[3];
     struct
     {
-      float m_x;
-      float m_y;
-      float m_z;
+      gmfloat m_x;
+      gmfloat m_y;
+      gmfloat m_z;
     };
   };
 };
@@ -254,7 +254,7 @@ struct gmVector3Obj
     GM_CHECK_USER_PARAM(gmVector3*, GM_VECTOR3, otherVec, 0);
     gmVector3* thisVec = (gmVector3*)a_thread->ThisUser_NoChecks();
         
-    float angle = 0;
+    gmfloat angle = 0;
     if(!gmGetFloatOrIntParamAsFloat(a_thread, 1, angle))
     {
       return GM_EXCEPTION;
@@ -274,7 +274,7 @@ struct gmVector3Obj
     GM_CHECK_NUM_PARAMS(1);
     gmVector3* thisVec = (gmVector3*)a_thread->ThisUser_NoChecks();
         
-    float angle = 0;
+    gmfloat angle = 0;
     if(!gmGetFloatOrIntParamAsFloat(a_thread, 0, angle))
     {
       return GM_EXCEPTION;
@@ -292,7 +292,7 @@ struct gmVector3Obj
     GM_CHECK_NUM_PARAMS(1);
     gmVector3* thisVec = (gmVector3*)a_thread->ThisUser_NoChecks();
         
-    float angle = 0;
+    gmfloat angle = 0;
     if(!gmGetFloatOrIntParamAsFloat(a_thread, 0, angle))
     {
       return GM_EXCEPTION;
@@ -310,7 +310,7 @@ struct gmVector3Obj
     GM_CHECK_NUM_PARAMS(1);
     gmVector3* thisVec = (gmVector3*)a_thread->ThisUser_NoChecks();
         
-    float angle = 0;
+    gmfloat angle = 0;
     if(!gmGetFloatOrIntParamAsFloat(a_thread, 0, angle))
     {
       return GM_EXCEPTION;
@@ -400,7 +400,7 @@ struct gmVector3Obj
     GM_CHECK_USER_PARAM(gmVector3*, GM_VECTOR3, otherVec, 0);
     gmVector3* thisVec = (gmVector3*)a_thread->ThisUser_NoChecks();
 
-    float frac = 0;
+    gmfloat frac = 0;
     if(!gmGetFloatOrIntParamAsFloat(a_thread, 1, frac))
     {
       return GM_EXCEPTION;
@@ -420,7 +420,7 @@ struct gmVector3Obj
     GM_CHECK_USER_PARAM(gmVector3*, GM_VECTOR3, otherVec, 0);
     gmVector3* thisVec = (gmVector3*)a_thread->ThisUser_NoChecks();
 
-    float frac = 0;
+    gmfloat frac = 0;
     if(!gmGetFloatOrIntParamAsFloat(a_thread, 1, frac))
     {
       return GM_EXCEPTION;
@@ -440,7 +440,7 @@ struct gmVector3Obj
     GM_CHECK_USER_PARAM(gmVector3*, GM_VECTOR3, otherVec, 0);
     gmVector3* thisVec = (gmVector3*)a_thread->ThisUser_NoChecks();
 
-    float time = 0;
+    gmfloat time = 0;
     if(!gmGetFloatOrIntParamAsFloat(a_thread, 1, time))
     {
       return GM_EXCEPTION;
@@ -551,7 +551,7 @@ struct gmVector3Obj
     {
       // Get operands
       gmVector3* vecObjA = (gmVector3*) ((gmUserObject*)GM_OBJECT(a_operands[0].m_value.m_ref))->m_user;
-      float scaleB = 0.0f;
+      gmfloat scaleB = 0.0f;
       
       if(a_operands[1].m_type == GM_FLOAT)
       {
@@ -559,7 +559,7 @@ struct gmVector3Obj
       }
       else if(a_operands[1].m_type == GM_INT)
       {
-        scaleB = (float)a_operands[1].m_value.m_int;
+        scaleB = (gmfloat)a_operands[1].m_value.m_int;
       }
        
       // Create new
@@ -574,7 +574,7 @@ struct gmVector3Obj
     else if((a_operands[0].m_type != GM_VECTOR3) && a_operands[1].m_type == GM_VECTOR3)
     {
       // Get operands
-      float scaleA = 0.0f;
+      gmfloat scaleA = 0.0f;
       gmVector3* vecObjB = (gmVector3*) ((gmUserObject*)GM_OBJECT(a_operands[1].m_value.m_ref))->m_user;
 
       if(a_operands[0].m_type == GM_FLOAT)
@@ -583,7 +583,7 @@ struct gmVector3Obj
       }
       else if(a_operands[0].m_type == GM_INT)
       {
-        scaleA = (float)a_operands[0].m_value.m_int;
+        scaleA = (gmfloat)a_operands[0].m_value.m_int;
       }
 
       // Create new
@@ -672,14 +672,14 @@ struct gmVector3Obj
       return;
     }
 
-    float newFloat = 0.0f;
+    gmfloat newFloat = gmfloat(0.0);
     if(a_operands[1].m_type == GM_FLOAT)
     {
       newFloat = a_operands[1].m_value.m_float;
     }
     else if(a_operands[1].m_type == GM_INT)
     {
-      newFloat = (float)a_operands[1].m_value.m_int;
+      newFloat = (gmfloat)a_operands[1].m_value.m_int;
     }
 
     if(cstr[0] == 'x')
@@ -702,7 +702,7 @@ struct gmVector3Obj
     gmVector3* thisVec = (gmVector3*) ((gmUserObject*)GM_OBJECT(a_operands[0].m_value.m_ref))->m_user;
     if(a_operands[1].m_type == GM_INT)
     {
-      int index = a_operands[1].m_value.m_int;
+      gmint index = a_operands[1].m_value.m_int;
       a_operands[0].SetFloat(thisVec->m_v[index]);
       return;
     }
@@ -715,7 +715,7 @@ struct gmVector3Obj
     gmVector3* thisVec = (gmVector3*) ((gmUserObject*)GM_OBJECT(a_operands[0].m_value.m_ref))->m_user;
     if(a_operands[1].m_type == GM_INT)
     {
-      int index = a_operands[1].m_value.m_int;
+      gmint index = a_operands[1].m_value.m_int;
       if(index < 0 || index >= 3)
       {
         return;
@@ -727,7 +727,7 @@ struct gmVector3Obj
       }
       else if(a_operands[2].m_type == GM_INT)
       {
-        thisVec->m_v[index] = (float)a_operands[2].m_value.m_int;
+        thisVec->m_v[index] = (gmfloat)a_operands[2].m_value.m_int;
       }
       else
       {
@@ -743,11 +743,11 @@ struct gmVector3Obj
     gmVector3* thisVec = (gmVector3*) ((gmUserObject*)GM_OBJECT(a_operands[0].m_value.m_ref))->m_user;
     if (thisVec->m_x != 0 || thisVec->m_y != 0 && thisVec->m_z != 0)
     {
-      a_operands[0] = gmVariable(1);
+      a_operands[0] = gmVariable( gmint(1) );
     }
     else
     {
-      a_operands[0] = gmVariable(0);
+      a_operands[0] = gmVariable( gmint(0) );
     }
   }
 
@@ -758,11 +758,11 @@ struct gmVector3Obj
     gmVector3* thisVec = (gmVector3*) ((gmUserObject*)GM_OBJECT(a_operands[0].m_value.m_ref))->m_user;
     if (thisVec->m_x != 0 || thisVec->m_y != 0 && thisVec->m_z != 0)
     {
-      a_operands[0] = gmVariable(0);
+      a_operands[0] = gmVariable( gmint(0) );
     }
     else
     {
-      a_operands[0] = gmVariable(1);
+      a_operands[0] = gmVariable( gmint(1) );
     }
   }
 #endif // GM_BOOL_OP
@@ -849,7 +849,7 @@ gmMemFixed gmVector3Obj::s_mem(sizeof(gmVector3), 64);
 gmType GM_VECTOR3 = GM_NULL;
 
 /// \brief Push a Vector3. (Eg. Use to return result).
-void gmVector3_Push(gmThread* a_thread, const float* a_vec)
+void gmVector3_Push(gmThread* a_thread, const gmfloat* a_vec)
 {
   gmVector3* newVec = gmVector3Obj::Alloc(a_thread->GetMachine(), false);
   *newVec = *(gmVector3*)a_vec;
@@ -857,7 +857,7 @@ void gmVector3_Push(gmThread* a_thread, const float* a_vec)
 }
 
 /// \brief Create a Vector3 user object and fill it (Eg. use, to set as table member).
-gmUserObject* gmVector3_Create(gmMachine* a_machine, const float* a_vec)
+gmUserObject* gmVector3_Create(gmMachine* a_machine, const gmfloat* a_vec)
 {
   gmVector3* newVec = gmVector3Obj::Alloc(a_machine, false);
   *newVec = *(gmVector3*)a_vec;

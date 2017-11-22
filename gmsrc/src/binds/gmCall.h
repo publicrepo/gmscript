@@ -333,7 +333,7 @@ public:
 
   /// \brief Get returned int
   /// \return true if function returned an int. 
-  bool GetReturnedInt(int& a_value)
+  bool GetReturnedInt(gmint& a_value)
   {
     if(m_returnFlag && (m_returnVar.m_type == GM_INT))
     {
@@ -345,7 +345,7 @@ public:
 
   /// \brief Get returned float
   /// \return true if function returned an float. 
-  bool GetReturnedFloat(float& a_value)
+  bool GetReturnedFloat(gmfloat& a_value)
   {
     if(m_returnFlag && (m_returnVar.m_type == GM_FLOAT))
     {

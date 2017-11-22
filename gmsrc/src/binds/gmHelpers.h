@@ -20,7 +20,7 @@
 // Helpers
 //
 
-#define GM_PI_VALUE 3.1415927f
+#define GM_PI_VALUE 3.14159265358979323846
 
 // Clamp value between to range
 template <class TYPE>
@@ -91,11 +91,11 @@ GM_FORCEINLINE TYPE gmMax3(const TYPE a_x, const TYPE a_y, const TYPE a_z)
   }
 }
 
-GM_FORCEINLINE float gmGetFloatOrIntParamAsFloat(gmThread * a_thread, int a_paramIndex)
+GM_FORCEINLINE gmfloat gmGetFloatOrIntParamAsFloat(gmThread * a_thread, int a_paramIndex)
 {
   if(a_thread->ParamType(a_paramIndex) == GM_INT)
   {
-    return (float)a_thread->Param(a_paramIndex).m_value.m_int;
+    return (gmfloat)a_thread->Param(a_paramIndex).m_value.m_int;
   }
   else
   {
@@ -104,7 +104,7 @@ GM_FORCEINLINE float gmGetFloatOrIntParamAsFloat(gmThread * a_thread, int a_para
 }
 
 
-GM_FORCEINLINE bool gmGetFloatOrIntParamAsFloat(gmThread * a_thread, int a_paramIndex, float& a_retValue)
+GM_FORCEINLINE bool gmGetFloatOrIntParamAsFloat(gmThread * a_thread, int a_paramIndex, gmfloat& a_retValue)
 {
   if(a_thread->ParamType(a_paramIndex) == GM_INT)
   {
@@ -122,7 +122,7 @@ GM_FORCEINLINE bool gmGetFloatOrIntParamAsFloat(gmThread * a_thread, int a_param
   }
 }
 
-GM_FORCEINLINE int gmGetFloatOrIntParamAsInt(gmThread * a_thread, int a_paramIndex)
+GM_FORCEINLINE gmint gmGetFloatOrIntParamAsInt(gmThread * a_thread, int a_paramIndex)
 {
   if(a_thread->ParamType(a_paramIndex) == GM_INT)
   {
@@ -134,7 +134,7 @@ GM_FORCEINLINE int gmGetFloatOrIntParamAsInt(gmThread * a_thread, int a_paramInd
   }
 }
 
-GM_FORCEINLINE bool gmGetFloatOrIntParamAsInt(gmThread * a_thread, int a_paramIndex, int& a_retValue)
+GM_FORCEINLINE bool gmGetFloatOrIntParamAsInt(gmThread * a_thread, int a_paramIndex, gmint& a_retValue)
 {
   if(a_thread->ParamType(a_paramIndex) == GM_INT)
   {
@@ -157,23 +157,23 @@ GM_FORCEINLINE bool gmGetFloatOrIntParamAsInt(gmThread * a_thread, int a_paramIn
          Beware of overflow since ints are only 32bit on Intel
   \return number is >= min and < max (exclusive of max)
 */
-int gmRandomInt(int a_min, int a_max);
+gmint gmRandomInt(gmint a_min, gmint a_max);
 
 /*!
   \brief gmRandomInt() returns a random int b/n two values
          Note this is a low precision random value since it is generated from an int.
   \return number is >= min and < max (exclusive of max)
 */
-float gmRandomFloat(float a_min, float a_max);
+gmfloat gmRandomFloat(gmfloat a_min, gmfloat a_max);
 
 /*!
   \brief Returns the sine and cosine of values
          Note should make platform specific version
 */
-GM_FORCEINLINE void gmSinCos(const float a_angle, float& a_sin, float& a_cos)
+GM_FORCEINLINE void gmSinCos(const gmfloat a_angle, gmfloat& a_sin, gmfloat& a_cos)
 {
-  a_sin = (float)sinf(a_angle);
-  a_cos = (float)cosf(a_angle);
+  a_sin = (gmfloat)sin(a_angle);
+  a_cos = (gmfloat)cos(a_angle);
 }
 
 #endif // _GMHELPERS_H_

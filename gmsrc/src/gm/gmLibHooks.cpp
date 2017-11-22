@@ -99,11 +99,11 @@ bool gmLibHooks::End(int a_errors)
     t = (m_debug) ? 1 : 0;
     *m_stream << t;
 
-    offsetPos = m_stream->Tell();
+    offsetPos = (gmuint32)m_stream->Tell();
     *m_stream << offsets[0] << offsets[1] << offsets[2];
 
     // write the string table
-    offsets[0] = m_stream->Tell();
+    offsets[0] = (gmuint32)m_stream->Tell();
     t = m_symbolOffset;
     *m_stream << t;
     USymbol * symbol = m_symbols.GetLast();
@@ -117,7 +117,7 @@ bool gmLibHooks::End(int a_errors)
     // write the source code
     if(m_debug && m_source)
     {
-      offsets[1] = m_stream->Tell();
+      offsets[1] = (gmuint32)m_stream->Tell();
       t = (gmuint32)strlen(m_source) + 1;
       t1 = 0;
       *m_stream << t << t1;
@@ -129,7 +129,7 @@ bool gmLibHooks::End(int a_errors)
     }
 
     // write the functions
-    offsets[2] = m_stream->Tell();
+    offsets[2] = (gmuint32)m_stream->Tell();
     t = m_functionId;
     *m_stream << t;
     m_stream->Write(m_functionStream.GetData(), m_functionStream.GetSize());

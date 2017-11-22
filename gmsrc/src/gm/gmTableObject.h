@@ -57,7 +57,7 @@ public:
   // Get by c string (uses table search)
   gmVariable Get(gmMachine * a_machine, const char * a_key) const;
   // Get by array index (uses table search)
-  gmVariable Get(int a_indexKey) const { return Get(gmVariable(a_indexKey)); }
+  gmVariable Get(gmint a_indexKey) const { return Get(gmVariable(a_indexKey)); }
   // Get by c string (uses linear search)
   gmVariable GetLinearSearch(const char * a_key) const;
 

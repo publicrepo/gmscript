@@ -145,7 +145,7 @@ public:
   // Versions that return bool return false if type was invalid, otherwise true, even if param was out of range. NOTE: Could switch to more complex return code, but user could simply check num params for range check if needed.
   // 
 
-  inline int ParamInt(int a_param, gmint a_default = 0) const;
+  inline gmint ParamInt(int a_param, gmint a_default = 0) const;
   inline bool ParamInt(int a_param, gmint& a_value, gmint a_default = 0) const;
   inline gmfloat ParamFloat(int a_param, gmfloat a_default = 0.0f) const;
   inline bool ParamFloat(int a_param, gmfloat& a_value, gmfloat a_default = 0.0f) const;
@@ -342,7 +342,7 @@ gmUserObject * gmThread::PushNewUser(void * a_user, int a_userType)
 // Parameter methods. (do not cause an error if the desired parameter is incorrect type)
 //
 
-inline int gmThread::ParamInt(int a_param, gmint a_default) const
+inline gmint gmThread::ParamInt(int a_param, gmint a_default) const
 {
   if(a_param >= m_numParameters) return a_default;
   gmVariable * var = m_stack + m_base + a_param;
@@ -815,21 +815,21 @@ inline gmUserObject * gmThread::ThisUserObject()
 
 #define GM_NUM_PARAMS GM_THREAD_ARG->GetNumParams()
 #if 1 // These macros only exception if param is present but type does not match
-  #define GM_INT_PARAM(VAR, PARAM, DEFAULT) int VAR; if( !GM_THREAD_ARG->ParamInt((PARAM), (VAR), (DEFAULT)) ) { return GM_EXCEPTION; }
-  #define GM_FLOAT_PARAM(VAR, PARAM, DEFAULT) float VAR; if( !GM_THREAD_ARG->ParamFloat((PARAM), (VAR), (DEFAULT)) )  { return GM_EXCEPTION; }
+  #define GM_INT_PARAM(VAR, PARAM, DEFAULT) gmint VAR; if( !GM_THREAD_ARG->ParamInt((PARAM), (VAR), (DEFAULT)) ) { return GM_EXCEPTION; }
+  #define GM_FLOAT_PARAM(VAR, PARAM, DEFAULT) gmfloat VAR; if( !GM_THREAD_ARG->ParamFloat((PARAM), (VAR), (DEFAULT)) )  { return GM_EXCEPTION; }
   #define GM_STRING_PARAM(VAR, PARAM, DEFAULT) const char * VAR; if( !GM_THREAD_ARG->ParamString((PARAM), (VAR), (DEFAULT)) )  { return GM_EXCEPTION; }
   #define GM_FUNCTION_PARAM(VAR, PARAM) gmFunctionObject * VAR; if( !GM_THREAD_ARG->ParamFunction((PARAM), (VAR)) )  { return GM_EXCEPTION; }
   #define GM_TABLE_PARAM(VAR, PARAM) gmTableObject * VAR; if( !GM_THREAD_ARG->ParamTable((PARAM), (VAR))  )  { return GM_EXCEPTION; }
   #define GM_USER_PARAM(OBJECT, VAR, PARAM) OBJECT VAR; if( !GM_THREAD_ARG->ParamUser((PARAM), (void*&)(VAR)) )  { return GM_EXCEPTION; }
-  #define GM_FLOAT_OR_INT_PARAM(VAR, PARAM, DEFAULT) float VAR; if( !GM_THREAD_ARG->ParamFloatOrInt((PARAM), (VAR), (DEFAULT)) ) { return GM_EXCEPTION; }
+  #define GM_FLOAT_OR_INT_PARAM(VAR, PARAM, DEFAULT) gmfloat VAR; if( !GM_THREAD_ARG->ParamFloatOrInt((PARAM), (VAR), (DEFAULT)) ) { return GM_EXCEPTION; }
 #else // Old versions
-  #define GM_INT_PARAM(VAR, PARAM, DEFAULT) int VAR = GM_THREAD_ARG->ParamInt((PARAM), (DEFAULT))
-  #define GM_FLOAT_PARAM(VAR, PARAM, DEFAULT) float VAR = GM_THREAD_ARG->ParamFloat((PARAM), (DEFAULT))
+  #define GM_INT_PARAM(VAR, PARAM, DEFAULT) gmint VAR = GM_THREAD_ARG->ParamInt((PARAM), (DEFAULT))
+  #define GM_FLOAT_PARAM(VAR, PARAM, DEFAULT) gmfloat VAR = GM_THREAD_ARG->ParamFloat((PARAM), (DEFAULT))
   #define GM_STRING_PARAM(VAR, PARAM, DEFAULT) const char * VAR = GM_THREAD_ARG->ParamString((PARAM), (DEFAULT))
   #define GM_FUNCTION_PARAM(VAR, PARAM) gmFunctionObject * VAR = GM_THREAD_ARG->ParamFunction((PARAM))
   #define GM_TABLE_PARAM(VAR, PARAM) gmTableObject * VAR = GM_THREAD_ARG->ParamTable((PARAM))
   #define GM_USER_PARAM(OBJECT, VAR, PARAM) OBJECT VAR = (OBJECT) GM_THREAD_ARG->ParamUser((PARAM));
-  #define GM_FLOAT_OR_INT_PARAM(VAR, PARAM, DEFAULT) float VAR = GM_THREAD_ARG->ParamFloatOrInt((PARAM), (DEFAULT))
+  #define GM_FLOAT_OR_INT_PARAM(VAR, PARAM, DEFAULT) gmfloat VAR = GM_THREAD_ARG->ParamFloatOrInt((PARAM), (DEFAULT))
 #endif
 
 //
@@ -843,12 +843,12 @@ inline gmUserObject * gmThread::ThisUserObject()
 
 #define GM_CHECK_INT_PARAM(VAR, PARAM) \
   if(GM_THREAD_ARG->ParamType((PARAM)) != GM_INT) { GM_EXCEPTION_MSG("expecting param %d as int", (PARAM)); return GM_EXCEPTION; } \
-  int VAR = GM_THREAD_ARG->Param((PARAM)).m_value.m_int;
+  gmint VAR = GM_THREAD_ARG->Param((PARAM)).m_value.m_int;
 
 #define GM_CHECK_FLOAT_PARAM(VAR, PARAM) \
   if(GM_THREAD_ARG->ParamType((PARAM)) != GM_FLOAT) \
   { GM_EXCEPTION_MSG("expecting param %d as float", (PARAM)); return GM_EXCEPTION; } \
-  float VAR = GM_THREAD_ARG->Param((PARAM)).m_value.m_float;
+  gmfloat VAR = GM_THREAD_ARG->Param((PARAM)).m_value.m_float;
 
 #define GM_CHECK_STRING_PARAM(VAR, PARAM) \
   if(GM_THREAD_ARG->ParamType((PARAM)) != GM_STRING) { GM_EXCEPTION_MSG("expecting param %d as string", (PARAM)); return GM_EXCEPTION; } \

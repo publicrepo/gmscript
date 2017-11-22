@@ -26,7 +26,7 @@ static const char * s_tempVarName1 = "__t1";
 /// \brief gmSortDebugLines will sort debug line information
 static void gmSortDebugLines(gmArraySimple<gmLineInfo> &a_lineInfo)
 {
-  int count = a_lineInfo.Count();
+  int count = (int)a_lineInfo.Count();
 
   // sort by address
   int i;
@@ -291,7 +291,7 @@ int gmCodeGenPrivate::Lock(const gmCodeTreeNode * a_codeTree, gmCodeGenHooks * a
     {
       locals = (const char **) alloca(sizeof(const char *) * m_currentFunction->m_numLocals);
       memset(locals, 0, sizeof(const char *) * m_currentFunction->m_numLocals);
-      for(gmuint v = 0; v < m_currentFunction->m_variables.Count(); ++v)
+      for(gmint v = 0; v < m_currentFunction->m_variables.Count(); ++v)
       {
         Variable &variable = m_currentFunction->m_variables[v];
         if(variable.m_offset != -1)
@@ -309,12 +309,12 @@ int gmCodeGenPrivate::Lock(const gmCodeTreeNode * a_codeTree, gmCodeGenHooks * a
     info.m_id = m_hooks->GetFunctionId();
     info.m_root = true;
     info.m_byteCode = m_currentFunction->m_byteCode.GetData();
-    info.m_byteCodeLength = m_currentFunction->m_byteCode.Tell();
+    info.m_byteCodeLength = (int)m_currentFunction->m_byteCode.Tell();
     info.m_numParams = 0;
     info.m_numLocals = m_currentFunction->m_numLocals;
     info.m_symbols = locals;
     info.m_maxStackSize = m_currentFunction->m_byteCode.GetMaxTos();
-    info.m_lineInfoCount = m_currentFunction->m_lineInfo.Count();
+    info.m_lineInfoCount = (int)m_currentFunction->m_lineInfo.Count();
     info.m_lineInfo = m_currentFunction->m_lineInfo.GetData();
     info.m_debugName = "__main";
     m_hooks->AddFunction(info);
@@ -577,7 +577,7 @@ bool gmCodeGenPrivate::GenExprFunction(const gmCodeTreeNode * a_node, gmByteCode
       locals = (const char **) alloca(sizeof(const char *) * m_currentFunction->m_numLocals);
       memset(locals, 0, sizeof(const char *) * m_currentFunction->m_numLocals);
 
-      for(gmuint v = 0; v < m_currentFunction->m_variables.Count(); ++v)
+      for(gmint v = 0; v < m_currentFunction->m_variables.Count(); ++v)
       {
         Variable &variable = m_currentFunction->m_variables[v];
         if(variable.m_offset != -1)
@@ -595,12 +595,12 @@ bool gmCodeGenPrivate::GenExprFunction(const gmCodeTreeNode * a_node, gmByteCode
     info.m_id = id;
     info.m_root = false;
     info.m_byteCode = m_currentFunction->m_byteCode.GetData();
-    info.m_byteCodeLength = m_currentFunction->m_byteCode.Tell();
+    info.m_byteCodeLength = (int)m_currentFunction->m_byteCode.Tell();
     info.m_numParams = numParams;
     info.m_numLocals = m_currentFunction->m_numLocals - numParams;
     info.m_symbols = locals;
     info.m_maxStackSize = m_currentFunction->m_byteCode.GetMaxTos();
-    info.m_lineInfoCount = m_currentFunction->m_lineInfo.Count();
+    info.m_lineInfoCount = (int)m_currentFunction->m_lineInfo.Count();
     info.m_lineInfo = m_currentFunction->m_lineInfo.GetData();
     info.m_debugName = m_currentFunction->m_debugName;
     m_hooks->AddFunction(info);
@@ -678,7 +678,7 @@ bool gmCodeGenPrivate::GenStmtBreak(const gmCodeTreeNode * a_node, gmByteCodeGen
     Patch * patch = &m_patches.InsertLast();
     patch->m_address = a_byteCode->Skip(sizeof(gmptr)); // NOTE: Using gmptr size addresses
     patch->m_next = m_loopStack[m_currentLoop].m_breaks;
-    m_loopStack[m_currentLoop].m_breaks = m_patches.Count()-1;
+    m_loopStack[m_currentLoop].m_breaks = (int)m_patches.Count()-1;
     return true;
   }
 
@@ -698,7 +698,7 @@ bool gmCodeGenPrivate::GenStmtContinue(const gmCodeTreeNode * a_node, gmByteCode
     Patch * patch = &m_patches.InsertLast();
     patch->m_address = a_byteCode->Skip(sizeof(gmptr)); // NOTE: Using gmptr size addresses
     patch->m_next = m_loopStack[m_currentLoop].m_continues;
-    m_loopStack[m_currentLoop].m_continues = m_patches.Count()-1;
+    m_loopStack[m_currentLoop].m_continues = (int)m_patches.Count()-1;
     return true;
   }
 
@@ -719,7 +719,7 @@ bool gmCodeGenPrivate::GenStmtFor(const gmCodeTreeNode * a_node, gmByteCodeGen *
 
   PushLoop();
 
-  loc1 = a_byteCode->Tell();
+  loc1 = (int)a_byteCode->Tell();
 
   // Condition expression
   if(!Generate(a_node->m_children[1], a_byteCode))
@@ -740,7 +740,7 @@ bool gmCodeGenPrivate::GenStmtFor(const gmCodeTreeNode * a_node, gmByteCodeGen *
   }
 
   // Continue patch
-  continueAddress = a_byteCode->Tell();
+  continueAddress = (int)a_byteCode->Tell();
 
   // Loop Expression
   if(!Generate(a_node->m_children[2], a_byteCode))
@@ -750,7 +750,7 @@ bool gmCodeGenPrivate::GenStmtFor(const gmCodeTreeNode * a_node, gmByteCodeGen *
   }
 
   a_byteCode->EmitPtr(BC_BRA, loc1);
-  loc1 = a_byteCode->Tell();
+  loc1 = (int)a_byteCode->Tell();
   if(a_node->m_children[1] != NULL)
   {
     a_byteCode->Seek(loc2);
@@ -782,7 +782,7 @@ bool gmCodeGenPrivate::GenStmtForEach(const gmCodeTreeNode * a_node, gmByteCodeG
   // Push the first iterator
   a_byteCode->Emit(BC_PUSHINT, (gmuint32) -2); // first iterator value.
 
-  continueAddress = a_byteCode->Tell();
+  continueAddress = (int)a_byteCode->Tell();
 
   // Generate call
   const char * keyVar = s_tempVarName1;
@@ -793,7 +793,7 @@ bool gmCodeGenPrivate::GenStmtForEach(const gmCodeTreeNode * a_node, gmByteCodeG
   gmuint16 valueOffset = (gmuint16) m_currentFunction->SetVariableType(valueVar, CTVT_LOCAL);
   gmuint32 opcode = (keyOffset << 16) | (valueOffset & 0xffff);
 
-  loc1 = a_byteCode->Tell();
+  loc1 = (int)a_byteCode->Tell();
   a_byteCode->Emit(BC_FOREACH, opcode);
 
   // Skip space for jump
@@ -807,7 +807,7 @@ bool gmCodeGenPrivate::GenStmtForEach(const gmCodeTreeNode * a_node, gmByteCodeG
   }
 
   a_byteCode->EmitPtr(BC_BRA, (gmuint32) loc1);
-  breakAddress = a_byteCode->Seek(loc2);
+  breakAddress = (int)a_byteCode->Seek(loc2);
   a_byteCode->EmitPtr(BC_BRZ, breakAddress);
   a_byteCode->Seek(breakAddress);
 
@@ -832,7 +832,7 @@ bool gmCodeGenPrivate::GenStmtWhile(const gmCodeTreeNode * a_node, gmByteCodeGen
   PushLoop();
 
   // Continue address
-  loc1 = continueAddress = a_byteCode->Tell();
+  loc1 = continueAddress = (int)a_byteCode->Tell();
 
   // Condition expression
   if(!Generate(a_node->m_children[0], a_byteCode)) 
@@ -851,7 +851,7 @@ bool gmCodeGenPrivate::GenStmtWhile(const gmCodeTreeNode * a_node, gmByteCodeGen
   }
   
   a_byteCode->EmitPtr(BC_BRA, loc1);
-  loc1 = a_byteCode->Seek(loc2);
+  loc1 = (int)a_byteCode->Seek(loc2);
   a_byteCode->EmitPtr(BC_BRZ, loc1);
   a_byteCode->Seek(loc1);
 
@@ -872,7 +872,7 @@ bool gmCodeGenPrivate::GenStmtDoWhile(const gmCodeTreeNode * a_node, gmByteCodeG
 
   PushLoop();
 
-  loc1 = a_byteCode->Tell();
+  loc1 = (int)a_byteCode->Tell();
 
   // Loop body
   if(!Generate(a_node->m_children[1], a_byteCode)) 
@@ -882,7 +882,7 @@ bool gmCodeGenPrivate::GenStmtDoWhile(const gmCodeTreeNode * a_node, gmByteCodeG
   }
 
   // Continue address
-  continueAddress = a_byteCode->Tell();
+  continueAddress = (int)a_byteCode->Tell();
 
   // Condition expression
   if(!Generate(a_node->m_children[0], a_byteCode)) 
@@ -893,7 +893,7 @@ bool gmCodeGenPrivate::GenStmtDoWhile(const gmCodeTreeNode * a_node, gmByteCodeG
 
   a_byteCode->EmitPtr(BC_BRNZ, loc1);
 
-  loc1 = a_byteCode->Tell();
+  loc1 = (int)a_byteCode->Tell();
 
   ApplyPatches(m_loopStack[m_currentLoop].m_breaks, a_byteCode, loc1);
   ApplyPatches(m_loopStack[m_currentLoop].m_continues, a_byteCode, continueAddress);
@@ -917,7 +917,7 @@ bool gmCodeGenPrivate::GenStmtIf(const gmCodeTreeNode * a_node, gmByteCodeGen * 
     if(!Generate(a_node->m_children[1], a_byteCode)) return false;
     loc2 = a_byteCode->Skip(SIZEOF_BC_BRA);
     if(!Generate(a_node->m_children[2], a_byteCode)) return false;
-    loc3 = a_byteCode->Seek(loc1);
+    loc3 = (int)a_byteCode->Seek(loc1);
     a_byteCode->EmitPtr(BC_BRZ, loc2+SIZEOF_BC_BRA);
     a_byteCode->Seek(loc2);
     a_byteCode->EmitPtr(BC_BRA, loc3);
@@ -928,7 +928,7 @@ bool gmCodeGenPrivate::GenStmtIf(const gmCodeTreeNode * a_node, gmByteCodeGen * 
     if(!Generate(a_node->m_children[0], a_byteCode)) return false;
     loc1 = a_byteCode->Skip(SIZEOF_BC_BRA);
     if(!Generate(a_node->m_children[1], a_byteCode)) return false;
-    loc2 = a_byteCode->Seek(loc1);
+    loc2 = (int)a_byteCode->Seek(loc1);
     m_currentFunction->m_currentLine = a_node->m_lineNumber;
     a_byteCode->EmitPtr(BC_BRZ, loc2);
     a_byteCode->Seek(loc2);
@@ -961,7 +961,7 @@ bool gmCodeGenPrivate::GenStmtFork(const gmCodeTreeNode * a_node, gmByteCodeGen 
    if (!Generate(a_node->m_children[0], a_byteCode )) return false;
    a_byteCode->Emit( BC_RET );
    
-   loc2 = a_byteCode->Seek( loc1 );
+   loc2 = (int)a_byteCode->Seek( loc1 );
    a_byteCode->Emit( BC_FORK, loc2 );
    a_byteCode->Seek( loc2 );
    
@@ -1254,7 +1254,7 @@ bool gmCodeGenPrivate::GenExprOpAnd(const gmCodeTreeNode * a_node, gmByteCodeGen
   if(!Generate(a_node->m_children[1], a_byteCode)) return false;
 
   // Seek back and finish expression 1
-  loc2 = a_byteCode->Seek(loc1);
+  loc2 = (int)a_byteCode->Seek(loc1);
   a_byteCode->EmitPtr(BC_BRZK, loc2);
   a_byteCode->Seek(loc2);
 
@@ -1278,7 +1278,7 @@ bool gmCodeGenPrivate::GenExprOpOr(const gmCodeTreeNode * a_node, gmByteCodeGen 
   if(!Generate(a_node->m_children[1], a_byteCode)) return false;
 
   // Seek back and finish expression 1
-  loc2 = a_byteCode->Seek(loc1);
+  loc2 = (int)a_byteCode->Seek(loc1);
   a_byteCode->EmitPtr(BC_BRNZK, loc2);
   a_byteCode->Seek(loc2);
 
@@ -1395,17 +1395,15 @@ bool gmCodeGenPrivate::GenExprConstant(const gmCodeTreeNode * a_node, gmByteCode
       }
       else
       {
-#if 1 // 32bit Integers
-        a_byteCode->Emit(BC_PUSHINT, *((gmint *) &a_node->m_data.m_iValue));
-#else
-        a_byteCode->EmitPtr(BC_PUSHINT, *((gmptr *) &a_node->m_data.m_iValue));
-#endif
+        // Note, must support 32 or 64 bit float
+        a_byteCode->Emit(BC_PUSHINT, a_node->m_data.m_iValue);
       }
       break;
     }
     case CTNCT_FLOAT : // FLOAT
     {
-      a_byteCode->Emit(BC_PUSHFP, *((gmuint32 *) ((void *) &a_node->m_data.m_fValue)));
+      // Note, must support 32 or 64 bit float
+      a_byteCode->Emit(BC_PUSHFP, a_node->m_data.m_fValue);
       break;
     }
     case CTNCT_STRING : // STRING
@@ -1577,7 +1575,7 @@ void gmCodeGenPrivate::FunctionState::Reset()
 
 int gmCodeGenPrivate::FunctionState::GetVariableOffset(const char * a_symbol, gmCodeTreeVariableType &a_type)
 {
-  for(gmuint v = 0; v < m_variables.Count(); ++v)
+  for(gmint v = 0; v < m_variables.Count(); ++v)
   {
     Variable &variable = m_variables[v];
     if(strcmp(variable.m_symbol, a_symbol) == 0)
@@ -1599,7 +1597,7 @@ int gmCodeGenPrivate::FunctionState::GetVariableOffset(const char * a_symbol, gm
 
 int gmCodeGenPrivate::FunctionState::SetVariableType(const char * a_symbol, gmCodeTreeVariableType a_type)
 {
-  for(gmuint v = 0; v < m_variables.Count(); ++v)
+  for(gmint v = 0; v < m_variables.Count(); ++v)
   {
     Variable &variable = m_variables[v];
     if(strcmp(variable.m_symbol, a_symbol) == 0)
@@ -1691,7 +1689,7 @@ gmCodeGenPrivate::FunctionState * gmCodeGenPrivate::PopFunction()
 void gmCodeGenPrivate::PushLoop()
 {
   LoopInfo * loop = &m_loopStack.InsertLast();
-  m_currentLoop = m_loopStack.Count()-1;
+  m_currentLoop = (int)m_loopStack.Count()-1;
   loop->m_breaks = -1;
   loop->m_continues = -1;
 }
@@ -1702,7 +1700,7 @@ void gmCodeGenPrivate::PopLoop()
   m_loopStack.RemoveLast();
   if(m_loopStack.Count())
   {
-    m_currentLoop = m_loopStack.Count() - 1;
+    m_currentLoop = (int)m_loopStack.Count() - 1;
   }
   else
   {
@@ -1713,7 +1711,7 @@ void gmCodeGenPrivate::PopLoop()
 
 void gmCodeGenPrivate::ApplyPatches(int a_patches, gmByteCodeGen * a_byteCode, gmuint32 a_value)
 {
-  unsigned int pos = a_byteCode->Tell();
+  int pos = (int)a_byteCode->Tell();
   while(a_patches >= 0)
   {
     Patch * curPatch = &m_patches[a_patches];

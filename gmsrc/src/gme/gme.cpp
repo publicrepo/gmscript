@@ -144,8 +144,8 @@ static int GM_CDECL gmfCURSOR(gmThread * a_thread)
   GM_CHECK_INT_PARAM(size, 1);
   CONSOLE_CURSOR_INFO info;
   if(size < 1) size = 1; if(size > 100) size = 100;
-  info.bVisible = state;
-  info.dwSize = size;
+  info.bVisible = (BOOL)state;
+  info.dwSize = (DWORD)size;
   SetConsoleCursorInfo(s_hConsole, &info);
   return GM_OK;
 }
@@ -168,7 +168,7 @@ int GM_CDECL gmfIsPressed(gmThread * a_thread)
 {
   GM_CHECK_NUM_PARAMS(1);
   GM_CHECK_INT_PARAM(key, 0);
-  a_thread->PushInt(GetAsyncKeyState(key));
+  a_thread->PushInt( (gmint)GetAsyncKeyState( (int)key ));
   return GM_OK;
 }
 
@@ -259,9 +259,9 @@ void main(int argc, char * argv[], char * envp[])
   if(argc <= 1)
   {
 #if GMDEBUG_SUPPORT
-    fprintf(stderr, "args: filename [-d<ip> for debug] [-e for env vars] [-ke for keypress on error] [-k for keypress on exit]"GM_NL);
+    fprintf(stderr, "args: filename [-d<ip> for debug] [-e for env vars] [-ke for keypress on error] [-k for keypress on exit]" GM_NL);
 #else //GMDEBUG_SUPPORT
-    fprintf(stderr, "args: filename [-e for env vars] [-ke for keypress on error] [-k for keypress on exit]"GM_NL);
+    fprintf(stderr, "args: filename [-e for env vars] [-ke for keypress on error] [-k for keypress on exit]" GM_NL);
 #endif //GMDEBUG_SUPPORT
 
     return;
@@ -317,7 +317,7 @@ void main(int argc, char * argv[], char * envp[])
   }
   if(script == NULL)
   {
-    fprintf(stderr, "could not open file %s"GM_NL, filename);
+    fprintf(stderr, "could not open file %s" GM_NL, filename);
     if(keypress || keypressOnError)
     {
       getchar();
@@ -392,7 +392,7 @@ void main(int argc, char * argv[], char * envp[])
     const char * message;
     while((message = g_machine->GetLog().GetEntry(first)))
     {
-      fprintf(stderr, "%s"GM_NL, message);
+      fprintf(stderr, "%s" GM_NL, message);
     }
     g_machine->GetLog().Reset();
 
@@ -416,7 +416,7 @@ void main(int argc, char * argv[], char * envp[])
     if(client.Connect(ip, ((short) port)))
     {
       session.Open(g_machine);
-      fprintf(stderr, "debug session opened"GM_NL);
+      fprintf(stderr, "debug session opened" GM_NL);
     }
 #endif
   }

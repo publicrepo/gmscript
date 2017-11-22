@@ -375,7 +375,7 @@ gmDebugSession &gmDebugSession::Pack(const char * a_val)
 
 void gmDebugSession::Send()
 {
-  m_sendMessage(this, m_out.GetData(), m_out.GetSize());
+  m_sendMessage(this, m_out.GetData(), (int)m_out.GetSize());
   m_out.Reset();
 }
 

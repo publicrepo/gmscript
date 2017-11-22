@@ -23,22 +23,22 @@ class gmStreamBufferStatic : public gmStream
 public:
   
   gmStreamBufferStatic();
-  gmStreamBufferStatic(const void * a_buffer, unsigned int a_size);
+  gmStreamBufferStatic(const void * a_buffer, gmint a_size);
   virtual ~gmStreamBufferStatic();
 
-  virtual unsigned int Seek(unsigned int p_pos);
-  virtual unsigned int Tell() const;
-  virtual unsigned int GetSize() const;
-  virtual unsigned int Read(void * p_buffer, unsigned int p_n);
-  virtual unsigned int Write(const void * p_buffer, unsigned int p_n);
+  virtual gmint Seek(gmint p_pos);
+  virtual gmint Tell() const;
+  virtual gmint GetSize() const;
+  virtual gmint Read(void * p_buffer, gmint p_n);
+  virtual gmint Write(const void * p_buffer, gmint p_n);
 
-  void Open(const void * a_buffer, unsigned int a_size);
+  void Open(const void * a_buffer, gmint a_size);
   inline const char* GetData() const { return m_stream; }
 
 private:
 
-  unsigned int m_cursor;
-  unsigned int m_size;
+  gmint m_cursor;
+  gmint m_size;
   const char * m_stream;
 };
 
@@ -52,23 +52,23 @@ public:
   gmStreamBufferDynamic();
   virtual ~gmStreamBufferDynamic();
 
-  virtual unsigned int Seek(unsigned int p_pos);
-  virtual unsigned int Tell() const;
-  virtual unsigned int GetSize() const;
-  virtual unsigned int Read(void * p_buffer, unsigned int p_n);
-  virtual unsigned int Write(const void * p_buffer, unsigned int p_n);
+  virtual gmint Seek(gmint p_pos);
+  virtual gmint Tell() const;
+  virtual gmint GetSize() const;
+  virtual gmint Read(void * p_buffer, gmint p_n);
+  virtual gmint Write(const void * p_buffer, gmint p_n);
 
   void Reset() ;
   void ResetAndFreeMemory();
-  inline void SetBlockSize(unsigned int a_blockSize) { m_stream.SetBlockSize(a_blockSize); }
+  inline void SetBlockSize(gmint a_blockSize) { m_stream.SetBlockSize(a_blockSize); }
   inline const char* GetData() const { return m_stream.GetData(); }
   inline char* GetUnsafeData() { return m_stream.GetData(); }
-  void SetSize(unsigned int a_size) { m_stream.SetCount(a_size); }
-  void SetCursor(unsigned int a_cursor) { m_cursor = a_cursor; }
+  void SetSize(gmint a_size) { m_stream.SetCount(a_size); }
+  void SetCursor(gmint a_cursor) { m_cursor = a_cursor; }
 
 private:
 
-  unsigned int m_cursor;
+  gmint m_cursor;
   gmArraySimple<char> m_stream;
 };
 

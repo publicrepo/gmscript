@@ -197,7 +197,7 @@ static int GM_CDECL gmfArray(gmThread * a_thread) // size
 {
   GM_INT_PARAM(size, 0, 0);
   gmUserArray * array = (gmUserArray *) a_thread->GetMachine()->Sys_Alloc(sizeof(gmUserArray));
-  array->Construct(a_thread->GetMachine(), size);
+  array->Construct(a_thread->GetMachine(), (int)size);
   a_thread->PushNewUser(array, GM_ARRAY);
   return GM_OK;
 }
@@ -222,7 +222,7 @@ static int GM_CDECL gmfArrayResize(gmThread * a_thread) // size
   if(arrayObject->m_user)
   {
     gmUserArray * array = (gmUserArray *) arrayObject->m_user;
-    array->Resize(a_thread->GetMachine(), size);
+    array->Resize(a_thread->GetMachine(), (int)size);
   }
   return GM_OK;
 }
@@ -237,7 +237,7 @@ static int GM_CDECL gmfArrayShift(gmThread * a_thread) // shift
   if(arrayObject->m_user)
   {
     gmUserArray * array = (gmUserArray *) arrayObject->m_user;
-    array->Shift(shift);
+    array->Shift((int)shift);
   }
   return GM_OK;
 }
@@ -254,7 +254,7 @@ static int GM_CDECL gmfArrayMove(gmThread * a_thread) // dst, src, size
   if(arrayObject->m_user)
   {
     gmUserArray * array = (gmUserArray *) arrayObject->m_user;
-    array->Move(dst, src, size);
+    array->Move((int)dst, (int)src, (int)size);
   }
   return GM_OK;
 }
@@ -266,7 +266,7 @@ static void GM_CDECL gmArrayGetInd(gmThread * a_thread, gmVariable * a_operands)
   gmUserArray * array = (gmUserArray *) arrayObject->m_user;
   if(a_operands[1].m_type == GM_INT)
   {
-    int index = a_operands[1].m_value.m_int;
+    int index = (int)a_operands[1].m_value.m_int;
     *a_operands = array->GetAt(index);
     return;
   }
@@ -280,7 +280,7 @@ static void GM_CDECL gmArraySetInd(gmThread * a_thread, gmVariable * a_operands)
   gmUserArray * array = (gmUserArray *) arrayObject->m_user;
   if(a_operands[1].m_type == GM_INT)
   {
-    int index = a_operands[1].m_value.m_int;
+    int index = (int)a_operands[1].m_value.m_int;
 
 #if GM_USE_INCGC
     //Apply write barrier

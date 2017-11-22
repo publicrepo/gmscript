@@ -234,7 +234,7 @@ static int GM_CDECL gmfFileSeek(gmThread * a_thread) // return false on error
     return GM_EXCEPTION;
   }
 
-  int result = fseek((FILE*)fileObject->m_user, offset, origin);
+  int result = fseek((FILE*)fileObject->m_user, (long)offset, (int)origin);
   if(result != 0)
   {
     a_thread->PushInt(false);
@@ -299,7 +299,7 @@ static int GM_CDECL gmfFileWriteChar(gmThread * a_thread) // int, return char wr
   GM_ASSERT(fileObject->m_userType == s_gmFileType);
   if(fileObject->m_user)
   {
-    int r = fputc(c, (FILE *) fileObject->m_user);
+    int r = fputc((int)c, (FILE *) fileObject->m_user);
     if(r != EOF) a_thread->PushInt(r);
   }
   return GM_OK;

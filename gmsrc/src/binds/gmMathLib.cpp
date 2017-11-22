@@ -29,7 +29,7 @@ int GM_CDECL gmfToString(gmThread * a_thread)
   if(GM_INT == var->m_type)
   {
     char numberAsStringBuffer[64];
-    sprintf(numberAsStringBuffer, "%d", var->m_value.m_int); // this won't be > 64 chars
+    sprintf(numberAsStringBuffer, "%lld", (gmint64)var->m_value.m_int); // this won't be > 64 chars
     a_thread->PushNewString(numberAsStringBuffer);
   }
   else if (GM_FLOAT == var->m_type)
@@ -157,7 +157,7 @@ static int GM_CDECL gmfRandSeed(gmThread * a_thread)
   GM_CHECK_NUM_PARAMS(1);
   GM_CHECK_INT_PARAM(seed, 0);
   
-  srand(seed);
+  srand((unsigned int)seed);
   
   return GM_OK;
 }
@@ -170,15 +170,15 @@ static int GM_CDECL gmfAbs(gmThread * a_thread)
 
   if(a_thread->ParamType(0) == GM_INT)
   {
-    int intValue = a_thread->Param(0).m_value.m_int;
+    gmint intValue = a_thread->Param(0).m_value.m_int;
     a_thread->PushInt(abs(intValue));
 
     return GM_OK;
   }
   else if(a_thread->ParamType(0) == GM_FLOAT)
   {
-    float floatValue = a_thread->Param(0).m_value.m_float;
-    a_thread->PushFloat((float)fabsf(floatValue));
+    gmfloat floatValue = a_thread->Param(0).m_value.m_float;
+    a_thread->PushFloat((gmfloat)fabs(floatValue));
 
     return GM_OK;
   }
@@ -194,15 +194,15 @@ static int GM_CDECL gmfSqrt(gmThread * a_thread)
 
   if(a_thread->ParamType(0) == GM_INT)
   {
-    int intValue = a_thread->Param(0).m_value.m_int;
-    a_thread->PushInt((int)sqrtf((float)intValue));
+    gmint intValue = a_thread->Param(0).m_value.m_int;
+    a_thread->PushInt((gmint)sqrt((gmfloat)intValue));
 
     return GM_OK;
   }
   else if(a_thread->ParamType(0) == GM_FLOAT)
   {
-    float floatValue = a_thread->Param(0).m_value.m_float;
-    a_thread->PushFloat(sqrtf(floatValue));
+    gmfloat floatValue = a_thread->Param(0).m_value.m_float;
+    a_thread->PushFloat(sqrt(floatValue));
 
     return GM_OK;
   }
@@ -216,26 +216,26 @@ static int GM_CDECL gmfPower(gmThread * a_thread)
 {
   GM_CHECK_NUM_PARAMS(2);
 
-  int minType = gmMin<int>(a_thread->ParamType(0), a_thread->ParamType(1));
+  gmint minType = gmMin<int>(a_thread->ParamType(0), a_thread->ParamType(1));
   if(minType < GM_INT)
   {
     return GM_EXCEPTION;
   }
-  int maxType = gmMax<int>(a_thread->ParamType(0), a_thread->ParamType(1));
+  gmint maxType = gmMax<int>(a_thread->ParamType(0), a_thread->ParamType(1));
 
   if(maxType == GM_INT)
   {
-    int valX = a_thread->Param(0).m_value.m_int;
-    int valY = a_thread->Param(1).m_value.m_int;
-    a_thread->PushInt((int)pow((float)valX, (float)valY));
+    gmint valX = a_thread->Param(0).m_value.m_int;
+    gmint valY = a_thread->Param(1).m_value.m_int;
+    a_thread->PushInt((gmint)pow((gmfloat)valX, (gmfloat)valY));
 
     return GM_OK;
   }
   else if(maxType == GM_FLOAT)
   {
-    float valX = gmGetFloatOrIntParamAsFloat(a_thread, 0);
-    float valY = gmGetFloatOrIntParamAsFloat(a_thread, 1);
-    a_thread->PushFloat((float)pow(valX, valY));
+    gmfloat valX = gmGetFloatOrIntParamAsFloat(a_thread, 0);
+    gmfloat valY = gmGetFloatOrIntParamAsFloat(a_thread, 1);
+    a_thread->PushFloat((gmfloat)pow(valX, valY));
 
     return GM_OK;
   }
@@ -253,15 +253,15 @@ static int GM_CDECL gmfFloor(gmThread * a_thread)
 
   if(a_thread->ParamType(0) == GM_INT) //Do nothing if Int
   {
-    int intValue = a_thread->Param(0).m_value.m_int;
+    gmint intValue = a_thread->Param(0).m_value.m_int;
     a_thread->PushInt(intValue);
 
     return GM_OK;
   }
   else if(a_thread->ParamType(0) == GM_FLOAT)
   {
-    float floatValue = a_thread->Param(0).m_value.m_float;
-    a_thread->PushFloat(floorf(floatValue));
+    gmfloat floatValue = a_thread->Param(0).m_value.m_float;
+    a_thread->PushFloat(floor(floatValue));
 
     return GM_OK;
   }
@@ -277,15 +277,15 @@ static int GM_CDECL gmfCeil(gmThread * a_thread)
 
   if(a_thread->ParamType(0) == GM_INT) //Do nothing if Int
   {
-    int intValue = a_thread->Param(0).m_value.m_int;
+    gmint intValue = a_thread->Param(0).m_value.m_int;
     a_thread->PushInt(intValue);
 
     return GM_OK;
   }
   else if(a_thread->ParamType(0) == GM_FLOAT)
   {
-    float floatValue = a_thread->Param(0).m_value.m_float;
-    a_thread->PushFloat(ceilf(floatValue));
+    gmfloat floatValue = a_thread->Param(0).m_value.m_float;
+    a_thread->PushFloat(ceil(floatValue));
 
     return GM_OK;
   }
@@ -301,15 +301,15 @@ static int GM_CDECL gmfRound(gmThread * a_thread)
 
   if(a_thread->ParamType(0) == GM_INT) //Do nothing if Int
   {
-    int intValue = a_thread->Param(0).m_value.m_int;
+    gmint intValue = a_thread->Param(0).m_value.m_int;
     a_thread->PushInt(intValue);
 
     return GM_OK;
   }
   else if(a_thread->ParamType(0) == GM_FLOAT)
   {
-    float floatValue = a_thread->Param(0).m_value.m_float;
-    a_thread->PushFloat(floorf(floatValue + 0.5f));
+    gmfloat floatValue = a_thread->Param(0).m_value.m_float;
+    a_thread->PushFloat(floor(floatValue + gmfloat(0.5)));
 
     return GM_OK;
   }
@@ -323,13 +323,13 @@ static int GM_CDECL gmfDegToRad(gmThread * a_thread)
 {
   GM_CHECK_NUM_PARAMS(1);
 
-  float floatValue;
+  gmfloat floatValue;
 
-  if(a_thread->ParamType(0) == GM_INT) { floatValue = (float) a_thread->Param(0).m_value.m_int; }
+  if(a_thread->ParamType(0) == GM_INT) { floatValue = (gmfloat) a_thread->Param(0).m_value.m_int; }
   else if(a_thread->ParamType(0) == GM_FLOAT) { floatValue = a_thread->Param(0).m_value.m_float; }
   else { return GM_EXCEPTION; }
 
-  a_thread->PushFloat( floatValue * (GM_PI_VALUE / 180.0f) );
+  a_thread->PushFloat( floatValue * (gmfloat(GM_PI_VALUE) / gmfloat(180.0)) );
 
   return GM_OK;
 }
@@ -340,13 +340,13 @@ static int GM_CDECL gmfRadToDeg(gmThread * a_thread)
 {
   GM_CHECK_NUM_PARAMS(1);
 
-  float floatValue;
+  gmfloat floatValue;
 
-  if(a_thread->ParamType(0) == GM_INT) { floatValue = (float) a_thread->Param(0).m_value.m_int; }
+  if(a_thread->ParamType(0) == GM_INT) { floatValue = (gmfloat) a_thread->Param(0).m_value.m_int; }
   else if(a_thread->ParamType(0) == GM_FLOAT) { floatValue = a_thread->Param(0).m_value.m_float; }
   else { return GM_EXCEPTION; }
 
-  a_thread->PushFloat( floatValue * (180.0f / GM_PI_VALUE) );
+  a_thread->PushFloat( floatValue * (gmfloat(180.0) / gmfloat(GM_PI_VALUE)) );
 
   return GM_OK;
 }
@@ -357,13 +357,13 @@ static int GM_CDECL gmfSin(gmThread * a_thread)
 {
   GM_CHECK_NUM_PARAMS(1);
 
-  float floatValue;
+  gmfloat floatValue;
 
-  if(a_thread->ParamType(0) == GM_INT) { floatValue = (float) a_thread->Param(0).m_value.m_int; }
+  if(a_thread->ParamType(0) == GM_INT) { floatValue = (gmfloat) a_thread->Param(0).m_value.m_int; }
   else if(a_thread->ParamType(0) == GM_FLOAT) { floatValue = a_thread->Param(0).m_value.m_float; }
   else { return GM_EXCEPTION; }
 
-  a_thread->PushFloat(sinf(floatValue));
+  a_thread->PushFloat(sin(floatValue));
 
   return GM_OK;
 }
@@ -374,13 +374,13 @@ static int GM_CDECL gmfASin(gmThread * a_thread)
 {
   GM_CHECK_NUM_PARAMS(1);
 
-  float floatValue;
+  gmfloat floatValue;
 
-  if(a_thread->ParamType(0) == GM_INT) { floatValue = (float) a_thread->Param(0).m_value.m_int; }
+  if(a_thread->ParamType(0) == GM_INT) { floatValue = (gmfloat) a_thread->Param(0).m_value.m_int; }
   else if(a_thread->ParamType(0) == GM_FLOAT) { floatValue = a_thread->Param(0).m_value.m_float; }
   else { return GM_EXCEPTION; }
 
-  a_thread->PushFloat(asinf(floatValue));
+  a_thread->PushFloat(asin(floatValue));
 
   return GM_OK;
 }
@@ -391,13 +391,13 @@ static int GM_CDECL gmfCos(gmThread * a_thread)
 {
   GM_CHECK_NUM_PARAMS(1);
 
-  float floatValue;
+  gmfloat floatValue;
 
-  if(a_thread->ParamType(0) == GM_INT) { floatValue = (float) a_thread->Param(0).m_value.m_int; }
+  if(a_thread->ParamType(0) == GM_INT) { floatValue = (gmfloat) a_thread->Param(0).m_value.m_int; }
   else if(a_thread->ParamType(0) == GM_FLOAT) { floatValue = a_thread->Param(0).m_value.m_float; }
   else { return GM_EXCEPTION; }
 
-  a_thread->PushFloat(cosf(floatValue));
+  a_thread->PushFloat(cos(floatValue));
 
   return GM_OK;
 }
@@ -408,13 +408,13 @@ static int GM_CDECL gmfACos(gmThread * a_thread)
 {
   GM_CHECK_NUM_PARAMS(1);
 
-  float floatValue;
+  gmfloat floatValue;
 
-  if(a_thread->ParamType(0) == GM_INT) { floatValue = (float) a_thread->Param(0).m_value.m_int; }
+  if(a_thread->ParamType(0) == GM_INT) { floatValue = (gmfloat) a_thread->Param(0).m_value.m_int; }
   else if(a_thread->ParamType(0) == GM_FLOAT) { floatValue = a_thread->Param(0).m_value.m_float; }
   else { return GM_EXCEPTION; }
 
-  a_thread->PushFloat(acosf(floatValue));
+  a_thread->PushFloat(acos(floatValue));
 
   return GM_OK;
 }
@@ -425,13 +425,13 @@ static int GM_CDECL gmfTan(gmThread * a_thread)
 {
   GM_CHECK_NUM_PARAMS(1);
 
-  float floatValue;
+  gmfloat floatValue;
 
-  if(a_thread->ParamType(0) == GM_INT) { floatValue = (float) a_thread->Param(0).m_value.m_int; }
+  if(a_thread->ParamType(0) == GM_INT) { floatValue = (gmfloat) a_thread->Param(0).m_value.m_int; }
   else if(a_thread->ParamType(0) == GM_FLOAT) { floatValue = a_thread->Param(0).m_value.m_float; }
   else { return GM_EXCEPTION; }
 
-  a_thread->PushFloat(tanf(floatValue));
+  a_thread->PushFloat(tan(floatValue));
 
   return GM_OK;
 }
@@ -442,13 +442,13 @@ static int GM_CDECL gmfATan(gmThread * a_thread)
 {
   GM_CHECK_NUM_PARAMS(1);
 
-  float floatValue;
+  gmfloat floatValue;
 
-  if(a_thread->ParamType(0) == GM_INT) { floatValue = (float) a_thread->Param(0).m_value.m_int; }
+  if(a_thread->ParamType(0) == GM_INT) { floatValue = (gmfloat) a_thread->Param(0).m_value.m_int; }
   else if(a_thread->ParamType(0) == GM_FLOAT) { floatValue = a_thread->Param(0).m_value.m_float; }
   else { return GM_EXCEPTION; }
 
-  a_thread->PushFloat(atanf(floatValue));
+  a_thread->PushFloat(atan(floatValue));
 
   return GM_OK;
 }
@@ -460,18 +460,18 @@ static int GM_CDECL gmfATan2(gmThread * a_thread)
 {
   GM_CHECK_NUM_PARAMS(2);
 
-  float floatValueY;
-  float floatValueX;
+  gmfloat floatValueY;
+  gmfloat floatValueX;
 
-  if(a_thread->ParamType(0) == GM_INT) {floatValueY = (float) a_thread->Param(0).m_value.m_int;}
+  if(a_thread->ParamType(0) == GM_INT) {floatValueY = (gmfloat) a_thread->Param(0).m_value.m_int;}
   else if(a_thread->ParamType(0) == GM_FLOAT) {floatValueY = a_thread->Param(0).m_value.m_float;}
   else {return GM_EXCEPTION;}
 
-  if(a_thread->ParamType(1) == GM_INT) {floatValueX = (float) a_thread->Param(1).m_value.m_int;}
+  if(a_thread->ParamType(1) == GM_INT) {floatValueX = (gmfloat) a_thread->Param(1).m_value.m_int;}
   else if(a_thread->ParamType(1) == GM_FLOAT) {floatValueX = a_thread->Param(1).m_value.m_float;}
   else {return GM_EXCEPTION;}
 
-  a_thread->PushFloat(atan2f(floatValueY, floatValueX));
+  a_thread->PushFloat(atan2(floatValueY, floatValueX));
 
   return GM_OK;
 }
@@ -486,43 +486,43 @@ static int GM_CDECL gmfLog(gmThread * a_thread)
   {
     if(a_thread->ParamType(0) == GM_INT) 
     {
-      float floatValue = (float) a_thread->Param(0).m_value.m_int;
-      a_thread->PushInt( (int) log(floatValue) );
+      gmfloat floatValue = (gmfloat) a_thread->Param(0).m_value.m_int;
+      a_thread->PushInt( (gmint) log(floatValue) );
       return GM_OK;
     }
     else if(a_thread->ParamType(0) == GM_FLOAT) 
     {
-      float floatValue = (float) a_thread->Param(0).m_value.m_float;
+      gmfloat floatValue = (gmfloat) a_thread->Param(0).m_value.m_float;
 
-      a_thread->PushFloat( logf(floatValue) );
+      a_thread->PushFloat( log(floatValue) );
       return GM_OK;
     }
     else {return GM_EXCEPTION;}
   }
   else if(numParams == 2) //Log to base params: base, value
   {
-    int minType = gmMin<int>(a_thread->ParamType(0), a_thread->ParamType(1));
+    gmint minType = gmMin<gmint>(a_thread->ParamType(0), a_thread->ParamType(1));
     if(minType < GM_INT)
     {
       return GM_EXCEPTION;
     }
-    int maxType = gmMax<int>(a_thread->ParamType(0), a_thread->ParamType(1));
+    gmint maxType = gmMax<gmint>(a_thread->ParamType(0), a_thread->ParamType(1));
 
     if(maxType == GM_INT)
     {
-      int base = a_thread->Param(0).m_value.m_int;
-      int value = a_thread->Param(1).m_value.m_int;
+      gmint base = a_thread->Param(0).m_value.m_int;
+      gmint value = a_thread->Param(1).m_value.m_int;
       
-      a_thread->PushInt( (int)( log10f((float)value) / log10f((float)base) ) );
+      a_thread->PushInt( (gmint)( log10((gmfloat)value) / log10((gmfloat)base) ) );
 
       return GM_OK;
     }
     else if(maxType == GM_FLOAT)
     {
-      float base = gmGetFloatOrIntParamAsFloat(a_thread, 0);
-      float value = gmGetFloatOrIntParamAsFloat(a_thread, 1);
+      gmfloat base = gmGetFloatOrIntParamAsFloat(a_thread, 0);
+      gmfloat value = gmGetFloatOrIntParamAsFloat(a_thread, 1);
       
-      a_thread->PushFloat( (float)( log10(value) / log10(base) ) );
+      a_thread->PushFloat( (gmfloat)( log10(value) / log10(base) ) );
 
       return GM_OK;
     }
@@ -543,26 +543,26 @@ static int GM_CDECL gmfMin(gmThread * a_thread)
 {
   GM_CHECK_NUM_PARAMS(2);
 
-  int minType = gmMin<int>(a_thread->ParamType(0), a_thread->ParamType(1));
+  gmint minType = gmMin<gmint>(a_thread->ParamType(0), a_thread->ParamType(1));
   if(minType < GM_INT)
   {
     return GM_EXCEPTION;
   }
 
-  int maxType = gmMax<int>(a_thread->ParamType(0), a_thread->ParamType(1));
+  gmint maxType = gmMax<gmint>(a_thread->ParamType(0), a_thread->ParamType(1));
 
   if(maxType == GM_INT)
   {
-    int valX = a_thread->Param(0).m_value.m_int;
-    int valY = a_thread->Param(1).m_value.m_int;
+    gmint valX = a_thread->Param(0).m_value.m_int;
+    gmint valY = a_thread->Param(1).m_value.m_int;
     a_thread->PushInt( gmMin(valX, valY) );
 
     return GM_OK;
   }
   else if(maxType == GM_FLOAT)
   {
-    float valX = gmGetFloatOrIntParamAsFloat(a_thread, 0);
-    float valY = gmGetFloatOrIntParamAsFloat(a_thread, 1);
+    gmfloat valX = gmGetFloatOrIntParamAsFloat(a_thread, 0);
+    gmfloat valY = gmGetFloatOrIntParamAsFloat(a_thread, 1);
     a_thread->PushFloat( gmMin(valX, valY) );
 
     return GM_OK;
@@ -579,26 +579,26 @@ static int GM_CDECL gmfMax(gmThread * a_thread)
 {
   GM_CHECK_NUM_PARAMS(2);
 
-  int minType = gmMin<int>(a_thread->ParamType(0), a_thread->ParamType(1));
+  gmint minType = gmMin<gmint>(a_thread->ParamType(0), a_thread->ParamType(1));
   if(minType < GM_INT)
   {
     return GM_EXCEPTION;
   }
 
-  int maxType = gmMax<int>(a_thread->ParamType(0), a_thread->ParamType(1));
+  gmint maxType = gmMax<gmint>(a_thread->ParamType(0), a_thread->ParamType(1));
 
   if(maxType == GM_INT)
   {
-    int valX = a_thread->Param(0).m_value.m_int;
-    int valY = a_thread->Param(1).m_value.m_int;
+    gmint valX = a_thread->Param(0).m_value.m_int;
+    gmint valY = a_thread->Param(1).m_value.m_int;
     a_thread->PushInt( gmMax(valX, valY) );
 
     return GM_OK;
   }
   else if(maxType == GM_FLOAT)
   {
-    float valX = gmGetFloatOrIntParamAsFloat(a_thread, 0);
-    float valY = gmGetFloatOrIntParamAsFloat(a_thread, 1);
+    gmfloat valX = gmGetFloatOrIntParamAsFloat(a_thread, 0);
+    gmfloat valY = gmGetFloatOrIntParamAsFloat(a_thread, 1);
     a_thread->PushFloat( gmMax(valX, valY) );
 
     return GM_OK;
@@ -617,19 +617,19 @@ static int GM_CDECL gmfClamp(gmThread * a_thread)
 
   //params: min, value, max
 
-  int minType = gmMin3(a_thread->ParamType(0), a_thread->ParamType(1), a_thread->ParamType(2));
+  gmint minType = gmMin3(a_thread->ParamType(0), a_thread->ParamType(1), a_thread->ParamType(2));
   if(minType < GM_INT)
   {
     return GM_EXCEPTION;
   }
 
-  int maxType = gmMax3(a_thread->ParamType(0), a_thread->ParamType(1), a_thread->ParamType(2));
+  gmint maxType = gmMax3(a_thread->ParamType(0), a_thread->ParamType(1), a_thread->ParamType(2));
 
   if(maxType == GM_INT)
   {
-    int limitMin = a_thread->Param(0).m_value.m_int;
-    int value = a_thread->Param(1).m_value.m_int;
-    int limitMax = a_thread->Param(2).m_value.m_int;
+    gmint limitMin = a_thread->Param(0).m_value.m_int;
+    gmint value = a_thread->Param(1).m_value.m_int;
+    gmint limitMax = a_thread->Param(2).m_value.m_int;
     
     a_thread->PushInt( gmClamp(limitMin, value, limitMax) );
 
@@ -637,9 +637,9 @@ static int GM_CDECL gmfClamp(gmThread * a_thread)
   }
   else if(maxType == GM_FLOAT)
   {
-    float limitMin = gmGetFloatOrIntParamAsFloat(a_thread, 0);
-    float value = gmGetFloatOrIntParamAsFloat(a_thread, 1);
-    float limitMax = gmGetFloatOrIntParamAsFloat(a_thread, 2);
+    gmfloat limitMin = gmGetFloatOrIntParamAsFloat(a_thread, 0);
+    gmfloat value = gmGetFloatOrIntParamAsFloat(a_thread, 1);
+    gmfloat limitMax = gmGetFloatOrIntParamAsFloat(a_thread, 2);
     
     a_thread->PushFloat( gmClamp(limitMin, value, limitMax) );
 

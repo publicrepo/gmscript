@@ -236,12 +236,12 @@ tablemember_expression
 var_statement
   : var_type identifier ';'
     {
-      $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int) $1);
+      $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int)(gmptr) $1);
       $$->SetChild(0, $2);
     }
   | var_type identifier '=' constant_expression ';'
     {
-      $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int) $1);
+      $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int)(gmptr) $1);
       $$->SetChild(0, $2);
       ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $2, $4));
     }
@@ -250,7 +250,7 @@ var_statement
       gmCodeTreeNode* func = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_FUNCTION, gmlineno);
       func->SetChild(1, $6);
 
-      $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int) $1);
+      $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int)(gmptr) $1);
       $$->SetChild(0, $3);
       ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $3, func));
     }
@@ -260,7 +260,7 @@ var_statement
       func->SetChild(0, $5);
       func->SetChild(1, $7);
 
-      $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int) $1);
+      $$ = gmCodeTreeNode::Create(CTNT_DECLARATION, CTNDT_VARIABLE, gmlineno, (int)(gmptr) $1);
       $$->SetChild(0, $3);
       ATTACH($$, $$, CreateOperation(CTNOT_ASSIGN, $3, func));
     }

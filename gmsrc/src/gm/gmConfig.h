@@ -21,7 +21,7 @@
 #include <string.h> // stricmp, strcmp, strcpy, strlen, strcat, memset, memcpy (binds: strlwr, wtrupr, strspn, strcspn, strchr, strstr)
 #include <stdarg.h> // va_start, va_end
 #include <ctype.h> // isdigit
-#include <math.h> // floorf, fmodf
+#include <cmath> // floor, fmod (with overloads)
 
 
 /// \enum gmEndian Endian byte order

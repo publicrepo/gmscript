@@ -130,7 +130,7 @@ public:
 //
 void gmDefaultPrintCallback(gmMachine * a_machine, const char * a_string)
 {
-  GM_PRINTF("%s"GM_NL, a_string);
+  GM_PRINTF("%s" GM_NL, a_string);
 }
 
 //
@@ -172,15 +172,14 @@ void GM_CDECL gmMachine::ScanRootsCallBack(gmMachine* a_machine, gmGarbageCollec
     a_gc->GetNextObject(a_machine->m_global);
   }
   // iterate over type variables and mark
-  gmuint i;
-  for(i = 0; i < a_machine->m_types.Count(); ++i)
+  for(gmint i = 0; i < a_machine->m_types.Count(); ++i)
   {
     a_gc->GetNextObject(a_machine->m_types[i].m_variables);
   }
 
 #if !GM_GC_KEEP_PERSISTANT_SEPARATE
   //NOTE This needs to be spread over time perhaps.
-  for(i=0; i<(gmuint)a_machine->m_numPermanantStrings; ++i)
+  for(gmint i=0; i < a_machine->m_numPermanantStrings; ++i)
   {
     a_gc->GetNextObject(a_machine->m_permanantStrings[i]);
   }
@@ -272,8 +271,7 @@ void gmMachine::ResetAndFreeMemory()
   #endif //!GM_GC_KEEP_PERSISTANT_SEPARATE
 
   m_global = NULL;
-  gmuint i;
-  for(i = 0; i < m_types.Count(); ++i)
+  for(gmint i = 0; i < m_types.Count(); ++i)
   {
     m_types[i].m_variables = NULL;
     m_types[i].m_name = NULL;
@@ -292,8 +290,7 @@ void gmMachine::ResetAndFreeMemory()
   }
   m_global = NULL; //Global was freed with the rest
   // operators\types
-  gmuint i;
-  for(i = 0; i < m_types.Count(); ++i)
+  for(gmint i = 0; i < m_types.Count(); ++i)
   {
     m_types[i].m_variables = NULL;
     m_types[i].m_name = NULL;
@@ -1172,7 +1169,7 @@ int gmMachine::Execute(gmuint32 a_delta)
 
   CollectGarbage();
 
-  return m_threads.Count();
+  return (int)m_threads.Count();
 }
 
 
@@ -1399,8 +1396,7 @@ bool gmMachine::CollectGarbage(bool a_forceFullCollect)
 
     // iterate over global variables and mark
     m_global->Mark(this, m_mark);
-    gmuint i;
-    for(i = 0; i < m_types.Count(); ++i)
+    for(gmint i = 0; i < m_types.Count(); ++i)
     {
       m_types[i].m_variables->Mark(this, m_mark);
     }
@@ -1706,7 +1702,7 @@ void gmMachine::Type::Init()
 void gmMachine::ResetDefaultTypes()
 {
   // clean up old types
-  gmuint i;
+  gmint i;
   for(i = 0; i < m_types.Count(); ++i)
   {
 #if GM_USE_INCGC
@@ -1921,11 +1917,11 @@ gmTableObject * gmMachine::GetTypeTable(gmType a_type)
 
 gmType gmMachine::GetTypeId(const char * a_typename) const
 {
-  for(gmuint id = GM_NULL; id < m_types.Count(); ++id)
+  for(gmint id = GM_NULL; id < m_types.Count(); ++id)
   {
     if( strcmp((const char *)(*m_types[id].m_name), a_typename) == 0 )
     {
-      return id;
+      return (gmType)id;
     }
   }
   return GM_INVALID_TYPE;

@@ -37,7 +37,7 @@ static int GM_CDECL gmfStringLeft(gmThread * a_thread)
   const char * str = (const char *) *strObj;
   
   int length = strObj->GetLength();
-  count = gmClamp(0, count, length);
+  count = gmClamp(0, (int)count, length);
 
   char * buffer = (char *) alloca(count + 1);
   memcpy(buffer, str, count);
@@ -62,7 +62,7 @@ static int GM_CDECL gmfStringRight(gmThread * a_thread)
   const char * str = (const char *) *strObj;
   
   int length = strObj->GetLength();
-  count = gmClamp(0, count, length);
+  count = gmClamp(0, (int)count, length);
 
   char * buffer = (char *) alloca(count + 1);
   memcpy(buffer, str + length - count, count);
@@ -87,8 +87,8 @@ static int GM_CDECL gmfStringRightAt(gmThread * a_thread)
   const char * str = (const char *) *strObj;
   
   int length = strObj->GetLength();
-  index = gmClamp(0, index, length);
-  int count = (length - index);
+  index = gmClamp(0, (int)index, length);
+  int count = (length - (int)index);
   char * buffer = (char *) alloca(count + 1);
   memcpy(buffer, str + index, count);
   buffer[count] = 0;
@@ -103,7 +103,7 @@ static int GM_CDECL gmfStringMid(gmThread * a_thread)
 {
   GM_CHECK_NUM_PARAMS(2);
 
-  int first = 0, count = 0;
+  gmint first = 0, count = 0;
 
   if(!gmGetFloatOrIntParamAsInt(a_thread, 0, first)) {return GM_EXCEPTION;}
   if(!gmGetFloatOrIntParamAsInt(a_thread, 1, count)) {return GM_EXCEPTION;}
@@ -323,7 +323,7 @@ static int GM_CDECL gmfStringAppendPath(gmThread * a_thread)
   }
 
   //Optional trailing slash flag
-  int PutTrailingSlash = a_thread->ParamInt(1, false);
+  gmint PutTrailingSlash = a_thread->ParamInt(1, false);
 
   if(a_thread->ParamType(0) == GM_STRING)
   {
@@ -524,7 +524,7 @@ static void GM_CDECL gmStringOpAppendPath(gmThread * a_thread, gmVariable * a_op
 static int GM_CDECL gmStringFind(gmThread * a_thread)
 {
   int numParams = GM_THREAD_ARG->GetNumParams();
-  int startOffset = 0;
+  gmint startOffset = 0;
   char* retCharPtr = NULL;
   const gmVariable * var = a_thread->GetThis();
   GM_ASSERT(var->m_type == GM_STRING);
@@ -685,7 +685,7 @@ static void GM_CDECL gmStringOpGetInd(gmThread * a_thread, gmVariable * a_operan
 
   gmStringObject * strObjA = (gmStringObject *) GM_OBJECT(a_operands[0].m_value.m_ref);
   const char* cStrA = strObjA->GetString();
-  int index = a_operands[1].m_value.m_int;
+  gmint index = a_operands[1].m_value.m_int;
   
   if( index < 0 || index > strObjA->GetLength()-1 )
   {

@@ -37,7 +37,7 @@ void gmByteCodeGen::Reset(void * a_context)
 
 bool gmByteCodeGen::Emit(gmByteCode a_instruction)
 {
-  if(m_emitCallback) m_emitCallback(Tell(), m_context);
+  if(m_emitCallback) m_emitCallback((int)Tell(), m_context);
   AdjustStack(a_instruction);
   *this << (gmuint32) a_instruction;
   return true;
@@ -47,7 +47,7 @@ bool gmByteCodeGen::Emit(gmByteCode a_instruction)
 
 bool gmByteCodeGen::Emit(gmByteCode a_instruction, gmuint32 a_operand32)
 {
-  if(m_emitCallback) m_emitCallback(Tell(), m_context);
+  if(m_emitCallback) m_emitCallback((int)Tell(), m_context);
   AdjustStack(a_instruction);
   *this << (gmuint32) a_instruction;
   *this << a_operand32;
@@ -55,10 +55,29 @@ bool gmByteCodeGen::Emit(gmByteCode a_instruction, gmuint32 a_operand32)
 }
 
 
+bool gmByteCodeGen::Emit(gmByteCode a_instruction, gmfloat a_operandValue)
+{
+  if(m_emitCallback) m_emitCallback((int)Tell(), m_context);
+  AdjustStack(a_instruction);
+  *this << (gmuint32) a_instruction;
+  *this << a_operandValue;
+  return true;
+}
+
+
+bool gmByteCodeGen::Emit(gmByteCode a_instruction, gmint a_operandValue)
+{
+  if(m_emitCallback) m_emitCallback((int)Tell(), m_context);
+  AdjustStack(a_instruction);
+  *this << (gmuint32) a_instruction;
+  *this << a_operandValue;
+  return true;
+}
+
 
 bool gmByteCodeGen::EmitPtr(gmByteCode a_instruction, gmptr a_operand)
 {
-  if(m_emitCallback) m_emitCallback(Tell(), m_context);
+  if(m_emitCallback) m_emitCallback((int)Tell(), m_context);
   AdjustStack(a_instruction);
   *this << ((gmuint32) a_instruction);
   *this << a_operand;
@@ -68,7 +87,7 @@ bool gmByteCodeGen::EmitPtr(gmByteCode a_instruction, gmptr a_operand)
 
 unsigned int gmByteCodeGen::Skip(unsigned int p_n, unsigned char p_value)
 {
-  unsigned int oldPos = Tell();
+  int oldPos = (int)Tell();
   if(p_n)
   {
     char * fill = (char *) alloca(p_n);

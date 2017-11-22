@@ -26,6 +26,8 @@ public:
 
   bool Emit(gmByteCode a_instruction);
   bool Emit(gmByteCode a_instruction, gmuint32 a_operand32);
+  bool Emit(gmByteCode a_instruction, gmfloat a_operandValue);
+  bool Emit(gmByteCode a_instruction, gmint a_operandValue);
   bool EmitPtr(gmByteCode a_instruction, gmptr a_operand);
 
   unsigned int Skip(unsigned int p_n, unsigned char p_value = 0);

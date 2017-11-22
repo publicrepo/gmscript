@@ -245,7 +245,7 @@ yyparse(YYPARSE_PARAM)
 #endif
 #endif
 
-  YYSTYPE yyval;                /*  the variable used to return         */
+  YYSTYPE yyval = 0;            /*  the variable used to return         */ // _GD_ '= 0' for VS2017 'error C4703: potentially uninitialized local pointer variable'
                                 /*  semantic values from the action     */
                                 /*  routines                            */
 
