@@ -416,3 +416,9 @@ o Fix EndOn bug reported by Korrion
 
 13/07/15
 o Fix 64bit related. Thanks palota.
+
+22/11/17
+o Updated code and some projects to build with MSVC 2017.
+o Removed older projects and solutions for GME at least.
+o Fixed code to support 32 and 64 bit gmint, gmfloat types.
+  GM files and binds, GME and GML updated and tested only.
