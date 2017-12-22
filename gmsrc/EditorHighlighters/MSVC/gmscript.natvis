@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+  <Type Name="gmMachine">
+    <DisplayString>{{CurrentMemoryUsage = {m_currentMemoryUsage,d}}}</DisplayString>
+    <Expand>
+      <Item Name="CurrentMemoryUsage">m_currentMemoryUsage</Item>
+      <Item Name="HardMemoryLimit">m_desiredByteMemoryUsageHard</Item>
+      <Item Name="SoftMemoryLimit">m_desiredByteMemoryUsageSoft</Item>
+      <Item Name="AutoSizeMemory">m_autoMem</Item>
+      <Item Name="GC_FullCollects">m_statsGCFullCollect</Item>
+      <Item Name="GC_IncrementalCollects">m_statsGCIncCollect</Item>
+      <Item Name="GC_Warnings">m_statsGCWarnings,d</Item>
+    </Expand>
+  </Type>
+
+  <Type Name="gmThread">
+    <DisplayString>{{this = ( {m_stack[m_base - 2]} )}}</DisplayString>
+    <Expand>
+      <ArrayItems>
+        <Size>m_numParameters</Size>
+        <ValuePointer>((gmVariable*)(m_stack+m_base))</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <Type Name="gmVariable">
+    <DisplayString Condition="m_type == 0">{{null}}</DisplayString>
+    <DisplayString Condition="m_type == 1">{{int = {m_value.m_int}}}</DisplayString>
+    <DisplayString Condition="m_type == 2">{{float = {m_value.m_float}}}</DisplayString>
+    <DisplayString Condition="m_type == 3">{{string = {((gmStringObject *)m_value.m_ref)->m_string,s}}}</DisplayString>
+    <DisplayString Condition="m_type == 4">{{table[{((gmTableObject*)m_value.m_ref)->m_slotsUsed}]}}</DisplayString>
+    <DisplayString Condition="(m_type == 5) &amp;&amp; (((gmFunctionObject*)m_value.m_ref)->m_cFunction != 0)">{{function(native) = {((gmFunctionObject*)m_value.m_ref)->m_cFunction}}}</DisplayString>	
+    <DisplayString Condition="(m_type == 5) &amp;&amp; (((gmFunctionObject*)m_value.m_ref)->m_cFunction == 0) &amp;&amp; (((gmFunctionObject*)m_value.m_ref)->m_debugInfo != nullptr)">{{function(script) = {((gmFunctionObject*)m_value.m_ref)->m_debugInfo->m_debugName,s}}}</DisplayString>
+    <DisplayString Condition="(m_type == 5) &amp;&amp; (((gmFunctionObject*)m_value.m_ref)->m_cFunction == 0) &amp;&amp; (((gmFunctionObject*)m_value.m_ref)->m_debugInfo == nullptr)">{{function = [no debug name, use gmMachine::SetDebugMode(true)]}}}</DisplayString>
+    <DisplayString Condition="m_type &gt;= 6">{{user = {m_type}}}</DisplayString>
+    <Expand>
+      <Item Condition="m_type == 0" Name="null:">"null"</Item>
+      <Item Condition="m_type == 1" Name="int:">m_value.m_int</Item>
+      <Item Condition="m_type == 2" Name="float:">m_value.m_float</Item>
+      <Item Condition="m_type == 3" Name="string:">((gmStringObject*)m_value.m_ref)->m_string,s</Item>
+      <Item Condition="m_type == 4" Name="table:">((gmTableObject*)m_value.m_ref)</Item>
+      <Item Condition="m_type == 5" Name="function:">((gmFunctionObject*)m_value.m_ref)</Item>
+      <Item Condition="m_type &gt;= 6" Name="user:">((gmUserObject*)m_value.m_ref)</Item>
+    </Expand>
+  </Type>
+
+  <Type Name="gmTableNode">
+    <DisplayString>{{({m_key} , {m_value})}}</DisplayString>
+    <Expand>
+      <Item Name="Key">m_key</Item>
+      <Item Name="Value">m_value</Item>
+    </Expand>
+  </Type>
+
+  <Type Name="gmTableObject">
+    <DisplayString>{{table[{m_slotsUsed}]}}</DisplayString>
+    <Expand>
+      <Item Name="Size">m_slotsUsed</Item>
+      <IndexListItems>
+        <Size>m_tableSize</Size>
+        <ValueNode Condition="m_nodes[$i].m_key.m_type != 0">m_nodes[$i]</ValueNode>
+        <ValueNode Condition="m_nodes[$i].m_key.m_type == 0">"unused slot"</ValueNode> <!-- Want to hide these -->
+      </IndexListItems>
+    </Expand>
+  </Type>
+
+  <Type Name="gmStringObject">
+    <DisplayString>{{string = {m_string}}}</DisplayString>
+  </Type>
+
+</AutoVisualizer>
