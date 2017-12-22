@@ -96,10 +96,16 @@ struct gmVariable
   inline bool IsInt() const { return m_type == GM_INT; }
   inline bool IsFloat() const { return m_type == GM_FLOAT; }
   inline bool IsNumber() const { return IsInt() || IsFloat(); }
+  inline bool IsString() const { return m_type == GM_STRING; }
+  inline bool IsFunction() const { return m_type == GM_FUNCTION; }
 
   // GetInt and GetFloat are not protected. User should verify the type before calling this.
   inline gmint GetInt() const  { return m_value.m_int; }
+  inline bool GetInt(gmint& a_value, gmint a_default);
+  inline gmint GetInt(gmint a_default);
   inline gmfloat GetFloat() const { return m_value.m_float; }
+  inline bool GetFloat(gmfloat& a_value, gmfloat a_default);
+  inline gmfloat GetFloat(gmfloat a_default);
 
 
   /// \brief AsString will get this gm variable as a string if possible.  AsString is used for the gm "print" and system.Exec function bindings.
@@ -116,9 +122,13 @@ struct gmVariable
   const char * AsStringWithType(gmMachine * a_machine, char * a_buffer, int a_len) const;
 
   /// Return int/float or zero
-  inline gmint GetIntSafe() const;
+  inline gmint GetIntSafe(gmint a_default = gmint(0)) const;
+  bool GetIntSafe(gmint& a_value, gmint a_default) const;
+  inline bool GetBoolSafe() const;
+  inline bool GetBoolSafe(bool& a_value, bool a_default) const;
   /// Return float/int or zero
-  inline gmfloat GetFloatSafe() const;
+  inline gmfloat GetFloatSafe(gmfloat a_default = gmfloat(0)) const;
+  inline bool GetFloatSafe(gmfloat& a_value, gmfloat a_default) const;
   /// Return string object or null
   inline gmStringObject* GetStringObjectSafe() const;
   /// Return table object or null
@@ -126,9 +136,11 @@ struct gmVariable
   /// Return function object or null
   inline gmFunctionObject* GetFunctionObjectSafe() const;
   /// Return c string or empty string
-  const char* GetCStringSafe() const;
+  const char* GetCStringSafe(const char * a_default = "") const;
   /// Return user type ptr or null
   void* GetUserSafe(int a_userType) const;
+  gmUserObject * GetUserObjectSafe(int a_userType) const;
+  gmUserObject * GetUserObjectSafe() const;
 
   static inline gmuint Hash(const gmVariable &a_key)
   {
@@ -215,7 +227,29 @@ inline void gmVariable::SetFunction(gmFunctionObject * a_function)
   m_value.m_ref = ((gmObject *) a_function)->GetRef();
 }
 
-gmint gmVariable::GetIntSafe() const
+inline bool gmVariable::GetInt(gmint& a_value, gmint a_default)
+{
+  a_value = IsInt() ? GetInt() : a_default;
+  return IsInt();
+}
+
+inline bool gmVariable::GetFloat(gmfloat& a_value, gmfloat a_default)
+{
+  a_value = IsFloat() ? GetFloat() : a_default;
+  return IsFloat();
+}
+
+inline gmfloat gmVariable::GetFloat(gmfloat a_default)
+{
+  return IsFloat() ? GetFloat() : a_default;
+}
+
+inline gmint gmVariable::GetInt(gmint a_default)
+{
+  return IsInt() ? GetInt() : a_default;
+}
+
+inline gmint gmVariable::GetIntSafe(gmint a_default) const
 {
   if( GM_INT == m_type )
   {
@@ -223,12 +257,48 @@ gmint gmVariable::GetIntSafe() const
   }
   else if( GM_FLOAT == m_type )
   {
-    return (int)m_value.m_float;
+    return (gmint)m_value.m_float;
   }
-  return 0;
+  return a_default;
 }
 
-gmfloat gmVariable::GetFloatSafe() const
+inline bool gmVariable::GetIntSafe(gmint& a_value, gmint a_default) const
+{
+  a_value = a_default;
+  if( GM_INT == m_type )
+  {
+    a_value = m_value.m_int;
+    return true;
+  }
+  else if( GM_FLOAT == m_type )
+  {
+    a_value = (gmint)m_value.m_float;
+    return true;
+  }
+  return false;
+}
+
+inline bool gmVariable::GetBoolSafe() const
+{
+  if( GM_INT == m_type )
+  {
+    return m_value.m_int != 0;
+  }
+  return false;
+}
+
+inline bool gmVariable::GetBoolSafe(bool& a_value, bool a_default) const
+{
+  a_value = a_default;
+  if( GM_INT == m_type )
+  {
+    a_value = m_value.m_int != 0;
+    return true;
+  }
+  return false; 
+}
+
+inline gmfloat gmVariable::GetFloatSafe(gmfloat a_default) const
 {
   if( GM_FLOAT == m_type )
   {
@@ -236,12 +306,28 @@ gmfloat gmVariable::GetFloatSafe() const
   }
   else if( GM_INT == m_type )
   {
-    return (float)m_value.m_int;
+    return (gmfloat)m_value.m_int;
   }
-  return gmfloat(0);
+  return a_default; 
 }
 
-gmStringObject * gmVariable::GetStringObjectSafe() const
+inline bool gmVariable::GetFloatSafe(gmfloat& a_value, gmfloat a_default) const
+{
+  a_value = a_default;
+  if( GM_FLOAT == m_type )
+  {
+    a_value = m_value.m_float;
+    return true;
+  }
+  else if( GM_INT == m_type )
+  {
+    a_value = (gmfloat)m_value.m_int;
+    return true;
+  }
+  return false; 
+}
+
+inline gmStringObject * gmVariable::GetStringObjectSafe() const
 {
   if( GM_STRING == m_type )
   {

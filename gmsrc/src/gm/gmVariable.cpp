@@ -24,16 +24,36 @@ const char * gmVariable::AsString(gmMachine * a_machine, char * a_buffer, int a_
   switch(m_type)
   {
     case GM_NULL : 
+    {
       _gmsnprintf(a_buffer, a_len, "null");
       break;
+    }
     case GM_INT :
+    {
       _gmsnprintf(a_buffer, a_len, "%lld", (gmint64)m_value.m_int);
       break;
+    }
     case GM_FLOAT :
+    {
       _gmsnprintf(a_buffer, a_len, "%g", m_value.m_float);
       break;
+    }
     case GM_STRING :
+    {
       return ((gmStringObject *) GM_MOBJECT(a_machine, m_value.m_ref))->GetString();
+    }
+    case GM_FUNCTION:
+    {
+      const char *source = nullptr, *fileName = nullptr;
+      if(a_machine->GetSourceCode(GetFunctionObjectSafe()->GetSourceId(), source, fileName) && fileName)
+      {
+        _gmsnprintf(a_buffer, a_len, "%s (%s)", GetFunctionObjectSafe()->GetDebugName(), fileName);
+      } else 
+      {
+        _gmsnprintf(a_buffer, a_len, "%s", GetFunctionObjectSafe()->GetDebugName());
+      }
+      break;
+    }
     default:
       gmAsStringCallback asStringCallback = a_machine->GetUserAsStringCallback(m_type);
       if(asStringCallback)
@@ -93,13 +113,13 @@ void gmVariable::SetString(gmMachine * a_machine, const char * a_cString)
 }
 
 
-const char * gmVariable::GetCStringSafe() const
+const char * gmVariable::GetCStringSafe(const char * a_default) const
 {
   if( m_type == GM_STRING )
   {
     return ((gmStringObject *)m_value.m_ref)->GetString();
   }
-  return "";
+  return a_default;
 }
 
 
@@ -111,3 +131,22 @@ void * gmVariable::GetUserSafe(int a_userType) const
   }
   return NULL;
 }
+
+gmUserObject *gmVariable::GetUserObjectSafe(int a_userType) const
+{
+	if( m_type == a_userType )
+	{
+		return ((gmUserObject *)m_value.m_ref);
+	}
+	return NULL;
+}
+
+gmUserObject *gmVariable::GetUserObjectSafe() const
+{
+	if( m_type >= GM_USER )
+	{
+		return ((gmUserObject *)m_value.m_ref);
+	}
+	return NULL;
+}
+
