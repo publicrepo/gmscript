@@ -8,6 +8,9 @@ Note that very minor changes like a renamed variable or
 modified comment may not appear in this list.
 -----------------------------------------------------------
 
+10 Oct 2018
+o Fix foreach, 64bit related. Thanks bavoha.
+
 22 Dec 2017
 o Fix some type casts. 
 o Integrate some changes from DrEvil's gmscripex.

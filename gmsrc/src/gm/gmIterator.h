@@ -26,7 +26,15 @@
 // bool IsValid() const
 //
 
-#define GM_INCLUDE_ITERATOR_KERNEL(T)                                \
+// NOTE: Rearranged macro due to VS2017: fatal error C1001: An internal error has occurred in the compiler.
+
+#define GM_INCLUDE_ITERATOR_KERNEL(T)\
+private:                                                             \
+inline operator unsigned int(void) { return 0xDEADBEEF; }            \
+inline operator int(void) { return 0xDEADBEEF; }                     \
+inline operator unsigned int(void) const { return 0xDEADBEEF; }      \
+inline operator int(void) const { return 0xDEADBEEF; }               \
+public:                                                              \
 inline void operator++() { Inc(); }                                  \
 inline void operator--() { Dec(); }                                  \
 inline void operator++(int) { Inc(); }                               \
@@ -39,13 +47,7 @@ inline const T* operator->(void) const { return Resolve(); }         \
 inline operator bool(void) { return IsValid(); }                     \
 inline operator bool(void) const { return IsValid(); }               \
 inline bool operator !(void) { return !IsValid(); }                  \
-inline bool operator !(void) const { return !IsValid(); }            \
-                                                                     \
-private:                                                             \
-inline operator unsigned int(void) { return 0xDEADBEEF; }            \
-inline operator int(void) { return 0xDEADBEEF; }                     \
-inline operator unsigned int(void) const { return 0xDEADBEEF; }      \
-inline operator int(void) const { return 0xDEADBEEF; }               \
-public:
+inline bool operator !(void) const { return !IsValid(); }
+
 
 #endif // _GMITERATOR_H_

@@ -55,7 +55,7 @@ void gmByteCodePrint(FILE * a_fp, const void * a_byteCode, int a_byteCodeLength)
       case BC_CALL : cp = "call"; opiptr = true; break;
       case BC_RET : cp = "ret"; break;
       case BC_RETV : cp = "retv"; break;
-      case BC_FOREACH : cp = "foreach"; opiptr = true; break;
+      case BC_FOREACH : cp = "foreach"; opi32 = true; break;
       
       case BC_POP : cp = "pop"; break;
       case BC_POP2 : cp = "pop2"; break;

@@ -314,7 +314,7 @@ gmFunctionObject * gmLibHooks::BindLib(gmMachine &a_machine, gmStream &a_stream,
         case BC_BRNZ :
         case BC_BRZK :
         case BC_BRNZK :
-        case BC_FOREACH : instruction += sizeof(gmptr); break;
+        case BC_FOREACH : instruction += sizeof(gmuint32); break;
         case BC_PUSHINT : instruction += sizeof(gmint); break;
         case BC_PUSHFP : instruction += sizeof(gmfloat); break;
 
