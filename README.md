@@ -14,12 +14,12 @@ Yes, GameMonkey is distributed under the MIT license and is free for any use inc
 
 ### What are the key features of GM?
 
-* Small code base. Compiled code may use about 75kb of RAM. Less when tweaking or sharing with application.
+* Small code base.
 * Compile source code at run time, or link to precompiled libs.
 * Lightweight, native threading (coroutines).
 * Soft real-time incremental garbage collection. Controllable memory footprint. No painful reference counting.
 * Easy to bind C\C++ functions and call script from C\C++.
-* Runtime debugging and reflexion support.
+* Runtime debugging and reflection support.
 * C style syntax.
 * Competitive performance when compared to other scripting languages for both CPU and Memory usage. Speed is a trade off for flexibility and simplicity.
 * Easily modifiable as it is written in C++ and uses Flex and Bison.
