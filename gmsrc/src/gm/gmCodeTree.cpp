@@ -545,7 +545,7 @@ void gmProcessDoubleQuoteString(char * a_string)
 
 
 
-int gmerror(char * a_message)
+int gmerror(const char * a_message)
 {
   gmCodeTree & ct = gmCodeTree::Get();
   if(ct.GetLog())

@@ -253,7 +253,7 @@ struct gmCodeTreeNode
 
 void gmProcessSingleQuoteString(char * a_string);
 void gmProcessDoubleQuoteString(char * a_string);
-int gmerror(char * a_message);
+int gmerror(const char * a_message);
 int gmparse(void);
 
 #endif // _GMCODETREE_H_
