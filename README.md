@@ -18,7 +18,7 @@ Yes, GameMonkey is distributed under the MIT license and is free for any use inc
 * Compile source code at run time, or link to precompiled libs.
 * Lightweight, native threading (coroutines).
 * Soft real-time incremental garbage collection. Controllable memory footprint. No painful reference counting.
-* Easy to bind C\C++ functions and call script from C\C++.
+* Easy to bind C++ functions and call script from C++.
 * Runtime debugging and reflection support.
 * C style syntax.
 * Competitive performance when compared to other scripting languages for both CPU and Memory usage. Speed is a trade off for flexibility and simplicity.
@@ -26,7 +26,7 @@ Yes, GameMonkey is distributed under the MIT license and is free for any use inc
 
 ### What does the script code look like?
 
-Here is some script code that calls functions bound in C:
+Here is some script code that calls functions bound in C++:
 
 ```
 OnDoorTriggerEnter = function(door, objEntering)
@@ -40,9 +40,9 @@ OnDoorTriggerEnter = function(door, objEntering)
 };
 ```
 
-### How do I bind a new script function in C?
+### How do I bind a new script function in C++?
 
-Here is an example of binding a script function in C:
+Here is an example of binding a script function in C++:
 
 ```
 // Use in script as: DebugText(int x, int y, string text)
@@ -76,7 +76,7 @@ int GM_CDECL DebugText(gmThread *a_thread)
 
 ```
 
-### How easy is it to call script from C?
+### How easy is it to call script from C++?
 
 Here is some C code calling a script function:
 

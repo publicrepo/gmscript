@@ -8,6 +8,9 @@ Note that very minor changes like a renamed variable or
 modified comment may not appear in this list.
 -----------------------------------------------------------
 
+12 Sep 2019
+o Update docs to clarify GM requires C++ not C to build and use. 
+
 10 Oct 2018
 o Fix foreach, 64bit related. Thanks bavoha.
 
