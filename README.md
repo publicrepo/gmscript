@@ -4,6 +4,8 @@
 
 This project is Greg's personal build of GM Script. It is primarily maintained for stability.
 
+Greg is one of the original creators which makes this a de-facto home of GM Script. He is not actively developing GM at this time of writing, but plans to maintain a working build indefinitely. Active developers are encouraged to support each other in the [GM forum](http://www.gmscript.com/gamemonkey/forum/) or other developer forums. This repository may be behind others in terms of features, so please explore, share, and find a public branch that suits you.
+
 ### What is GameMonkey Script?
 
 GameMonkey is a embedded scripting language that is intended for use in game and tool applications. GameMonkey is however suitable for use in any project requiring simple scripting support. GameMonkey borrows concepts from Lua (www.lua.org), but uses syntax similar to C, making it more accessible to game programmers. GameMonkey also natively supports multithreading and the concept of states.
