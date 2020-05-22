@@ -67,6 +67,9 @@ FL		    (f|F)
 "true"                            { return(KEYWORD_TRUE);       }
 "false"                           { return(KEYWORD_FALSE);      }
 "fork"                            { return(KEYWORD_FORK);       }
+"switch"                          { return(KEYWORD_SWITCH);     }
+"case"                            { return(KEYWORD_CASE);       }
+"default"                         { return(KEYWORD_DEFAULT);    }
 
 {LETTER}({LETTER}|{DIGIT})*       { return(IDENTIFIER);         }
                                                                 

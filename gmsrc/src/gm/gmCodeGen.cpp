@@ -94,6 +94,9 @@ public:
   bool GenStmtDoWhile(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode);
   bool GenStmtIf(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode);
   bool GenStmtCompound(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode);
+#if GM_USE_SWITCH
+  bool GenStmtSwitch(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode);
+#endif //GM_USE_SWITCH
   bool GenExprOpDot(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode);
   bool GenExprOpUnary(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode);
   #if GM_USE_INCDECOPERATORS
@@ -404,6 +407,18 @@ bool gmCodeGenPrivate::Generate(const gmCodeTreeNode * a_node, gmByteCodeGen * a
             return false;
           }
 #endif //GM_USE_FORK
+#if GM_USE_SWITCH
+		  case CTNST_SWITCH: res = GenStmtSwitch(a_node, a_byteCode); break;
+#else //GM_USE_SWITCH
+		  case CTNST_SWITCH: // Unsupported, but tokens exist
+		  {
+			  if (m_log && m_currentFunction)
+			  {
+				  m_log->LogEntry("error (%d) 'switch' statement not supported", m_currentFunction->m_currentLine);
+			  }
+			  return false;
+		  }
+#endif //GM_USE_SWITCH
           default: 
           {
             GM_ASSERT(false);
@@ -899,6 +914,114 @@ bool gmCodeGenPrivate::GenStmtDoWhile(const gmCodeTreeNode * a_node, gmByteCodeG
   return true;
 }
 
+
+#if GM_USE_SWITCH
+bool gmCodeGenPrivate::GenStmtSwitch(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode)
+{
+	GM_ASSERT(a_node->m_type == CTNT_STATEMENT && a_node->m_subType == CTNST_SWITCH);
+	const gmCodeTreeNode *switchexpr = a_node->m_children[0];
+	const gmCodeTreeNode *defaultstmt = NULL;
+
+	gmuint caseid = 0;
+	gmuint casestmtid = 0;
+	gmArraySimple<gmuint> casejumpfromlocs;
+	gmArraySimple<gmuint> casestmtjumpfromlocs;
+	const gmCodeTreeNode * casenode = a_node->m_children[1];
+
+	// Generate 'switch' part
+	if (!Generate(switchexpr, a_byteCode)) return false;
+
+	while (casenode)
+	{
+		GM_ASSERT(casenode->m_type == CTNT_STATEMENT);
+
+		if (casenode->m_subType == CTNST_CASE)
+		{
+			// Duplicate result of switch evaluation to save us having to do it ease case
+			a_byteCode->Emit(BC_DUP);
+			// Generate conditional code
+			if (!Generate(casenode->m_children[0], a_byteCode)) return false;
+			// Do 'equal' test & jump to body
+			a_byteCode->Emit(BC_OP_EQ);
+			gmuint jumpfromloc = a_byteCode->Skip(SIZEOF_BC_BRA);
+			casejumpfromlocs.InsertLast(jumpfromloc);
+			++caseid;
+		}
+		else
+		{
+			// Must be a default statement
+			if (!casenode->m_children[0])
+			{
+				if (m_log) m_log->LogEntry("default missing statement body", casenode->m_lineNumber);
+				return false;
+			}
+			if (casenode->m_sibling)
+			{
+				if (m_log) m_log->LogEntry("cannot have case after default", casenode->m_lineNumber);
+				return false;
+			}
+
+			defaultstmt = casenode->m_children[0];
+		}
+
+		if (casenode->m_children[1])	// This statement has a body
+		{
+			if (!defaultstmt)
+			{
+				// We have some code
+				// Emit placeholder for next case when this block have all failed
+				gmuint casefailloc = a_byteCode->Skip(SIZEOF_BC_BRA);
+				// Emit jump to next block of code
+				gmuint beforestmtloc = a_byteCode->Tell();
+				// Emit statement
+				if (!Generate(casenode->m_children[1], a_byteCode)) return false;
+				// Jump to 'end'
+				gmuint jumpfromstmtloc = a_byteCode->Skip(SIZEOF_BC_BRA);	// store loc
+				casestmtjumpfromlocs.InsertLast(jumpfromstmtloc);
+				++casestmtid;
+				// Go back and backfill ptrs to the jump to loc
+				for (caseid = 0; caseid < casejumpfromlocs.Count(); ++caseid)
+				{
+					// jump to position
+					a_byteCode->Seek(casejumpfromlocs[caseid]);
+					// emit jump (tell case to jump to jump just before the statement to exec it)
+					a_byteCode->Emit(BC_BRNZ, beforestmtloc);
+
+				}
+				// Remove all old locs
+				casejumpfromlocs.ResetAndFreeMemory();
+				gmuint end_of_stmt = a_byteCode->Tell();
+				a_byteCode->Seek(casefailloc);
+				a_byteCode->Emit(BC_BRA, jumpfromstmtloc + SIZEOF_BC_BRA);
+				// Jump back to where we were ready for next statement
+				a_byteCode->Seek(jumpfromstmtloc + SIZEOF_BC_BRA);
+				// reset case
+				caseid = 0;
+			}
+		}
+		// Move to next sibling
+		casenode = casenode->m_sibling;
+	}
+	gmuint default_loc = a_byteCode->Tell();
+	if (defaultstmt)
+	{
+		if (!Generate(defaultstmt, a_byteCode)) return false;
+	}
+	gmuint end_of_code = a_byteCode->Tell();
+	for (caseid = 0; caseid < casestmtjumpfromlocs.Count(); ++caseid)
+	{
+		gmuint loc = casestmtjumpfromlocs[caseid];
+		// jump to position
+		a_byteCode->Seek(loc);
+		// emit jump (tell case to jump to here)
+		a_byteCode->Emit(BC_BRA, end_of_code);
+	}
+	// Jump back to end
+	a_byteCode->Seek(end_of_code);
+	a_byteCode->Emit(BC_POP);
+	return true;
+}
+#endif //GM_USE_SWITCH
 
 
 bool gmCodeGenPrivate::GenStmtIf(const gmCodeTreeNode * a_node, gmByteCodeGen * a_byteCode)

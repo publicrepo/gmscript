@@ -195,6 +195,11 @@ static void PrintRecursive(const gmCodeTreeNode * a_node, FILE * a_fp, bool a_fi
 #if GM_USE_FORK
           case CTNST_FORK : fprintf(a_fp, "CTNST_FORK:%04d" GM_NL, a_node->m_lineNumber); break;
 #endif //GM_USE_FORK
+#if GM_USE_SWITCH
+		  case CTNST_SWITCH: fprintf(a_fp, "CTNST_SWITCH:%04d" GM_NL, a_node->m_lineNumber); break;
+		  case CTNST_CASE: fprintf(a_fp, "CTNST_CASE:%04d" GM_NL, a_node->m_lineNumber); break;
+		  case CTNST_DEFAULT: fprintf(a_fp, "CTNST_DEFAULT:%04d" GM_NL, a_node->m_lineNumber); break;
+#endif //GM_USE_SWITCH
           default : fprintf(a_fp, "UNKNOWN STATEMENT:" GM_NL); break;
         }
       }
