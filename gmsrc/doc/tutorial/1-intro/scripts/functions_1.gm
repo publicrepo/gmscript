@@ -1,0 +1,6 @@
+
+myMultiply = function( x, y )	{ return x * y; };
+
+a = myMultiply( 100, 2 );
+print( a );
+

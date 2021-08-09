@@ -1,0 +1,8 @@
+
+fruits = table ( "apple", "pear", "orange" );
+foreach ( frt in fruits )
+{
+	print(frt);
+}
+
+

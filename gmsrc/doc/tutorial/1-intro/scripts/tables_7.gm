@@ -1,0 +1,14 @@
+
+myAlien = table(
+	Name = "Alien",
+	AttackPower = 20,
+	Strength = 50,
+	OnAttack = function( entity )
+		{
+			entity.Damage( this.AttackPower );
+			
+		}
+);
+
+
+

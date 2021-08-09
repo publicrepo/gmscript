@@ -1,0 +1,9 @@
+
+myStruct = table(
+	SayHello = function() { print( "Hello, world!" ); }
+);
+
+myStruct.SayHello();	// Call table-bound function
+
+
+

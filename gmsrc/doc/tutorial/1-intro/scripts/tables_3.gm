@@ -1,0 +1,7 @@
+
+myTest = table( 1, 4, Test = "Text!", 7, 8 );
+print( myTest[0] );
+print( myTest[3] );
+print( myTest["Test"] );
+
+

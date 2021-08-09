@@ -1,0 +1,13 @@
+global mytable = table(
+
+	myMember = 50,
+	setMember = function( a_value )
+	{
+		member myMember = a_value;
+	}
+);
+
+print( mytable.myMember );
+mytable.setMember( 100 );
+print( mytable.myMember );
+

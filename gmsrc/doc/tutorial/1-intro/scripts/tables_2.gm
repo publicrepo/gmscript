@@ -1,0 +1,10 @@
+
+myData = table( Name = "Test", Weight = 60 );
+
+print( myData[ "Name" ] );
+print( myData[ "Weight" ] );
+myData["Name"] = "Albert";
+myData["Test"] = "Some Text Here";
+print( myData[ "Name" ] );
+print( myData[ "Test" ] );
+

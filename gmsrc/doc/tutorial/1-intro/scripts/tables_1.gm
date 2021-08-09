@@ -1,0 +1,8 @@
+
+myArray = table( 1, 2, 3.14, 4, 5, "dog", "cat", 100 );
+
+myArray[0] = 50;
+print( myArray[1] );
+myArray[100] = "dog_100";	// new item added
+print( myArray[100] );
+

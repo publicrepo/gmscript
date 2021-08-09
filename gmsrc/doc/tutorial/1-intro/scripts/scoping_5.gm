@@ -1,0 +1,14 @@
+
+myTable = table(
+	myMember = 50
+);
+
+setMember = function( a_param )
+{
+	this.myMember = a_param;
+};
+
+print( myTable.myMember );
+myTable:setMember( 100 );
+print( myTable.myMember );
+
