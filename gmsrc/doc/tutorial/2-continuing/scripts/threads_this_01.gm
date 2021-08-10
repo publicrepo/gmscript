@@ -1,0 +1,20 @@
+
+global my_entity = {
+	x = 50, y = 100, name = "test"
+};
+
+
+global move_ent_left = function()
+{
+	print( "Starting thread - this.name = " + .name );
+	while( this.x > 0 )
+	{
+		this.x = this.x - 10;
+		print( this.name + " - x = " + this.x );
+		yield();
+	}
+	print( "Ending thread - this.name = " + .name );
+};
+
+my_entity:thread( move_ent_left );
+sleep(1);

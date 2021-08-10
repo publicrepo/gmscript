@@ -1,0 +1,25 @@
+/*
+  Yield based thread looping - bad!
+*/
+
+global WakeUp = false;
+
+global thread_1 = function( a_count )
+{
+  while (WakeUp == false)
+  {
+    // Snooze
+    print("zzz");
+    yield();
+  }
+  
+  print("I just woke up, boy was I tired!");
+  
+};
+
+// Launch thread
+thread( thread_1 );
+// Sleep for 1 secs then set the wakeup variable
+sleep(1);
+
+WakeUp = true;

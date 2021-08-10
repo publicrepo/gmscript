@@ -1,0 +1,36 @@
+
+global create_robot = function(x, y, name)
+{
+	return { x = x, y = y, name = name, id, class="robot" };
+};
+
+global behaviour_stupid = function()
+{
+	print( .name + " is acting stupidly" );
+};
+
+global behaviour_seek = function()
+{
+	print( .name + " is seeking resources" );
+};
+
+global behaviour_rest = function()
+{
+	print( .name + " is resting" );
+};
+
+global robot_def = {
+	{"tom", behaviour_seek},
+	{"mike", behaviour_rest}, 
+	{"jane", behaviour_stupid}, 
+	{"bob", behaviour_stupid},
+	{"sarah", behaviour_seek}
+};
+
+for(id = 0; id < 5; id = id + 1)
+{
+	robot = create_robot(1 * id, 10 * id, robot_def[id][0]);
+	robot:thread(robot_def[id][1]);
+}
+
+sleep(1);

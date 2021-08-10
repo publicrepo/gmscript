@@ -1,0 +1,25 @@
+global awake = function()
+{
+	print("I'm awake!");
+};
+
+global resting = function()
+{
+	print("I am resting");
+	sig = block("wakeup");
+	if (sig == "wakeup")
+	{
+		stateSet( awake );
+	}
+};
+
+global init_state = function()
+{
+	// Set a state on the thread
+	// we're now using states
+	stateSet( resting );
+};
+
+thread( init_state );
+sleep(1);
+signal("wakeup");

@@ -1,0 +1,48 @@
+global GuardGotoTowerOne = function()
+{
+	print("Going to Tower One...");
+	res = NPCGoto(this, Location.TOWER_ONE);
+	if (res == Event.SUCCESS)
+	{
+		print("Arrived at tower One");
+		this:stateSet(GuardWait);
+	}
+	else
+	{
+		print("Couldn't get there");
+	}
+};
+global GuardGotoTowerTwo = function()
+{
+	print("Going to Tower Two...");
+	res = NPCGoto(this, Location.TOWER_TWO);
+	if (res == Event.SUCCESS)
+	{
+		print("Arrived at tower Two");
+		this:stateSet(GuardWait);
+	}
+	else
+	{
+		print("Couldn't get there");
+	}
+};
+global GuardWait = function()
+{
+	print("Looking around...");
+	sleep(2);
+	print("Nothing here, moving on...");
+	if (stateGetLast() == GuardGotoTowerOne)
+	{
+		this:stateSet(GuardGotoTowerTwo);
+	}
+	else
+	{
+		this:stateSet(GuardGotoTowerOne);
+	}
+};
+global GuardMove = function()
+{
+	this:stateSet(GuardGotoTowerOne);
+};
+npc = CreateNPC();
+npc:thread(GuardMove);

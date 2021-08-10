@@ -1,0 +1,51 @@
+global ent_state_panic = function()
+{
+	print(.name + " is panicking, firing off alrams and attracting attention to you");
+};
+
+global ent_state_awake = function()
+{
+	print(.name + " is waking up");
+	this:stateSet( stateGetLast() );	// revert to previous state
+};
+
+global ent_state_sleeping = function()
+{
+	print(.name + " is sleeping");
+	sig = block("quiet_noise", "loud_bang", "kill");
+	if (sig == "quiet_noise")
+	{
+		this:stateSet( ent_state_awake );
+	}
+	else if (sig == "loud_bang")
+	{
+		this:stateSet( ent_state_panic );
+	}
+	else
+	{
+		print( .name + " killed" );
+	}
+};
+
+/// Initialise the state on the entity
+global ent_state_init = function(func)
+{
+	print( .name, " state initialised");
+	this:stateSet(func);
+};
+
+global ent_1 = { name = "roboguard 1000" };
+global ent_2 = { name = "old ticker" };
+
+// Create two threads, one for each entity and initialise them in the sleeping state
+ent_1.threadid = ent_1:thread( ent_state_init, ent_state_sleeping );
+ent_2.threadid = ent_2:thread( ent_state_init, ent_state_sleeping );
+
+sleep(1);
+print( "You stand on a twig");
+signal("quiet_noise");
+sleep(1);
+print( "You fire a gun at " + ent_1.name + " causing a loud noise");
+signal("loud_bang", ent_1.threadid);
+// Tell the entity to die
+signal("kill", ent_2.threadid);
