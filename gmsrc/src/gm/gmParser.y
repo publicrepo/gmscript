@@ -90,6 +90,9 @@ gmCodeTreeNode * CreateAsignExpression(int a_subTypeType, gmCodeTreeNode * a_lef
 %token KEYWORD_TRUE
 %token KEYWORD_FALSE
 %token KEYWORD_FORK
+%token KEYWORD_SWITCH
+%token KEYWORD_CASE
+%token KEYWORD_DEFAULT
 %token IDENTIFIER
 %token CONSTANT_HEX
 %token CONSTANT_BINARY
@@ -322,6 +325,77 @@ selection_statement
     {
       $$ = gmCodeTreeNode::Create(CTNT_STATEMENT, CTNST_FORK, ($2) ? $2->m_lineNumber : gmlineno );
       $$->SetChild(0, $2 );
+    }
+  | KEYWORD_SWITCH '(' constant_expression ')' '{' case_selection_statement_list '}'
+    {
+      $$ = gmCodeTreeNode::Create(CTNT_STATEMENT, CTNST_SWITCH, ($3) ? $3->m_lineNumber : gmlineno);
+      $$->SetChild(0, $3);
+      $$->SetChild(1, $6);
+    }
+  ;
+
+case_selection_statement
+  : KEYWORD_CASE postfix_case_expression ':'
+    {
+      $$ = gmCodeTreeNode::Create(CTNT_STATEMENT, CTNST_CASE, ($2) ? $2->m_lineNumber : gmlineno);
+      $$->SetChild(0, $2);
+    }
+  | KEYWORD_CASE postfix_case_expression ':' compound_statement
+    {
+      $$ = gmCodeTreeNode::Create(CTNT_STATEMENT, CTNST_CASE, ($2) ? $2->m_lineNumber : gmlineno);
+      $$->SetChild(0, $2);
+      $$->SetChild(1, $4);
+    }
+   | KEYWORD_DEFAULT ':' compound_statement
+    {
+      $$ = gmCodeTreeNode::Create(CTNT_STATEMENT, CTNST_DEFAULT, ($3) ? $3->m_lineNumber : gmlineno);
+      $$->SetChild(0, $3);
+    }
+  ;
+  
+case_selection_statement_list
+  : case_selection_statement
+    {
+      $$ = $1;
+    }
+  | case_selection_statement_list case_selection_statement
+    {
+      ATTACH($$, $1, $2);
+    }
+  ;
+ 
+ postfix_case_expression
+  : case_expression
+    {
+      $$ = $1;
+    }
+  | postfix_case_expression '[' constant_expression ']'
+    {
+      $$ = CreateOperation(CTNOT_ARRAY_INDEX, $1, $3);
+    }
+  | postfix_case_expression '.' identifier
+    {
+      $$ = CreateOperation(CTNOT_DOT, $1, $3);
+    }
+  ;
+ 
+ case_expression
+  : identifier
+    {
+      $$ = $1;
+    }
+  | '.' identifier
+    {
+      $$ = $2;
+      $$->m_flags |= gmCodeTreeNode::CTN_MEMBER;
+    }
+  | KEYWORD_THIS
+    {
+      $$ = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_THIS, gmlineno);
+    }
+  | constant  
+    {
+      $$ = $1;
     }
   ;
 

@@ -107,5 +107,6 @@ enum gmEndian
 #define GM_USER_FOREACH             1         // Support foreach for user types
 #define GM_USE_ENDON                1         // Support endon() to kill thread when signalled
 #define GM_USE_INCDECOPERATORS      1         // Support operator ++ and --
+#define GM_USE_SWITCH				1	      // Support switch statements
 
 #endif // _GMCONFIG_H_
