@@ -1,0 +1,2 @@
+print( myMultiply( 10, 2 ) );
+

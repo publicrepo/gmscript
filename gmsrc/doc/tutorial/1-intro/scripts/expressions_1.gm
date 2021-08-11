@@ -1,0 +1,23 @@
+x = 5;			// Assign a value to x
+print( x );
+
+y = (x * 10) + 56;	// Assign a value to y
+print( y );
+
+if (x == 10)		// Comparison (equality)
+{
+	print( "x is equal to 10" );
+}
+if (x != 10)		// Comparison (inequality)
+{
+	print( "x is not equal to 10" );
+}
+if (x < 10)			// Comparison (less than)
+{
+	print( "x is less than 10" );
+}
+if (x > 10)			// Comparison (greater than)
+{
+	print( "x is greater than 10" );
+}
+

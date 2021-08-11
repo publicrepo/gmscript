@@ -1,0 +1,15 @@
+// Create a variable in the global scope
+global myvar = 100;
+
+// parameter 'a_param' is in function local scope
+myfunc = function( a_param )
+{
+	// Access variable myvar in global scope
+	global myvar = a_param;
+	print( myvar );
+};
+
+print( myvar );
+myfunc( 50 );
+print( myvar );
+

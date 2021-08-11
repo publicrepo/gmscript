@@ -1,0 +1,5 @@
+for (it = 0; it <= 10; it = it + 1)
+{
+	print( "it = ", it );
+}
+

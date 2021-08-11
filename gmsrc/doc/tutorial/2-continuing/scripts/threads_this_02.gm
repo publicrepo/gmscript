@@ -1,0 +1,24 @@
+
+global robot = {
+	x = 50, y = 100, name = "robot"
+};
+
+global player = {
+	x = 150, y = 200, name = "player"
+};
+
+global move_ent_left = function()
+{
+	print( "Starting thread - this.name = " + .name );
+	while( this.x > 0 )
+	{
+		this.x = this.x - 10;
+		print( this.name + " - x = " + this.x );
+		yield();
+	}
+	print( "Ending thread - this.name = " + .name );
+};
+
+robot:thread( move_ent_left );
+player:thread( move_ent_left );
+sleep(1);

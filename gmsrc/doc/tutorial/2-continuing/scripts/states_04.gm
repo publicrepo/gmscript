@@ -1,0 +1,30 @@
+global state_advance = function()
+{
+	print("Leaving cover and advancing");
+};
+
+global state_decide_action = function()
+{
+	print("I have to decide on a next action");
+};
+
+global state_hiding = function()
+{
+	print("Behind cover, waiting to advance");
+	sig = block("advance");
+	if (sig == "advance")
+	{
+		stateSet( awake );
+	}
+};
+
+global init_state = function()
+{
+	stateSet( state_hiding );
+};
+
+tid = thread( init_state );
+sleep(1);
+// Signal isn't thrown, tell this thread to change state
+print("Cover explodes!");
+stateSetOnThread( tid, state_decide_action );

@@ -1,0 +1,8 @@
+
+fruits = table ( "apple", "pear", Juicy = "orange" );
+foreach ( k and f in fruits )
+{
+	print( "The value at key '", k, "' is '", f, "'" );
+}
+
+

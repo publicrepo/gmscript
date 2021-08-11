@@ -1,0 +1,17 @@
+
+global thread_func = function( a_name, a_count )
+{
+ print( "["+a_name+"] Starting..." );
+ for (i = 0; i < a_count; i = i + 1)
+ {
+  print( "["+a_name+"] iteration: " + i );
+  yield();
+ };
+ print( "["+a_name+"] Finishing..." );
+};
+
+print( "[0] Ready to execute..." );
+thread( thread_func, 1, 100 );
+thread( thread_func, 2, 100 );
+sleep(1);
+print( "[0] Thread created..." );

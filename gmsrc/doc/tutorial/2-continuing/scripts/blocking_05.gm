@@ -1,0 +1,27 @@
+/*
+  Basic blocking and signalling #5
+*/
+
+global blockfunc = function(name)
+{
+	print( name + ", waiting for instruction, sir!" );
+	signal_received = block("attack", "move", "defend");
+	if(signal_received == "attack")
+	{
+		print(name + " is attacking!");
+	}
+	else if (signal_received == "move")
+	{
+		print(name + " is moving to position!");
+	}
+	else if (signal_received == "defend")
+	{
+		print(name + " is defending til the death!");
+	}
+};
+
+thread_1 = thread( blockfunc, "woob" );
+thread_2 = thread( blockfunc, "foo" );
+sleep(1);
+signal("attack", thread_1);
+signal("defend", thread_2);

@@ -1,0 +1,72 @@
+/*
+	Scoping example to show 'this' scoping in action
+*/
+
+bigAlien = table(
+	myName = "Big Alien"
+	,myPower = 100
+	,myHealth = 100
+	,isDead = false
+);
+
+smallAlien = table(
+	myName = "Small Alien"
+	,myPower = 10
+	,myHealth = 10
+	,isDead = false
+);
+
+player = table(
+
+	myName = "Player"
+	,myPower = 20
+	,myHealth = 20
+	,isDead = false
+);
+
+Attack = function( a_target )
+{
+	print( a_target.myName, "was attacked by", .myName );
+	// Attack
+	a_target.myHealth -= .myPower;
+
+	if (a_target.myHealth < 0 )
+	{
+		a_target.myHealth = 0;
+	}
+
+	if (a_target.myHealth == 0)
+	{
+		a_target.isDead = true;
+		print( a_target.myName, "died" );
+	}
+};
+
+ShowStats = function()
+{
+	print( "Stats for **", .myName, "**" );
+	print( "Health", .myHealth );
+	print( "Power", .myPower );
+	print( "Dead?", .isDead );
+	print( "-----------------\n" );
+};
+
+// Show stats before attacks commence
+player:ShowStats();
+smallAlien:ShowStats();
+bigAlien:ShowStats();
+
+print( "Commencing attacks!\n" );
+
+smallAlien:Attack( player );
+player:Attack( smallAlien );
+bigAlien:Attack( player );
+
+print( "Attacks over!\n" );
+
+player:ShowStats();
+smallAlien:ShowStats();
+bigAlien:ShowStats();
+
+
+

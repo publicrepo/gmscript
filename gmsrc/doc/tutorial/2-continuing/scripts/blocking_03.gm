@@ -1,0 +1,29 @@
+/*
+  Basic blocking and signalling #3
+*/
+
+global thread_1 = function()
+{
+  block("WAKEUP");
+
+  print("I just woke up, boy was I tired! You should wake up too!");
+  
+  signal("YOUTOO");
+};
+
+global thread_2 = function()
+{
+  block("YOUTOO");
+
+  print("What did you wake me up for?");
+  
+};
+
+
+// Launch thread
+thread( thread_2 );
+thread( thread_1 );
+// Sleep for 1 secs then set the wakeup variable
+sleep(1);
+
+signal("WAKEUP");

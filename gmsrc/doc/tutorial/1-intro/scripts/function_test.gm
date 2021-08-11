@@ -1,0 +1,10 @@
+global sayHello = function()
+{
+	print( "Hello, World!");
+};
+
+global myMultiply = function( a_x, a_y )
+{
+	return a_x * a_y;
+};
+
