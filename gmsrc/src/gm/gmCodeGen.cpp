@@ -980,7 +980,7 @@ bool gmCodeGenPrivate::GenStmtSwitch(const gmCodeTreeNode * a_node, gmByteCodeGe
 				casestmtjumpfromlocs.InsertLast(jumpfromstmtloc);
 				++casestmtid;
 				// Go back and backfill ptrs to the jump to loc
-				for (caseid = 0; caseid < casejumpfromlocs.Count(); ++caseid)
+				for (caseid = 0; caseid < (gmuint)casejumpfromlocs.Count(); ++caseid)
 				{
 					// jump to position
 					a_byteCode->Seek(casejumpfromlocs[caseid]);
@@ -992,7 +992,7 @@ bool gmCodeGenPrivate::GenStmtSwitch(const gmCodeTreeNode * a_node, gmByteCodeGe
 				casejumpfromlocs.ResetAndFreeMemory();
 				gmuint end_of_stmt = a_byteCode->Tell();
 				a_byteCode->Seek(casefailloc);
-				a_byteCode->Emit(BC_BRA, jumpfromstmtloc + SIZEOF_BC_BRA);
+				a_byteCode->Emit(BC_BRA, jumpfromstmtloc + (gmuint)SIZEOF_BC_BRA);
 				// Jump back to where we were ready for next statement
 				a_byteCode->Seek(jumpfromstmtloc + SIZEOF_BC_BRA);
 				// reset case
@@ -1008,7 +1008,7 @@ bool gmCodeGenPrivate::GenStmtSwitch(const gmCodeTreeNode * a_node, gmByteCodeGe
 		if (!Generate(defaultstmt, a_byteCode)) return false;
 	}
 	gmuint end_of_code = a_byteCode->Tell();
-	for (caseid = 0; caseid < casestmtjumpfromlocs.Count(); ++caseid)
+	for (caseid = 0; caseid < (gmuint)casestmtjumpfromlocs.Count(); ++caseid)
 	{
 		gmuint loc = casestmtjumpfromlocs[caseid];
 		// jump to position
