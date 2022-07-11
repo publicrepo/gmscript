@@ -922,7 +922,7 @@ constant
   | CONSTANT_INT
     {
       $$ = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_CONSTANT, gmlineno, CTNCT_INT);
-      $$->m_data.m_iValue = atoi(gmtext);
+      $$->m_data.m_iValue = (gmint)strtoll(gmtext, NULL, 10);
     }
   | KEYWORD_TRUE
     {
@@ -983,7 +983,7 @@ constant
   | CONSTANT_FLOAT
     {
       $$ = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_CONSTANT, gmlineno, CTNCT_FLOAT);
-      $$->m_data.m_fValue = (float) atof(gmtext);
+      $$->m_data.m_fValue = (gmfloat)atof(gmtext);
     }
   | constant_string_list
     {

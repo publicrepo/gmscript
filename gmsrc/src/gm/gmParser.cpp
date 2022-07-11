@@ -1955,7 +1955,7 @@ case 139:
 case 140:
 {
       yyval = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_CONSTANT, gmlineno, CTNCT_INT);
-      yyval->m_data.m_iValue = atoi(gmtext);
+      yyval->m_data.m_iValue = (gmint)strtoll(gmtext, NULL, 10);
     ;
     break;}
 case 141:
@@ -2020,7 +2020,7 @@ case 143:
 case 144:
 {
       yyval = gmCodeTreeNode::Create(CTNT_EXPRESSION, CTNET_CONSTANT, gmlineno, CTNCT_FLOAT);
-      yyval->m_data.m_fValue = (float) atof(gmtext);
+      yyval->m_data.m_fValue = (gmfloat)atof(gmtext);
     ;
     break;}
 case 145:

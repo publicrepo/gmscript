@@ -8,6 +8,9 @@ Note that very minor changes like a renamed variable or
 modified comment may not appear in this list.
 -----------------------------------------------------------
 
+11 Jul 2022
+o Fix parser for 64bit ints. Thanks bavoha.
+
 12 Sep 2019
 o Update docs to clarify GM requires C++ not C to build and use. 
 
